@@ -12,10 +12,8 @@
     <groupId>com.noagility</groupId>
     <artifactId>personalcrm</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
     <name>Personal CRM</name>
     <description>A personal CRM made by NoAgility</description>
-
 
     <properties>
         <java.version>11</java.version>

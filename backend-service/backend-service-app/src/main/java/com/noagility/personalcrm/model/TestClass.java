@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
  * @NoArgsConstructor self explanatory.
  */
 @Data
-@AllArgsConstructor
+//@AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class TestClass {
