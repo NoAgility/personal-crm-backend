@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  student-service:
+    container_name: backend-service
+    build:
+      context: backend-service
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      TEST: test
+    healthcheck:
+      test: "exit 0"
