@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  student-service:
+  backend-service:
     container_name: backend-service
     build:
       context: backend-service
