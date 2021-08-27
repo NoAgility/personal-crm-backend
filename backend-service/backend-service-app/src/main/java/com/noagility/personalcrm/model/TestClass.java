@@ -1,9 +1,5 @@
 package com.noagility.personalcrm.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * For backend team:
@@ -11,23 +7,26 @@ import lombok.NoArgsConstructor;
  * @AllArgsConstructor generates constructor with all attributes at runtime.
  * @NoArgsConstructor self explanatory.
  */
-@Data
-//@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 public class TestClass {
 
-    /*
-    This won't be needed for the actual application, but I'm providing hardcoded objects in TestClassService
-    as an example so I put it here
-    */
+    public TestClass() {
+    }
 
-    /*
-    Remove these and uncomment the @AllArgsConstructor once you remove the hardcoded response @ testClassService
-     */
     public TestClass(String id, String name, String address) {
         this.id = id;
         this.name = name;
+        this.address = address;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAddress(String address) {
         this.address = address;
     }
 

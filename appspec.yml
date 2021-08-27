@@ -10,7 +10,7 @@ hooks:
      runas: root
   AfterInstall:
    - location: setup.sh
-     timeout: 1200
+     timeout: 2400
      runas: root
   ApplicationStart:
    - location: run.sh
