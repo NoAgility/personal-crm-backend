@@ -4,6 +4,10 @@ files:
   - source: .
     destination: /home/ec2-user/personal-crm-backend/
 hooks:
+  ApplicationStop:
+   - location: purge.sh
+     timeout: 300
+     runas: root
   AfterInstall:
    - location: setup.sh
      timeout: 300
