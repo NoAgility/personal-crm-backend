@@ -45,7 +45,6 @@ public class TestClass {
     /*
     Up to here
      */
-
     private String id;
     private String name;
     private String address;

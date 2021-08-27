@@ -21,4 +21,12 @@ public class TestClassController {
         List<TestClass> list = testClassService.get();
         return ResponseEntity.ok().body(list);
     }
+    @GetMapping("/dburl")
+    public ResponseEntity<String> getDbPort() {
+        return ResponseEntity.ok().body(System.getenv("SPRING_DATASOURCE_URL"));
+    }
+    @GetMapping("/user/{username}")
+    public ResponseEntity<TestClass> getUser(@PathVariable("username") String username) {
+        return ResponseEntity.ok().body(testClassService.selectByUsername(username));
+    }
 }
