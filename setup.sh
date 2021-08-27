@@ -7,3 +7,5 @@ sudo usermod -a -G docker ec2-user
 sudo chmod 666 /var/run/docker.sock
 sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 sudo service docker start
+cd /home/ec2-user/personal-crm-backend
+docker-compose --env-file /home/ec2-user/personal-crm-backend/config/prod.env build --no-cache
