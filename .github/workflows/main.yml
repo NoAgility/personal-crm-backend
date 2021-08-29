@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline into Production
 on:
   push:
     branches: [ main ]
