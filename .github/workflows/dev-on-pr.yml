@@ -1,5 +1,7 @@
 name: CI Pipeline for PR into dev
 on:
+  push:
+    branches: [ dev ]
   pull_request:
     branches: [ dev ]
 
