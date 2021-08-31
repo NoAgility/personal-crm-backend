@@ -20,11 +20,6 @@ public class TestClassService {
     TestClassRowMapper testClassRowMapper;
     @Autowired
     JdbcTemplate jdbcTemplate;
-    public List<TestClass> get() {
-        return Arrays.asList(new TestClass[] {new TestClass("1", "Apple", "10 Appleton St"),
-        new TestClass("2", "Banana", "20 Bananaboat Rd"),
-                new TestClass("3", "Orange", "Orangepeel St")});
-    }
 
     public TestClass selectByUsername(String query) {
         try {

@@ -11,7 +11,6 @@ public class TestClassRowMapper implements RowMapper<TestClass> {
     @Override
     public TestClass mapRow(ResultSet resultSet, int i) throws SQLException {
         TestClass res = new TestClass();
-
         resultSet.next();
         res.setId(resultSet.getString("id"));
         res.setName(resultSet.getString("username"));
