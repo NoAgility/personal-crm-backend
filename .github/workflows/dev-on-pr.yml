@@ -1,4 +1,4 @@
-name: CI Pipeline for PR into dev
+name: CI Pipeline for pull request into development branch
 on:
   pull_request:
     branches: [ dev ]
