@@ -36,7 +36,7 @@ jobs:
         id: deploy
         run: |
           aws deploy create-deployment \
-            --application-name personal-crm-noagility \
+            --application-name no-agility-personal-crm-prod \
             --deployment-group-name production \
             --ignore-application-stop-failures \
             --deployment-config-name CodeDeployDefault.OneAtATime \
