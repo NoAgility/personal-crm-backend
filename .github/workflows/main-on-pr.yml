@@ -1,4 +1,4 @@
-name: CI Pipeline for PR into main
+name: CI Pipeline for pull request into main branch
 on:
   pull_request:
     branches: [ main ]
