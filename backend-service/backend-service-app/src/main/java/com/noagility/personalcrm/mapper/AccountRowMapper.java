@@ -17,10 +17,11 @@ public class AccountRowMapper implements RowMapper<Account> {
         Account res = new Account();
         resultSet.next();
         res.setAccountID(resultSet.getInt("AccountID"));
-        res.setRoleID(resultSet.getInt("RoleID"));
+        res.setAccountUsername(resultSet.getString("AccountUsername"));
         res.setAccountName(resultSet.getString("AccountName"));
         res.setAccountDOB(asLocalDate(resultSet.getDate("AccountDOB")));
         res.setAccountCreation(asLocalDate(resultSet.getDate("AccountCreation")));
+        System.out.println(res.toString());
         return res;
     }
     public static LocalDate asLocalDate(Date date) {
