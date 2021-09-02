@@ -4,6 +4,7 @@ package com.noagility.personalcrm.controller;
 import com.noagility.personalcrm.model.TestClass;
 import com.noagility.personalcrm.service.TestClassService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class TestClassController {
     public ResponseEntity<String> getDbPort() {
         return ResponseEntity.ok().body(System.getenv("SPRING_DATASOURCE_URL"));
     }
-    @GetMapping("/user/{username}")
+    @GetMapping(path ="/user/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TestClass> getUser(@PathVariable("username") String username) {
         return ResponseEntity.ok().body(testClassService.selectByUsername(username));
     }
