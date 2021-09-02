@@ -24,6 +24,10 @@ public class Account {
         AccountCreation = accountCreation;
     }
 
+    public Account() {
+
+    }
+
     @java.lang.Override
     public java.lang.String toString() {
         return "Account{" +
