@@ -3,25 +3,25 @@ package com.noagility.personalcrm.model;
 import java.time.LocalDate;
 
 public class Account {
-    private int AccountID;
-    private int RoleID;
-    private String AccountName;
-    private LocalDate AccountDOB;
-    private LocalDate AccountCreation;
+    private int accountID;
+    private String accountUsername;
+    private String accountName;
+    private LocalDate accountDOB;
+    private LocalDate accountCreation;
 
-    public Account(int accountID, int roleID, String accountName, LocalDate accountDOB, LocalDate accountCreation) {
-        AccountID = accountID;
-        RoleID = roleID;
-        AccountName = accountName;
-        AccountDOB = accountDOB;
-        AccountCreation = accountCreation;
+    public Account(int accountID, String accountUsername, String accountName, LocalDate accountDOB, LocalDate accountCreation) {
+        this.accountID = accountID;
+        this.accountUsername = accountUsername;
+        this.accountName = accountName;
+        this.accountDOB = accountDOB;
+        this.accountCreation = accountCreation;
     }
 
-    public Account(int roleID, String accountName, LocalDate accountDOB, LocalDate accountCreation) {
-        RoleID = roleID;
-        AccountName = accountName;
-        AccountDOB = accountDOB;
-        AccountCreation = accountCreation;
+    public Account(String accountUsername, String accountName, LocalDate accountDOB, LocalDate accountCreation) {
+        this.accountUsername = accountUsername;
+        this.accountName = accountName;
+        this.accountDOB = accountDOB;
+        this.accountCreation = accountCreation;
     }
 
     public Account() {
@@ -31,51 +31,51 @@ public class Account {
     @java.lang.Override
     public java.lang.String toString() {
         return "Account{" +
-                "AccountID=" + AccountID +
-                ", RoleID=" + RoleID +
-                ", AccountName='" + AccountName + '\'' +
-                ", AccountDOB=" + AccountDOB +
-                ", AccountCreation=" + AccountCreation +
+                "accountID=" + accountID +
+                ", accountUsername=" + accountUsername +
+                ", accountName='" + accountName + '\'' +
+                ", accountDOB=" + accountDOB +
+                ", accountCreation=" + accountCreation +
                 '}';
     }
 
     public int getAccountID() {
-        return AccountID;
+        return accountID;
     }
 
-    public int getRoleID() {
-        return RoleID;
+    public String getAccountUsername(){
+        return accountUsername;
     }
-
+    
     public String getAccountName() {
-        return AccountName;
+        return accountName;
     }
 
     public LocalDate getAccountDOB() {
-        return AccountDOB;
+        return accountDOB;
     }
 
     public LocalDate getAccountCreation() {
-        return AccountCreation;
+        return accountCreation;
     }
 
     public void setAccountID(int accountID) {
-        AccountID = accountID;
+        this.accountID = accountID;
     }
 
-    public void setRoleID(int roleID) {
-        RoleID = roleID;
+    public void setAccountUsername(String accountUsername) {
+        this.accountUsername = accountUsername;
     }
 
     public void setAccountName(String accountName) {
-        AccountName = accountName;
+        this.accountName = accountName;
     }
 
     public void setAccountDOB(LocalDate accountDOB) {
-        AccountDOB = accountDOB;
+        this.accountDOB = accountDOB;
     }
 
     public void setAccountCreation(LocalDate accountCreation) {
-        AccountCreation = accountCreation;
+        this.accountCreation = accountCreation;
     }
 }

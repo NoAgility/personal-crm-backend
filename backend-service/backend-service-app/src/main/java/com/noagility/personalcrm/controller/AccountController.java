@@ -21,26 +21,30 @@ import java.util.List;
 public class AccountController {
     @Autowired
     private CreateAccountService CreateAccountService;
+    @Autowired
     private AccountService AccountService;
 
     @GetMapping("/dburl")
     public ResponseEntity<String> getDbPort() {
         return ResponseEntity.ok().body(System.getenv("SPRING_DATASOURCE_URL"));
     }
-    @GetMapping(path ="/{account}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Account> getAccount(@PathVariable("account") String username) {
-        return ResponseEntity.ok().body(AccountService.selectByUsername(username));
-    }
 
     @GetMapping("/create")
-    public ResponseEntity<Account> createAccount() {
-        Account account = CreateAccountService.get();
-        return ResponseEntity.ok().body(account);
+    public ResponseEntity<String> createAccount(@RequestParam String username, @RequestParam String password, @RequestParam String name, @RequestParam String dateOfBirth) {
+        if(CreateAccountService.registerAccount(username, password, name, dateOfBirth)){
+            return ResponseEntity.ok().body("Success");
+        }
+        return ResponseEntity.badRequest().body("Failure");
     }
 
     @GetMapping("/delete")
     public ResponseEntity<Account> deleteAccount() {
         Account account = DeleteAccountService.get();
         return ResponseEntity.ok().body(account);
+    }
+
+    @GetMapping("/getByUsername")
+    public ResponseEntity<Account> getAccount(@RequestParam String username){
+        return ResponseEntity.ok().body(AccountService.getByUsername(username));
     }
 }
