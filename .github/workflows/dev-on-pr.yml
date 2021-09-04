@@ -17,4 +17,4 @@ jobs:
           distribution: 'adopt'
       # Step 3
       - name: Build Application and Run unit Test
-        run: docker-compose --env-file /config/dev.env up -d
+        run: docker-compose --env-file config/dev.env up -d
