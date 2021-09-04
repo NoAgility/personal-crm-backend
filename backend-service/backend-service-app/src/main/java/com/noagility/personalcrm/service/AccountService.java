@@ -17,13 +17,13 @@ public class AccountService {
     AccountRowMapper accountRowMapper;
 
 
-    public Account getByUsername(String query) {
+    public Account getByUsername(String username) {
         try {
             String sql = "SELECT * FROM Accounts WHERE AccountUsername = ?;";
 
             PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(sql);
 
-            preparedStatement.setString(1, query);
+            preparedStatement.setString(1, username);
             ResultSet rs = preparedStatement.executeQuery();
             Account result = accountRowMapper.mapRow(rs, 0);
             return result;
@@ -70,7 +70,7 @@ public class AccountService {
     public boolean deactivateAccount(String username) {
         try{
             //  Insert new account into Accounts table
-            String sql = "UPDATE Accounts SET Active = 0 WHERE username = ?;";
+            String sql = "UPDATE Accounts SET AccountActive = 0 WHERE AccountUsername = ?;";
             PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(sql);
             preparedStatement.setString(1, username);
             preparedStatement.executeUpdate();
