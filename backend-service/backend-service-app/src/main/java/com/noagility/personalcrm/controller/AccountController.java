@@ -5,7 +5,7 @@ import com.noagility.personalcrm.model.Account;
 import com.noagility.personalcrm.model.TestClass;
 import com.noagility.personalcrm.service.AccountService;
 import com.noagility.personalcrm.service.CreateAccountService;
-import com.noagility.personalcrm.service.DeleteAccountService;
+import com.noagility.personalcrm.service.DeactivateAccountService;
 import com.noagility.personalcrm.service.TestClassService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.relational.core.sql.Delete;
@@ -39,7 +39,7 @@ public class AccountController {
 
     @GetMapping("/delete")
     public ResponseEntity<Account> deleteAccount() {
-        Account account = DeleteAccountService.get();
+        Account account = DeactivateAccountService.get();
         return ResponseEntity.ok().body(account);
     }
 

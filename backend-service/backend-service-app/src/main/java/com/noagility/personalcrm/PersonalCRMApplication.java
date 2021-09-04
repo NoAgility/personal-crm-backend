@@ -4,7 +4,7 @@ import com.noagility.personalcrm.mapper.AccountRowMapper;
 import com.noagility.personalcrm.mapper.TestClassRowMapper;
 import com.noagility.personalcrm.service.AccountService;
 import com.noagility.personalcrm.service.CreateAccountService;
-import com.noagility.personalcrm.service.DeleteAccountService;
+import com.noagility.personalcrm.service.DeactivateAccountService;
 import com.noagility.personalcrm.service.TestClassService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,8 +43,8 @@ public class PersonalCRMApplication {
 		return new CreateAccountService();
 	}
 	@Bean
-	DeleteAccountService getDeleteAccountService() {
-		return new DeleteAccountService();
+	DeactivateAccountService getDeleteAccountService() {
+		return new DeactivateAccountService();
 	}
 
 	@Bean

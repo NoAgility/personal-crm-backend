@@ -2,7 +2,7 @@ package com.noagility.personalcrm.service;
 
 import com.noagility.personalcrm.model.Account;
 
-public class DeleteAccountService {
+public class DeactivateAccountService {
     public static Account get() {
         return null;
     }
