@@ -1,11 +1,7 @@
 package com.noagility.personalcrm;
 
 import com.noagility.personalcrm.mapper.AccountRowMapper;
-import com.noagility.personalcrm.mapper.TestClassRowMapper;
 import com.noagility.personalcrm.service.AccountService;
-import com.noagility.personalcrm.service.CreateAccountService;
-import com.noagility.personalcrm.service.DeleteAccountService;
-import com.noagility.personalcrm.service.TestClassService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -23,28 +19,12 @@ public class PersonalCRMApplication {
 	}
 
 	@Bean
-	TestClassRowMapper getTestClassRowMapper() {
-		return new TestClassRowMapper();
-	}
-	@Bean
-	TestClassService getTestClassService() {
-		return new TestClassService();
-	}
-	@Bean
 	AccountRowMapper AccountClassRowMapper() {
 		return new AccountRowMapper();
 	}
 	@Bean
 	AccountService getAccountService() {
 		return new AccountService();
-	}
-	@Bean
-	CreateAccountService getCreateAccountService() {
-		return new CreateAccountService();
-	}
-	@Bean
-	DeleteAccountService getDeleteAccountService() {
-		return new DeleteAccountService();
 	}
 
 	@Bean

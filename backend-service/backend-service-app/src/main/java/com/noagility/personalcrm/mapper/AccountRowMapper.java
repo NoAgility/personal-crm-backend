@@ -1,7 +1,6 @@
 package com.noagility.personalcrm.mapper;
 
 import com.noagility.personalcrm.model.Account;
-import com.noagility.personalcrm.model.TestClass;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.Date;
@@ -21,6 +20,7 @@ public class AccountRowMapper implements RowMapper<Account> {
         res.setAccountName(resultSet.getString("AccountName"));
         res.setAccountDOB(asLocalDate(resultSet.getDate("AccountDOB")));
         res.setAccountCreation(asLocalDate(resultSet.getDate("AccountCreation")));
+        res.setAccountActive(resultSet.getBoolean("AccountActive"));
         System.out.println(res.toString());
         return res;
     }
