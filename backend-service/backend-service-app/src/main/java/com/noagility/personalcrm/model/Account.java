@@ -8,6 +8,7 @@ public class Account {
     private String accountName;
     private LocalDate accountDOB;
     private LocalDate accountCreation;
+    private boolean accountActive;
 
     public Account(int accountID, String accountUsername, String accountName, LocalDate accountDOB, LocalDate accountCreation) {
         this.accountID = accountID;
@@ -37,6 +38,14 @@ public class Account {
                 ", accountDOB=" + accountDOB +
                 ", accountCreation=" + accountCreation +
                 '}';
+    }
+
+    public void setAccountActive(boolean accountActive) {
+        this.accountActive = accountActive;
+    }
+
+    public boolean isAccountActive() {
+        return accountActive;
     }
 
     public int getAccountID() {
