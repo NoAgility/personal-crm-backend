@@ -21,7 +21,7 @@ services:
   backend-service:
     container_name: backend-service
     depends_on:
-    - "db"
+    - db
     build:
       context: ./backend-service
     restart: always
