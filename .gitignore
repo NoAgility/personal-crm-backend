@@ -4,7 +4,7 @@ HELP.md
 !**/src/main/**
 !**/src/test/**
 appspec.yml
-
+.vscode/
 ### STS ###
 .apt_generated
 .classpath
