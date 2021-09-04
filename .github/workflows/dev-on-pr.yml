@@ -7,20 +7,14 @@ jobs:
   continuous-integration:
     runs-on: ubuntu-latest
     steps:
-      
       # Step 1
       - uses: actions/checkout@v2
       # Step 2
-      - name: Set up environment variables
-        run: echo "$(config/dev.env)" >> $GITHUB_ENV
-      # Step 2
-      - run: docker run --name personalCrmDB -p 3306:3306 -env-file config/dev.env -d mysql:8.0
-      # Step 3
       - name: Set up JDK 11
         uses: actions/setup-java@v2
         with:
           java-version: '11'
           distribution: 'adopt'
-      # Step 4
+      # Step 3
       - name: Build Application and Run unit Test
         run: mvn -B package --file backend-service/backend-service-app/pom.xml

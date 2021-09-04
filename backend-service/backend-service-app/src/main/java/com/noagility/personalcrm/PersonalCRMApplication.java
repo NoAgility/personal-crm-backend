@@ -30,7 +30,7 @@ public class PersonalCRMApplication {
 	@Bean
 	CommandLineRunner runner() {
 		return args -> { LOGGER.info("Application has started.");
-		System.out.println("\n\n\n" + System.getenv("SPRING_DATASOURCE_URL")); };
+		System.out.println("\n" + System.getenv("SPRING_DATASOURCE_URL")); };
 	}
 
 }
