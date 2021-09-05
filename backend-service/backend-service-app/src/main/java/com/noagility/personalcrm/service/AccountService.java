@@ -33,6 +33,22 @@ public class AccountService {
         return null;
     }
 
+    public Account getByID(int id){
+        try{
+            String sql = "SELECT * FROM Accounts WHERE AccountID = ?;";
+
+            PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(sql);
+
+            preparedStatement.setInt(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            Account result = accountRowMapper.mapRow(rs, 0);
+            return result;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public boolean registerAccount(String username, String password, String name, String dateOfBirth){
         //if(checkAccount(username)){
         // return false;
@@ -67,12 +83,13 @@ public class AccountService {
             return false;
         }
     }
-    public boolean deactivateAccount(String username) {
+    
+    public boolean deactivateAccount(int id) {
         try{
             //  Insert new account into Accounts table
             String sql = "UPDATE Accounts SET AccountActive = 0 WHERE AccountUsername = ?;";
             PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(sql);
-            preparedStatement.setString(1, username);
+            preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
             //should add password deletion for security reasons
             return true;
