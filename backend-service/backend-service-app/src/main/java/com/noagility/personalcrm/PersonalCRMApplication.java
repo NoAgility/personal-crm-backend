@@ -5,6 +5,7 @@ import com.noagility.personalcrm.service.AccountService;
 import com.noagility.personalcrm.service.JwtUserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -27,8 +28,6 @@ public class PersonalCRMApplication {
 	AccountService getAccountService() {
 		return new AccountService();
 	}
-	@Bean
-	JwtUserDetailsService getJwtUserDetailsService(){return new JwtUserDetailsService();}
 	@Bean
 	LoginRowMapper LoginClassRowMapper() {return new LoginRowMapper();}
 	@Bean

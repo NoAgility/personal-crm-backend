@@ -3,20 +3,12 @@ package com.noagility.personalcrm.service;
 import com.noagility.personalcrm.mapper.AccountRowMapper;
 import com.noagility.personalcrm.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
-<<<<<<< Updated upstream
-
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-=======
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 
-import javax.sql.DataSource;
->>>>>>> Stashed changes
 
 public class AccountService {
     @Autowired
@@ -24,6 +16,9 @@ public class AccountService {
 
     @Autowired
     AccountRowMapper accountRowMapper;
+
+    @Autowired
+    BCryptPasswordEncoder passwordEncoder;
 
 
     public Account getByUsername(String username) {
@@ -83,7 +78,7 @@ public class AccountService {
             preparedStatement = dataSource.getConnection().prepareStatement(sql);
             preparedStatement.setInt(1, account.getAccountID());
             preparedStatement.setString(2, username);
-            preparedStatement.setString(3, password);
+            preparedStatement.setString(3, passwordEncoder.encode(password));
             preparedStatement.executeUpdate();
             return true;
         }
