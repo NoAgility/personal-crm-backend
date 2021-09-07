@@ -1,6 +1,6 @@
 package com.noagility.personalcrm.mapper;
 
-import com.noagility.personalcrm.model.Account;
+import com.noagility.personalcrm.model.*;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.Date;
@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+
 
 public class AccountRowMapper implements RowMapper<Account> {
     @Override

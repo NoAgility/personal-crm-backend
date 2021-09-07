@@ -1,7 +1,8 @@
 package com.noagility.personalcrm;
 
-import com.noagility.personalcrm.mapper.AccountRowMapper;
+import com.noagility.personalcrm.mapper.*;
 import com.noagility.personalcrm.service.AccountService;
+import com.noagility.personalcrm.service.JwtUserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -26,7 +27,10 @@ public class PersonalCRMApplication {
 	AccountService getAccountService() {
 		return new AccountService();
 	}
-
+	@Bean
+	JwtUserDetailsService getJwtUserDetailsService(){return new JwtUserDetailsService();}
+	@Bean
+	LoginRowMapper LoginClassRowMapper() {return new LoginRowMapper();}
 	@Bean
 	CommandLineRunner runner() {
 		return args -> { LOGGER.info("Application has started.");
