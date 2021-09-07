@@ -87,7 +87,7 @@ public class AccountService {
     public boolean deactivateAccount(int id) {
         try{
             //  Insert new account into Accounts table
-            String sql = "UPDATE Accounts SET AccountActive = 0 WHERE AccountUsername = ?;";
+            String sql = "UPDATE Accounts SET AccountActive = 0 WHERE AccountID = ?;";
             PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(sql);
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();

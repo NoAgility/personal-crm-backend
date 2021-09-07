@@ -1,6 +1,12 @@
 package com.noagility.personalcrm.model;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Account {
     private int accountID;
@@ -8,7 +14,9 @@ public class Account {
     private String accountName;
     private LocalDate accountDOB;
     private LocalDate accountCreation;
-    private boolean accountActive;
+    private boolean accountActive = true;
+
+    private static String DOB_DATE_FORMAT = "yyyy-MM-dd";
 
     public Account(int accountID, String accountUsername, String accountName, LocalDate accountDOB, LocalDate accountCreation) {
         this.accountID = accountID;
@@ -25,20 +33,29 @@ public class Account {
         this.accountCreation = accountCreation;
     }
 
+    public Account(int accountID, String accountUsername, String accountName, LocalDate accountDOB) {
+        this.accountID = accountID;
+        this.accountUsername = accountUsername;
+        this.accountName = accountName;
+        this.accountDOB = accountDOB;
+    }
+
     public Account() {
 
     }
 
     @java.lang.Override
     public java.lang.String toString() {
-        return "Account{" +
-                "accountID=" + accountID +
-                ", accountUsername=" + accountUsername +
-                ", accountName='" + accountName + '\'' +
-                ", accountDOB=" + accountDOB +
-                ", accountCreation=" + accountCreation +
+        return "{" +
+                "\"accountID\":" + accountID +
+                ",\"accountUsername\":\"" + accountUsername + "\"" +
+                ",\"accountName\":\"" + accountName + "\"" +
+                ",\"accountDOB\":\"" + accountDOB + "\"" +
+                ",\"accountCreation\":\"" + accountCreation + "\"" +
+                ",\"accountActive\":" + accountActive +
                 '}';
     }
+
 
     public void setAccountActive(boolean accountActive) {
         this.accountActive = accountActive;
@@ -60,10 +77,12 @@ public class Account {
         return accountName;
     }
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     public LocalDate getAccountDOB() {
         return accountDOB;
     }
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     public LocalDate getAccountCreation() {
         return accountCreation;
     }
@@ -86,5 +105,31 @@ public class Account {
 
     public void setAccountCreation(LocalDate accountCreation) {
         this.accountCreation = accountCreation;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if(this == obj){
+            return true;
+        }
+        if(obj == null){
+            return false;
+        }
+        if(getClass() != obj.getClass()){
+            return false;
+        }
+        
+        Account account = (Account) obj;
+        if(
+            accountID == account.getAccountID()
+            && accountUsername.equals(account.getAccountUsername())
+            && accountName.equals(account.getAccountName())
+            && accountDOB.equals(account.getAccountDOB())
+            && accountCreation.equals(account.getAccountCreation())
+            && accountActive == account.isAccountActive()
+        ){
+            return true;
+        }
+        return false;
     }
 }

@@ -33,7 +33,7 @@ public class AccountController {
             (String)payload.get("username"), 
             (String)payload.get("password"),
             (String)payload.get("name"),
-            (String)payload.get("dateOfBirth")
+            (String)payload.get("dob")
         )){
             return ResponseEntity.ok().body("Success");
         }
