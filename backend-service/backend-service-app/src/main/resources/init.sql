@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS `Meetings` (
 CREATE TABLE IF NOT EXISTS `AccountLoginDetails` (
   `AccountID` INT NOT NULL,
   `AccountUsername` VARCHAR(45) NOT NULL,
-  `AccountPassword` VARCHAR(45) NOT NULL,
+  `AccountPassword` VARCHAR(60) NOT NULL,
   INDEX `fk_AccountLogin_Accounts_idx` (`AccountID` ASC, `AccountUsername` ASC) ,
   PRIMARY KEY (`AccountID`),
   UNIQUE INDEX `AccountID_UNIQUE_ACCOUNTLOGINDETAILS` (`AccountID` ASC) ,

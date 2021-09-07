@@ -79,7 +79,7 @@ public class AccountService {
     
     public boolean deactivateAccount(int id) {
         //  Insert new account into Accounts table
-        String sql = "UPDATE Accounts SET AccountActive = 0 WHERE AccountUsername = ?;";
+        String sql = "UPDATE Accounts SET AccountActive = 0 WHERE AccountID = ?;";
         return jdbcTemplate.update(sql, id) != 0;
     }
 }
