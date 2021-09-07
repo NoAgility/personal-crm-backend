@@ -12,16 +12,10 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/account")
-@CrossOrigin(origins="http://localhost:3000")
 public class AccountController {
 
     @Autowired
     private AccountService accountService;
-
-    @GetMapping("/dburl")
-    public ResponseEntity<String> getDbPort() {
-        return ResponseEntity.ok().body(System.getenv("SPRING_DATASOURCE_URL"));
-    }
 
     @RequestMapping(
         value = "/create",
