@@ -1,5 +1,8 @@
 package com.noagility.personalcrm;
 
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import org.json.JSONObject;
 import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -26,10 +29,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noagility.personalcrm.deserializer.AccountDeserializer;
 import com.noagility.personalcrm.mapper.AccountRowMapper;
 import com.noagility.personalcrm.model.Account;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import javax.servlet.http.Cookie;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ConfigurationProperties("application.properties")
 @TestPropertySource(locations = "/application-test.properties")
 class PersonalCRMApplicationTests {
 
@@ -99,14 +105,25 @@ class PersonalCRMApplicationTests {
 			.accept(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isOk());
-		
-		String returnedJson = mvc.perform(get("/account/get?username=testAccountDeactivation")
+
+		MvcResult result = mvc.perform(post("/authenticate/login")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content("{\"username\": \"testAccountDeactivation\", \"password\":\"testingpassword\"}")
 			.accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
 			.andDo(print())
-			.andReturn()
-			.getResponse()
-			.getContentAsString();
+			.andExpect(status().isOk())
+			.andReturn();
+
+		String token = JsonPath.read(result.getResponse().getContentAsString(), "$.token");
+		Cookie cookie = new Cookie("jwt", token);
+
+		String returnedJson = mvc.perform(MockMvcRequestBuilders.get("/account/get?username=testAccountDeactivation")
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andDo(print())
+				.andReturn()
+				.getResponse()
+				.getContentAsString();
 
 		Account beforeDeactivation = accountDeserializer.deserializeAccount(returnedJson);
 
@@ -116,7 +133,8 @@ class PersonalCRMApplicationTests {
 			.append("}")
 			.toString().replaceAll("'", "\"");
 		
-		mvc.perform(post("/account/deactivate")
+		mvc.perform(MockMvcRequestBuilders.post("/account/deactivate")
+			.cookie(cookie)
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(jsonDeactivate)
 			.accept(MediaType.APPLICATION_JSON))

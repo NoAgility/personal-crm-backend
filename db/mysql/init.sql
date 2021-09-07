@@ -130,7 +130,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `personalCrmDB`.`AccountLoginDetails` (
   `AccountID` INT NOT NULL,
   `AccountUsername` VARCHAR(45) NOT NULL,
-  `AccountPassword` VARCHAR(45) NOT NULL,
+  `AccountPassword` VARCHAR(60) NOT NULL,
   INDEX `fk_AccountLogin_Accounts_idx` (`AccountID` ASC, `AccountUsername` ASC) VISIBLE,
   PRIMARY KEY (`AccountID`),
   UNIQUE INDEX `AccountID_UNIQUE` (`AccountID` ASC) VISIBLE,
