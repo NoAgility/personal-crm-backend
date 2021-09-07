@@ -55,7 +55,7 @@ public class Account {
     public String getAccountUsername(){
         return accountUsername;
     }
-    
+
     public String getAccountName() {
         return accountName;
     }

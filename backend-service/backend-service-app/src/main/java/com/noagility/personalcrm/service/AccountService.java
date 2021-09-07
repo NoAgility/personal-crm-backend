@@ -3,15 +3,16 @@ package com.noagility.personalcrm.service;
 import com.noagility.personalcrm.mapper.AccountRowMapper;
 import com.noagility.personalcrm.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.List;
+
 
 public class AccountService {
     @Autowired
@@ -21,7 +22,12 @@ public class AccountService {
     AccountRowMapper accountRowMapper;
 
     @Autowired
+
+    BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
     JdbcTemplate jdbcTemplate;
+
 
     public Account getByUsername(String username) {
         try {
@@ -57,7 +63,7 @@ public class AccountService {
 
             //  Insert new account login details into AccountLoginDetials
             sql = "INSERT INTO AccountLoginDetails(AccountID, AccountUsername, AccountPassword) VALUES (?, ?, ?)";
-            jdbcTemplate.update(sql, account.getAccountID(), username, password);
+            jdbcTemplate.update(sql, account.getAccountID(), username, passwordEncoder.encode(password));
             return true;
 
         } catch (DataIntegrityViolationException e) {
