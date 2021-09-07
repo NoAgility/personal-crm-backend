@@ -106,7 +106,6 @@ public class Account {
     public void setAccountCreation(LocalDate accountCreation) {
         this.accountCreation = accountCreation;
     }
-<<<<<<< HEAD
 
     @Override
     public boolean equals(Object obj){
@@ -134,6 +133,3 @@ public class Account {
         return false;
     }
 }
-=======
-}
->>>>>>> 40c128fc9d7e1b7360af26715677a2896c2fbe7b
