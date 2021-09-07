@@ -3,11 +3,15 @@ package com.noagility.personalcrm.service;
 import com.noagility.personalcrm.mapper.AccountRowMapper;
 import com.noagility.personalcrm.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.List;
 
 public class AccountService {
     @Autowired
@@ -16,87 +20,60 @@ public class AccountService {
     @Autowired
     AccountRowMapper accountRowMapper;
 
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
     public Account getByUsername(String username) {
         try {
-            String sql = "SELECT * FROM Accounts WHERE AccountUsername = ?;";
-
-            PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(sql);
-
-            preparedStatement.setString(1, username);
-            ResultSet rs = preparedStatement.executeQuery();
-            Account result = accountRowMapper.mapRow(rs, 0);
-            return result;
-        } catch (SQLException e) {
+            String sql = "SELECT * FROM Accounts WHERE AccountUsername = ?";
+            Account account = jdbcTemplate.queryForObject(sql, accountRowMapper, username);
+            return account;
+        } catch (EmptyResultDataAccessException e) {
             e.printStackTrace();
         }
         return null;
     }
 
     public Account getByID(int id){
-        try{
-            String sql = "SELECT * FROM Accounts WHERE AccountID = ?;";
-
-            PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(sql);
-
-            preparedStatement.setInt(1, id);
-            ResultSet rs = preparedStatement.executeQuery();
-            Account result = accountRowMapper.mapRow(rs, 0);
-            return result;
-        } catch (SQLException e) {
+        try {
+            String sql = "SELECT * FROM Accounts WHERE AccountID = ?";
+            Account account = jdbcTemplate.queryForObject(sql, accountRowMapper, id);
+            return account;
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
 
     public boolean registerAccount(String username, String password, String name, String dateOfBirth){
-        //if(checkAccount(username)){
-        // return false;
-        //}
-        //System.out.println("Reached here");
-        try{
+        try {
             //  Insert new account into Accounts table
-            String sql = "INSERT INTO Accounts(AccountUsername, AccountName, AccountDOB) VALUES (?, ?, ?);";
-            PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(sql);
-            preparedStatement.setString(1, username);
-            preparedStatement.setString(2, name);
-            preparedStatement.setString(3, dateOfBirth);
-            preparedStatement.executeUpdate();
+            String sql = "INSERT INTO Accounts(AccountUsername, AccountName, AccountDOB) VALUES (?, ?, ?)";
+            jdbcTemplate.update(sql, username, name, dateOfBirth);
 
             //  Retrieve new account from the accounts table
-            sql = "SELECT * FROM Accounts WHERE AccountUsername = ?;";
-            preparedStatement = dataSource.getConnection().prepareStatement(sql);
-            preparedStatement.setString(1, username);
-            Account account = accountRowMapper.mapRow(preparedStatement.executeQuery(), 0);
+            sql = "SELECT * FROM Accounts WHERE AccountUsername = ?";
+            Account account = jdbcTemplate.queryForObject(sql, accountRowMapper, username);
 
             //  Insert new account login details into AccountLoginDetials
             sql = "INSERT INTO AccountLoginDetails(AccountID, AccountUsername, AccountPassword) VALUES (?, ?, ?)";
-            preparedStatement = dataSource.getConnection().prepareStatement(sql);
-            preparedStatement.setInt(1, account.getAccountID());
-            preparedStatement.setString(2, username);
-            preparedStatement.setString(3, password);
-            preparedStatement.executeUpdate();
+            jdbcTemplate.update(sql, account.getAccountID(), username, password);
             return true;
-        }
-        catch(SQLException e){
+
+        } catch (DataIntegrityViolationException e) {
             e.printStackTrace();
-            return false;
+            //Log failure to create new account due to existing username
+
+        } catch (IncorrectResultSizeDataAccessException e) {
+            e.printStackTrace();
+            //Log failure to retrieve account after insertion
         }
+        return false;
     }
     
     public boolean deactivateAccount(int id) {
-        try{
-            //  Insert new account into Accounts table
-            String sql = "UPDATE Accounts SET AccountActive = 0 WHERE AccountID = ?;";
-            PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(sql);
-            preparedStatement.setInt(1, id);
-            preparedStatement.executeUpdate();
-            //should add password deletion for security reasons
-            return true;
-        }
-        catch(SQLException e){
-            e.printStackTrace();
-            return false;
-        }
+        //  Insert new account into Accounts table
+        String sql = "UPDATE Accounts SET AccountActive = 0 WHERE AccountID = ?;";
+        return jdbcTemplate.update(sql, id) != 0;
     }
 }

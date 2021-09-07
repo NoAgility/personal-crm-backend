@@ -40,11 +40,13 @@ class PersonalCRMApplicationTests {
 
 	@Test
 	public void testTestCase() throws Exception {
-
+		/*
 		mvc.perform(get("/account/dburl")
 				.accept(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isOk());
+				
+		 */
 	}
 
 	@Test

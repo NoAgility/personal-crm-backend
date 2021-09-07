@@ -14,7 +14,6 @@ public class AccountRowMapper implements RowMapper<Account> {
     @Override
     public Account mapRow(ResultSet resultSet, int i) throws SQLException {
         Account res = new Account();
-        resultSet.next();
         res.setAccountID(resultSet.getInt("AccountID"));
         res.setAccountUsername(resultSet.getString("AccountUsername"));
         res.setAccountName(resultSet.getString("AccountName"));
