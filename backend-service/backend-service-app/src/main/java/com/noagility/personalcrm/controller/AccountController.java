@@ -26,7 +26,7 @@ public class AccountController {
         System.out.println((String)payload.get("username"));
         System.out.println((String)payload.get("password"));
         System.out.println((String)payload.get("name"));
-        System.out.println((String)payload.get("dateOfBirth"));
+        System.out.println((String)payload.get("dob"));
         if(accountService.registerAccount(
             (String)payload.get("username"), 
             (String)payload.get("password"),

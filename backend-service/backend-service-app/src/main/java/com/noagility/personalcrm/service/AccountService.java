@@ -27,6 +27,7 @@ public class AccountService {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
+    private Object DataIntegrityViolationException;
 
 
     public Account getByUsername(String username) {
@@ -52,8 +53,14 @@ public class AccountService {
     }
 
     public boolean registerAccount(String username, String password, String name, String dateOfBirth){
+        if(getByUsername(username)!=null){
+            System.out.println("username taken");
+            //this should thow the error for repeated usename below
+            return false;
+        }
         try {
             //  Insert new account into Accounts table
+
             String sql = "INSERT INTO Accounts(AccountUsername, AccountName, AccountDOB) VALUES (?, ?, ?)";
             jdbcTemplate.update(sql, username, name, dateOfBirth);
 
