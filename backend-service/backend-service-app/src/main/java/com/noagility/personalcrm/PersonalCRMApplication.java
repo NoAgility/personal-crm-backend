@@ -1,9 +1,11 @@
 package com.noagility.personalcrm;
 
-import com.noagility.personalcrm.mapper.TestClassRowMapper;
-import com.noagility.personalcrm.service.TestClassService;
+import com.noagility.personalcrm.mapper.*;
+import com.noagility.personalcrm.service.AccountService;
+import com.noagility.personalcrm.service.JwtUserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,18 +21,19 @@ public class PersonalCRMApplication {
 	}
 
 	@Bean
-	TestClassRowMapper getTestClassRowMapper() {
-		return new TestClassRowMapper();
+	AccountRowMapper AccountClassRowMapper() {
+		return new AccountRowMapper();
 	}
 	@Bean
-	TestClassService getTestClassService() {
-		return new TestClassService();
+	AccountService getAccountService() {
+		return new AccountService();
 	}
-
+	@Bean
+	LoginRowMapper LoginClassRowMapper() {return new LoginRowMapper();}
 	@Bean
 	CommandLineRunner runner() {
 		return args -> { LOGGER.info("Application has started.");
-		System.out.println("\n\n\n" + System.getenv("SPRING_DATASOURCE_URL")); };
+		System.out.println("\n" + System.getenv("SPRING_DATASOURCE_URL")); };
 	}
 
 }

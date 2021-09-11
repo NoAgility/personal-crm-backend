@@ -1,4 +1,6 @@
-version: '3.8'
+# Run this yml file if you only want the database setup!
+# You will need to set a few environment variables in order for this to work
+
 services:
   db:
     container_name: mysql-db
@@ -18,20 +20,3 @@ services:
     expose:
       # Opens port 3306 on the container
       - 3306
-  backend-service:
-    container_name: backend-service
-    depends_on:
-    - db
-    build:
-      context: ./backend-service
-    restart: always
-    environment:
-      DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      ENV: ${ENV}
-    ports:
-      - "80:8080"
-    healthcheck:
-      test: "exit 0"
