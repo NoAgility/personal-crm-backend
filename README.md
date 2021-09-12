@@ -32,7 +32,7 @@ If you don’t see PersonalCRMApplication under Application, you need to run the
 4. Paste into “Environment variables”:
 
  
-SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/personalCrmDB;MYSQL_ROOT_PASSWORD=admin
+SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/personalCrmDB;MYSQL_ROOT_PASSWORD=admin;ENV=dev
 
 5. Run the application and it should work, provided that you’ve already run docker-compose-local-soft.sh to startup the database server.
 
