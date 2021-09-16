@@ -37,7 +37,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
 
-            List<String> jwtTokenMaybe = Arrays.stream(cookies).filter((cookie) -> {return cookie.getName() == "jwt";})
+            List<String> jwtTokenMaybe = Arrays.stream(cookies).filter((cookie) -> {return cookie.getName().equals("jwt") ;})
                     .map((cookie) -> {return cookie.getValue();})
                     .collect(Collectors.toList());
 
