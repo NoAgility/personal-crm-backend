@@ -44,7 +44,7 @@ public class ContactService {
 
 
 
-    public boolean updateContact(String username) {
+    public boolean updateContact(String username, String contact) {
        return false;
     }
 

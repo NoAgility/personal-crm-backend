@@ -73,7 +73,8 @@ public class ContactController {
     public ResponseEntity<String> update(@RequestBody Map<String, Object> payload){
 
         if(contactService.updateContact(
-                jwtTokenUtil.getUsernameFromToken((String)payload.get("token"))
+                jwtTokenUtil.getUsernameFromToken((String)payload.get("token")),
+                (String)payload.get("contact")
         )){
             return ResponseEntity.ok().body("Success");
         }
