@@ -56,7 +56,7 @@ public class ContactService {
         try {
             //  Insert new contact into Contacts table
 
-            String sql = "DELETE * FROM Account_Contacts WHERE AccountID = ? AND ContactID = ?";
+            String sql = "DELETE FROM Account_Contacts WHERE AccountID = ? AND ContactID = ?";
             jdbcTemplate.update(sql, usernameID, contactID);
             return true;
 
