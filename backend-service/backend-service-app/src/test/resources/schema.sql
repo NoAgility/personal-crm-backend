@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `Chats` (
 -- Table `Messages`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Messages` (
-  `MessageID` INT NOT NULL,
+  `MessageID` INT NOT NULL AUTO_INCREMENT,
   `ChatID` INT NOT NULL,
   `AccountID` INT NOT NULL,
   `MessageTime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
