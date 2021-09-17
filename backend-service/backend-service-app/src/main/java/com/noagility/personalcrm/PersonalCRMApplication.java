@@ -2,6 +2,7 @@ package com.noagility.personalcrm;
 
 import com.noagility.personalcrm.mapper.*;
 import com.noagility.personalcrm.service.AccountService;
+import com.noagility.personalcrm.service.ChatService;
 import com.noagility.personalcrm.service.ContactService;
 import com.noagility.personalcrm.service.JwtUserDetailsService;
 import org.slf4j.Logger;
@@ -37,6 +38,20 @@ public class PersonalCRMApplication {
 	@Bean
 	ContactRowMapper ContactClassRowMapper() {return new ContactRowMapper();}
 
+	@Bean
+	ChatService getChatService(){
+		return new ChatService();
+	}
+
+	@Bean 
+	ChatRowMapper getChatRowMapper(){
+		return new ChatRowMapper();
+	}
+
+	@Bean 
+	MessageRowMapper getMessageRowMapper(){
+		return new MessageRowMapper();
+	}
 
 	@Bean
 	CommandLineRunner runner() {

@@ -35,8 +35,9 @@ public class AccountService {
             String sql = "SELECT * FROM Accounts WHERE AccountUsername = ?";
             Account account = jdbcTemplate.queryForObject(sql, accountRowMapper, username);
             return account;
-        } catch (EmptyResultDataAccessException e) {
-            e.printStackTrace();
+        }
+        catch(Exception e){
+            
         }
         return null;
     }

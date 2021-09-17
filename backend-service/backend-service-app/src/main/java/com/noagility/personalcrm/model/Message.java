@@ -1,15 +1,15 @@
 package com.noagility.personalcrm.model;
 
-import java.time.LocalTime;
+import java.time.LocalDate;
 
 public class Message implements Comparable<Message>{
     private int messageID;
     private int chatID;
     private int accountID;
-    private LocalTime messageTime;
+    private LocalDate messageTime;
     private String messageText;
 
-    public Message(int messageID, int chatID, int accountID, LocalTime messageTime, String messageText){
+    public Message(int messageID, int chatID, int accountID, LocalDate messageTime, String messageText){
         this.messageID = messageID;
         this.chatID = chatID;
         this.accountID = accountID;
@@ -29,12 +29,32 @@ public class Message implements Comparable<Message>{
         return accountID;
     }
 
-    public LocalTime getMessageTime(){
+    public LocalDate getMessageTime(){
         return messageTime;
     }
 
     public String getMessageText(){
         return messageText;
+    }
+
+    public void setMessageID(int messageID){
+        this.messageID = messageID;
+    }
+
+    public void setChatID(int chatID){
+        this.chatID = chatID;
+    }
+
+    public void setAccountID(int accountID){
+        this.accountID = accountID;
+    }
+
+    public void setMessageTime(LocalDate messageTime){
+        this.messageTime = messageTime;
+    }
+
+    public void setMessageText(String messageText){
+        this.messageText = messageText;
     }
 
     @Override
