@@ -1,6 +1,7 @@
 package com.noagility.personalcrm.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -8,7 +9,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public class Chat {
     private int chatID;
     private LocalDateTime chatCreation;
-    private List<Message> messages;
+    private List<Message> messages = new ArrayList<>();
+    private List<Account> chatParticipants = new ArrayList<>();
 
     public Chat(int chatID, LocalDateTime chatCreation){
         this.chatID = chatID;
@@ -36,7 +38,25 @@ public class Chat {
         this.messages = messages;
     }
 
+    public void setChatParticipants(List<Account> chatParticipants){
+        this.chatParticipants = chatParticipants;
+    }
+
     public List<Message> getMessages(){
         return messages;
+    }
+
+    public List<Account> getChatParticipants(){
+        return chatParticipants;
+    }
+
+    public boolean containsAccountID(int accountID){
+        for(Account account : chatParticipants){
+            if(account.getAccountID() == accountID){
+                return true;
+            }
+        }
+
+        return false;
     }
 }

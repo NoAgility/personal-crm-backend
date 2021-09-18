@@ -3,6 +3,8 @@ package com.noagility.personalcrm.Util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -14,6 +16,9 @@ import java.util.Map;
 import java.util.function.Function;
 import javax.xml.bind.DatatypeConverter;
 
+import com.noagility.personalcrm.model.Account;
+import com.noagility.personalcrm.service.AccountService;
+
 
 @Component("jwtTokenUtil")
 public class JwtTokenUtil implements Serializable {
@@ -24,6 +29,9 @@ public class JwtTokenUtil implements Serializable {
 
     @Value("${jwt.secret}")
     private String secret;
+
+    @Autowired
+    AccountService accountService;
 
     //retrieve username from jwt token
     public String getUsernameFromToken(String token) {
@@ -73,4 +81,14 @@ public class JwtTokenUtil implements Serializable {
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
+
+    public Account getAccountFromToken(String token){
+        return accountService.getByUsername(getUsernameFromToken(token));
+    }
+
+    public boolean validateTokenSender(String token, int accountID){
+        return accountID == (getAccountFromToken(token).getAccountID());
+    }
+
+    
 }

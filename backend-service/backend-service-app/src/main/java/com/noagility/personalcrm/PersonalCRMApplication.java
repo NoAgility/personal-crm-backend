@@ -54,6 +54,11 @@ public class PersonalCRMApplication {
 	}
 
 	@Bean
+	IntegerRowMapper getIntegerRowMapper(){
+		return new IntegerRowMapper();
+	}
+	
+	@Bean
 	CommandLineRunner runner() {
 		return args -> { LOGGER.info("Application has started.");
 		System.out.println("\n" + System.getenv("SPRING_DATASOURCE_URL")); };
