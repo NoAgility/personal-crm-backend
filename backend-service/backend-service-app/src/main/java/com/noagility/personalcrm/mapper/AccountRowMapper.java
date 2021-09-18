@@ -21,7 +21,7 @@ public class AccountRowMapper implements RowMapper<Account> {
         res.setAccountDOB(asLocalDate(resultSet.getDate("AccountDOB")));
         res.setAccountCreation(asLocalDate(resultSet.getDate("AccountCreation")));
         res.setAccountActive(resultSet.getBoolean("AccountActive"));
-        System.out.println(res.toString());
+        System.out.println("Account: " + res.toString());
         return res;
     }
     public static LocalDate asLocalDate(Date date) {
