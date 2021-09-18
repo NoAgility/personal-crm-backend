@@ -46,7 +46,7 @@ public class JwtAuthenticationController {
         final String token = jwtTokenUtil.generateToken(userDetails);
 
         Cookie cookie = new Cookie("jwt", token);
-        cookie.setMaxAge(100000);
+        cookie.setMaxAge((int)JwtTokenUtil.JWT_TOKEN_VALIDITY);
         cookie.setHttpOnly(true);
         response.addCookie(cookie);
 

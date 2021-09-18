@@ -114,8 +114,7 @@ class PersonalCRMApplicationTests {
 			.andExpect(status().isOk())
 			.andReturn();
 
-		String token = JsonPath.read(result.getResponse().getContentAsString(), "$.token");
-		Cookie cookie = new Cookie("jwt", token);
+		Cookie cookie = result.getResponse().getCookie("jwt");
 
 		String returnedJson = mvc.perform(MockMvcRequestBuilders.get("/account/get?username=testAccountDeactivation")
 				.accept(MediaType.APPLICATION_JSON))

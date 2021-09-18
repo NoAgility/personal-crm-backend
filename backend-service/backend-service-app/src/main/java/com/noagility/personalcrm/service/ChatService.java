@@ -55,7 +55,6 @@ public class ChatService {
             maxChatID = jdbcTemplate.queryForObject(sql, Integer.class);
         }
         catch(Exception e){
-            e.printStackTrace();
             maxChatID = 0;
         }
     }
