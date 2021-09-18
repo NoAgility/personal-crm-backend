@@ -1,16 +1,16 @@
 package com.noagility.personalcrm.model;
 
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Map;
-import java.util.TreeMap;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class Chat {
     private int chatID;
-    private LocalDate chatCreation;
-    private Map<Integer, Message> messages = new TreeMap<>();
+    private LocalDateTime chatCreation;
+    private List<Message> messages;
 
-    public Chat(int chatID, LocalDate chatCreation){
+    public Chat(int chatID, LocalDateTime chatCreation){
         this.chatID = chatID;
         this.chatCreation = chatCreation;
     }
@@ -19,23 +19,24 @@ public class Chat {
         return chatID;
     }
 
-    public LocalDate getChatCreation(){
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    public LocalDateTime getChatCreation(){
         return chatCreation;
     }
 
-    public void addMessage(Message message){
-        messages.put(message.getMessageID(), message);
+    public void setChatID(int chatID){
+        this.chatID = chatID;
     }
 
-    public Message getMessageByID(int messageID){
-        return messages.get(messageID);
+    public void setChatCreation(LocalDateTime chatCreation){
+        this.chatCreation = chatCreation;
     }
 
-    public void removeMessageByID(int messageID){
-        messages.remove(messageID);
+    public void setChatMessages(List<Message> messages){
+        this.messages = messages;
     }
 
-    public Collection<Message> getMessages(){
-        return messages.values();
+    public List<Message> getMessages(){
+        return messages;
     }
 }

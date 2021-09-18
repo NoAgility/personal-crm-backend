@@ -3,8 +3,9 @@ package com.noagility.personalcrm.mapper;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 import com.noagility.personalcrm.model.Chat;
@@ -16,11 +17,11 @@ public class ChatRowMapper implements RowMapper<Chat>{
     public Chat mapRow(ResultSet resultSet, int i) throws SQLException {
         return new Chat(
             resultSet.getInt("ChatID"),
-            asLocalDate(resultSet.getDate("ChatCreation"))
+            asLocalDateTime(resultSet.getTimestamp("ChatCreation"))
         );
     }
 
-    public static LocalDate asLocalDate(Date date) {
-        return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+    public static LocalDateTime asLocalDateTime(Timestamp date) {
+        return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 }
