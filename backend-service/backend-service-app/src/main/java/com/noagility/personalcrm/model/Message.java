@@ -1,15 +1,17 @@
 package com.noagility.personalcrm.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class Message implements Comparable<Message>{
     private int messageID;
     private int chatID;
     private int accountID;
-    private LocalDate messageTime;
+    private LocalDateTime messageTime;
     private String messageText;
 
-    public Message(int messageID, int chatID, int accountID, LocalDate messageTime, String messageText){
+    public Message(int messageID, int chatID, int accountID, LocalDateTime messageTime, String messageText){
         this.messageID = messageID;
         this.chatID = chatID;
         this.accountID = accountID;
@@ -29,7 +31,8 @@ public class Message implements Comparable<Message>{
         return accountID;
     }
 
-    public LocalDate getMessageTime(){
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    public LocalDateTime getMessageTime(){
         return messageTime;
     }
 
@@ -49,7 +52,7 @@ public class Message implements Comparable<Message>{
         this.accountID = accountID;
     }
 
-    public void setMessageTime(LocalDate messageTime){
+    public void setMessageTime(LocalDateTime messageTime){
         this.messageTime = messageTime;
     }
 

@@ -8,7 +8,9 @@ import javax.sql.DataSource;
 
 import com.noagility.personalcrm.PersonalCRMApplication;
 import com.noagility.personalcrm.mapper.ChatRowMapper;
+import com.noagility.personalcrm.mapper.MessageRowMapper;
 import com.noagility.personalcrm.model.Chat;
+import com.noagility.personalcrm.model.Message;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,9 @@ public class ChatService {
     @Autowired
     ChatRowMapper chatRowMapper;
     
+    @Autowired
+    MessageRowMapper messageRowMapper;
+
     private int maxChatID;
 
     @EventListener(ApplicationReadyEvent.class)
@@ -43,7 +48,7 @@ public class ChatService {
     }
 
     public boolean addMessage(int chatID, int accountID, String messageText){
-        System.out.println(String.format("{\"chatID\":%d,\"accountID\":%d,\"messageText\":\"%s\"}", chatID, accountID, messageText));
+        System.out.println(String.format("addMessage: {\"chatID\":%d,\"accountID\":%d,\"messageText\":\"%s\"}", chatID, accountID, messageText));
         try{
             //  Insert new message into Messages table
             String sql = "INSERT INTO Messages(ChatID, AccountID, MessageText) VALUES (?, ?, ?)";
@@ -58,7 +63,7 @@ public class ChatService {
     }
 
     public boolean addChat(Collection<Integer> accountIDs){
-        System.out.println(String.format("{\"accountIDs\":%s}", accountIDs.toString()));
+        System.out.println(String.format("addChat: {\"accountIDs\":%s}", accountIDs.toString()));
         try{
             //  Insert new chat into Chats table
             String sql = "INSERT INTO Chats(ChatID) VALUES (?)";
@@ -82,5 +87,58 @@ public class ChatService {
         }
 
         return false;
+    }
+
+    public boolean deleteMessage(int messageID, int chatID){
+        System.out.println(String.format("removeMessage: {\"messageID\": %d, \"chatID\": %d}", messageID, chatID));
+        try{
+            //  Delete message by messageID and chatID
+            String sql = "DELETE FROM Messages WHERE MessageID = ? AND ChatID = ?";
+            jdbcTemplate.update(sql, messageID, chatID);
+
+            return true;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean editMessage(int messageID, int chatID, String newText){
+        System.out.println(String.format("editMessage: {\"messageID\": %d, \"chatID\": %d, \"newText\": \"%s\"}", messageID, chatID, newText));
+        try{
+            //  Edit message by messageID and chatID
+            String sql = "UPDATE Messages SET MessageText = ? WHERE MessageID = ? AND ChatID = ?";
+            jdbcTemplate.update(sql, newText, messageID, chatID);
+            
+            return true;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public Chat getChatByID(int chatID){
+        System.out.println(String.format("getChatByID: {\"chatID\": %d}", chatID));
+        try{
+            //  Get chat by chatID
+            String sql = "SELECT * FROM Chats WHERE ChatID = ?";
+            Chat chat = jdbcTemplate.queryForObject(sql, chatRowMapper, chatID);
+            
+            //  Get messages by chatID
+            sql = "SELECT * FROM Messages WHERE ChatID = ? ORDER BY MessageTime ASC";
+            List<Message> messages = jdbcTemplate.query(sql, messageRowMapper, chatID);
+            chat.setChatMessages(messages);
+
+            return chat;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
