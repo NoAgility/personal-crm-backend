@@ -1,6 +1,5 @@
 package com.noagility.personalcrm.mapper;
 
-import com.noagility.personalcrm.model.Account;
 import com.noagility.personalcrm.model.Contact;
 import org.springframework.jdbc.core.RowMapper;
 

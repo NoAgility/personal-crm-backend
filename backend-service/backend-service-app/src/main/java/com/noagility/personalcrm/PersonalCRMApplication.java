@@ -46,7 +46,10 @@ public class PersonalCRMApplication {
 	TaskContactMapper TaskContactClassRowMapper() {return new TaskContactMapper();}
 	@Bean
 	TaskNoteRowMapper TaskNoteClassRowMapper() {return new TaskNoteRowMapper();}
-
+	@Bean
+	IntegerRowMapper getIntegerRowMapper(){
+		return new IntegerRowMapper();
+	}
 
 	@Bean
 	ChatService getChatService(){

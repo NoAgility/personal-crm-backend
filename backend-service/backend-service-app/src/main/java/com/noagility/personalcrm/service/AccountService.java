@@ -1,5 +1,6 @@
 package com.noagility.personalcrm.service;
 
+import com.noagility.personalcrm.Util.JwtTokenUtil;
 import com.noagility.personalcrm.mapper.AccountRowMapper;
 import com.noagility.personalcrm.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ public class AccountService {
     JdbcTemplate jdbcTemplate;
     private Object DataIntegrityViolationException;
 
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
 
     public Account getByUsername(String username) {
         try {
@@ -33,7 +36,7 @@ public class AccountService {
             return account;
         }
         catch(Exception e){
-            
+
         }
         return null;
     }
@@ -80,10 +83,12 @@ public class AccountService {
         }
         return false;
     }
-    
+
     public boolean deactivateAccount(int id) {
         //  Insert new account into Accounts table
         String sql = "UPDATE Accounts SET AccountActive = 0 WHERE AccountID = ?;";
         return jdbcTemplate.update(sql, id) != 0;
     }
+
+
 }

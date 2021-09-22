@@ -52,7 +52,7 @@ public class TaskController {
     public ResponseEntity<String> addTaskNote(@RequestBody Map<String, Object> payload){
         try {
             if(taskService.addTaskNote(
-                    (Integer)payload.get("taskID"),
+                    Integer.parseInt((String)payload.get("taskID")),
                     (String)payload.get("taskNote")
             )){
                 return ResponseEntity.ok().body("Success");
@@ -72,8 +72,8 @@ public class TaskController {
     public ResponseEntity<String> addTaskContact(@RequestBody Map<String, Object> payload){
         try {
             if(taskService.addTaskContact(
-                    (Integer) payload.get("taskID"),
-                    (Integer) payload.get("contactID")
+                    Integer.parseInt((String)payload.get("taskID")),
+                    Integer.parseInt((String)payload.get("contactID"))
             )){
                 return ResponseEntity.ok().body("Success");
             }
@@ -92,7 +92,7 @@ public class TaskController {
     )
     public ResponseEntity<List<Task>> read(@RequestBody Map<String, Object> payload){
         return ResponseEntity.ok().body(
-                taskService.getTasksByAccountID((Integer) payload.get("accountID"))
+                taskService.getTasksByAccountID(Integer.parseInt((String) payload.get("accountID")))
         );
     }
 
@@ -104,7 +104,7 @@ public class TaskController {
     public ResponseEntity<String> updateTask(@RequestBody Map<String, Object> payload){
         try {
             if(taskService.updateTask(
-                    (Integer)payload.get("taskID"),
+                    Integer.parseInt((String)payload.get("taskID")),
                     (String) payload.get("newTaskName")
             )){
                 return ResponseEntity.ok().body("Success");
@@ -124,7 +124,7 @@ public class TaskController {
     public ResponseEntity<String> updateTaskNote(@RequestBody Map<String, Object> payload){
         try {
             if(taskService.updateTaskNote(
-                    (Integer)payload.get("taskID"),
+                    Integer.parseInt((String)payload.get("taskID")),
                     (String) payload.get("oldTaskNoteID"),
                     (String) payload.get("newTaskNoteID")
             )){
@@ -146,7 +146,7 @@ public class TaskController {
     )
     public ResponseEntity<String> deleteTask(@RequestBody Map<String, Object> payload){
         try{
-            if(taskService.deleteTask((Integer)payload.get("taskID"))){
+            if(taskService.deleteTask(Integer.parseInt((String)payload.get("taskID")))){
                 return ResponseEntity.ok().body("Success");
             }
         }
@@ -154,7 +154,7 @@ public class TaskController {
             e.printStackTrace();
         }
 
-        return ResponseEntity.badRequest().body("Success");
+        return ResponseEntity.badRequest().body("Failure");
     }
 
     @RequestMapping(
@@ -165,8 +165,8 @@ public class TaskController {
     public ResponseEntity<String> deleteContact(@RequestBody Map<String, Object> payload){
         try{
             if(taskService.deleteTaskContact(
-                    (Integer)payload.get("taskID"),
-                    (Integer)payload.get("contactID")
+                    Integer.parseInt((String)payload.get("taskID")),
+                            Integer.parseInt((String)payload.get("contactID"))
             )){
                 return ResponseEntity.ok().body("Success");
             }
@@ -174,7 +174,7 @@ public class TaskController {
         catch(Exception e){
             e.printStackTrace();
         }
-        return ResponseEntity.badRequest().body("Success");
+        return ResponseEntity.badRequest().body("Failure");
     }
 
     @RequestMapping(
@@ -185,7 +185,7 @@ public class TaskController {
     public ResponseEntity<String> deleteTaskNote(@RequestBody Map<String, Object> payload){
         try{
             if(taskService.deleteTaskNote(
-                    (Integer)payload.get("taskID"),
+                    Integer.parseInt((String)payload.get("taskID")),
                     (String)payload.get("noteID")
             )){
                 return ResponseEntity.ok().body("Success");

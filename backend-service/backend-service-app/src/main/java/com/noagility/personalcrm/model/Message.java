@@ -80,11 +80,11 @@ public class Message implements Comparable<Message>{
         Message message = (Message) obj;
 
         if(
-            messageID == message.getMessageID()
-            && chatID == message.getChatID()
-            && accountID == message.getAccountID()
-            && messageTime.equals(message.getMessageTime())
-            && messageText.equals(message.getMessageText())
+                messageID == message.getMessageID()
+                        && chatID == message.getChatID()
+                        && accountID == message.getAccountID()
+                        && messageTime.equals(message.getMessageTime())
+                        && messageText.equals(message.getMessageText())
         ){
             return true;
         }

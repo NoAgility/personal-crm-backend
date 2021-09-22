@@ -33,10 +33,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
-
             List<String> jwtTokenMaybe = Arrays.stream(cookies).filter((cookie) -> {return cookie.getName().equals("jwt") ;})
                     .map((cookie) -> {return cookie.getValue();})
                     .collect(Collectors.toList());

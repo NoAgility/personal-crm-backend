@@ -24,6 +24,10 @@ public class TaskRowMapper implements RowMapper<Task>{
     }
 
     public static LocalDateTime asLocalDateTime(Timestamp date) {
-        return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+        if(date != null){
+            return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+        }
+        return null;
+
     }
 }

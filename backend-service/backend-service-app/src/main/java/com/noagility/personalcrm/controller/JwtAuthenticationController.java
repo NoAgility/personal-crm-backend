@@ -1,11 +1,8 @@
 package com.noagility.personalcrm.controller;
 
 import com.noagility.personalcrm.Util.JwtTokenUtil;
-import com.noagility.personalcrm.model.JwtRequest;
-import com.noagility.personalcrm.model.JwtResponse;
 import com.noagility.personalcrm.service.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,7 +11,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 
@@ -33,16 +31,18 @@ public class JwtAuthenticationController {
     private JwtUserDetailsService userDetailsService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody Map<String, Object> payload) throws Exception {
-
+    @ResponseBody
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody Map<String, Object> payload, HttpServletResponse response) throws Exception {
         authenticate((String)payload.get("username"), (String)payload.get("password"));
-
         final UserDetails userDetails = userDetailsService
                 .loadUserByUsername((String)payload.get("username"));
         final String token = jwtTokenUtil.generateToken(userDetails);
-        Date expDate = jwtTokenUtil.getExpirationDateFromToken(token);
-        return ResponseEntity.ok(new JwtResponse(token, expDate));
 
+        Cookie cookie = new Cookie("jwt", token);
+        cookie.setMaxAge((int)JwtTokenUtil.JWT_TOKEN_VALIDITY);
+        cookie.setHttpOnly(true);
+        response.addCookie(cookie);
+        return ResponseEntity.ok("Success");
     }
 
     private void authenticate(String username, String password) throws Exception {
