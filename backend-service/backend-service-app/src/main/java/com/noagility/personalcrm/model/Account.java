@@ -1,12 +1,8 @@
 package com.noagility.personalcrm.model;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.time.LocalDate;
 
 public class Account {
     private int accountID;
@@ -118,15 +114,15 @@ public class Account {
         if(getClass() != obj.getClass()){
             return false;
         }
-        
+
         Account account = (Account) obj;
         if(
-            accountID == account.getAccountID()
-            && accountUsername.equals(account.getAccountUsername())
-            && accountName.equals(account.getAccountName())
-            && accountDOB.equals(account.getAccountDOB())
-            && accountCreation.equals(account.getAccountCreation())
-            && accountActive == account.isAccountActive()
+                accountID == account.getAccountID()
+                        && accountUsername.equals(account.getAccountUsername())
+                        && accountName.equals(account.getAccountName())
+                        && accountDOB.equals(account.getAccountDOB())
+                        && accountCreation.equals(account.getAccountCreation())
+                        && accountActive == account.isAccountActive()
         ){
             return true;
         }

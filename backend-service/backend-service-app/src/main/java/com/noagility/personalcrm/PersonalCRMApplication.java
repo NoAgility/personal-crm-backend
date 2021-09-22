@@ -4,7 +4,7 @@ import com.noagility.personalcrm.mapper.*;
 import com.noagility.personalcrm.service.AccountService;
 import com.noagility.personalcrm.service.ChatService;
 import com.noagility.personalcrm.service.ContactService;
-import com.noagility.personalcrm.service.JwtUserDetailsService;
+import com.noagility.personalcrm.service.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -39,19 +39,28 @@ public class PersonalCRMApplication {
 	ContactRowMapper ContactClassRowMapper() {return new ContactRowMapper();}
 
 	@Bean
+	TaskService getTaskService() {return new TaskService();}
+	@Bean
+	TaskRowMapper TaskClassRowMapper() {return new TaskRowMapper();}
+	@Bean
+	TaskContactMapper TaskContactClassRowMapper() {return new TaskContactMapper();}
+	@Bean
+	TaskNoteRowMapper TaskNoteClassRowMapper() {return new TaskNoteRowMapper();}
+
+
+	@Bean
 	ChatService getChatService(){
 		return new ChatService();
 	}
-
 	@Bean 
 	ChatRowMapper getChatRowMapper(){
 		return new ChatRowMapper();
 	}
-
 	@Bean 
 	MessageRowMapper getMessageRowMapper(){
 		return new MessageRowMapper();
 	}
+
 
 	@Bean
 	CommandLineRunner runner() {

@@ -1,9 +1,9 @@
 package com.noagility.personalcrm.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDateTime;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class Chat {
     private int chatID;

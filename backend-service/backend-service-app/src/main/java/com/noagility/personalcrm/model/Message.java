@@ -1,8 +1,8 @@
 package com.noagility.personalcrm.model;
 
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.time.LocalDateTime;
 
 public class Message implements Comparable<Message>{
     private int messageID;

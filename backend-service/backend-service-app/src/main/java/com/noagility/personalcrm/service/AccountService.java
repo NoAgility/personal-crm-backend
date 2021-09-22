@@ -3,16 +3,12 @@ package com.noagility.personalcrm.service;
 import com.noagility.personalcrm.mapper.AccountRowMapper;
 import com.noagility.personalcrm.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.sql.DataSource;
-import java.sql.*;
-import java.util.List;
 
 
 public class AccountService {

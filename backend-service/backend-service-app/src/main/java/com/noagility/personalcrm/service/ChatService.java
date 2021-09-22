@@ -1,23 +1,18 @@
 package com.noagility.personalcrm.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import javax.sql.DataSource;
-
-import com.noagility.personalcrm.PersonalCRMApplication;
 import com.noagility.personalcrm.mapper.ChatRowMapper;
 import com.noagility.personalcrm.mapper.MessageRowMapper;
 import com.noagility.personalcrm.model.Chat;
 import com.noagility.personalcrm.model.Message;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.jdbc.core.JdbcTemplate;
+
+import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class ChatService {
     @Autowired
