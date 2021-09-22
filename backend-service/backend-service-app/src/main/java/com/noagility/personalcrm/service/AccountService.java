@@ -4,6 +4,11 @@ import com.noagility.personalcrm.Util.JwtTokenUtil;
 import com.noagility.personalcrm.mapper.AccountRowMapper;
 import com.noagility.personalcrm.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.dao.DataAccessException;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -89,6 +94,4 @@ public class AccountService {
         String sql = "UPDATE Accounts SET AccountActive = 0 WHERE AccountID = ?;";
         return jdbcTemplate.update(sql, id) != 0;
     }
-
-
 }

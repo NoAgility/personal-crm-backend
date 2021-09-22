@@ -5,6 +5,8 @@ import com.noagility.personalcrm.service.AccountService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +17,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+
+import com.noagility.personalcrm.model.Account;
+import com.noagility.personalcrm.service.AccountService;
 
 
 @Component("jwtTokenUtil")
@@ -86,6 +91,5 @@ public class JwtTokenUtil implements Serializable {
     public boolean validateTokenSender(String token, int accountID){
         return accountID == (getAccountFromToken(token).getAccountID());
     }
-
 
 }

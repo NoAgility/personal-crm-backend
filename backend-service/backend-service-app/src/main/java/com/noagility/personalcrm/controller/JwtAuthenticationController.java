@@ -15,6 +15,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
 
 @RestController
 @CrossOrigin
@@ -33,6 +36,7 @@ public class JwtAuthenticationController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<?> createAuthenticationToken(@RequestBody Map<String, Object> payload, HttpServletResponse response) throws Exception {
+
         authenticate((String)payload.get("username"), (String)payload.get("password"));
         final UserDetails userDetails = userDetailsService
                 .loadUserByUsername((String)payload.get("username"));
@@ -42,6 +46,7 @@ public class JwtAuthenticationController {
         cookie.setMaxAge((int)JwtTokenUtil.JWT_TOKEN_VALIDITY);
         cookie.setHttpOnly(true);
         response.addCookie(cookie);
+
         return ResponseEntity.ok("Success");
     }
 

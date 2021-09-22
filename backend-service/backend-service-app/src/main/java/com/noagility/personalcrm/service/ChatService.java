@@ -1,5 +1,14 @@
 package com.noagility.personalcrm.service;
 
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import javax.sql.DataSource;
+
+import com.noagility.personalcrm.PersonalCRMApplication;
+
 import com.noagility.personalcrm.Util.JwtTokenUtil;
 import com.noagility.personalcrm.mapper.AccountRowMapper;
 import com.noagility.personalcrm.mapper.ChatRowMapper;
@@ -55,7 +64,9 @@ public class ChatService {
     }
 
 
-    /**
+
+    
+    /** 
      * <p>Adds a message to a given chat
      * @param chatID
      * @param accountID
@@ -78,7 +89,8 @@ public class ChatService {
     }
 
 
-    /**
+    
+    /** 
      * <p>Creates a chat with the given accountIDs
      * @param accountIDs
      * @return boolean
@@ -111,7 +123,8 @@ public class ChatService {
     }
 
 
-    /**
+    
+    /** 
      * <p>Deletes a message with the given messageID and chatID
      * @param messageID
      * @param chatID
@@ -134,7 +147,7 @@ public class ChatService {
     }
 
 
-    /**
+    /** 
      * <p>Edits a message with the given messageID and chatID
      * @param messageID
      * @param chatID
@@ -158,7 +171,7 @@ public class ChatService {
     }
 
 
-    /**
+    /** 
      * <p>Returns the specified chat object for the given chatID
      * @param chatID
      * @return Chat
@@ -177,10 +190,11 @@ public class ChatService {
 
             //  Get chat participants by chatID
             sql = "SELECT Accounts.AccountID, AccountUsername, AccountName, AccountDOB, AccountCreation, AccountActive"
-                    + " FROM Accounts_Chats"
-                    + " LEFT JOIN Accounts"
-                    + " ON Accounts_Chats.AccountID = Accounts.AccountID"
-                    + " WHERE ChatID = ?";
+                + " FROM Accounts_Chats"
+                + " LEFT JOIN Accounts"
+                + " ON Accounts_Chats.AccountID = Accounts.AccountID"
+                + " WHERE ChatID = ?";
+          
             List<Account> accounts = jdbcTemplate.query(sql, accountRowMapper, chatID);
             chat.setChatParticipants(accounts);
 
@@ -193,7 +207,8 @@ public class ChatService {
         return null;
     }
 
-    /**
+
+    /** 
      * <p>Returns the specified Message object by the messageID and chatID
      * @param messageID
      * @param chatID
@@ -216,7 +231,8 @@ public class ChatService {
     }
 
 
-    /**
+    
+    /** 
      * <p>Gets all of the chats a user is in
      * @param accountID
      * @return List<Chat>
@@ -251,7 +267,8 @@ public class ChatService {
     }
 
 
-    /**
+    
+    /** 
      * <p>Validates that the person sending the request has created the messsage
      * @param token
      * @param messageID
@@ -260,6 +277,7 @@ public class ChatService {
      */
     public boolean validateMessageCreator(String token, int messageID, int chatID){
 
+      
         System.out.println(String.format("validateMessageCreator: {\"token\": \"%s\", \"messageID\": %d, \"chatID\": %d}", token, messageID, chatID));
         try{
             //  Get message by messageID and chatID
@@ -269,11 +287,10 @@ public class ChatService {
         catch(Exception e){
             e.printStackTrace();
         }
-
         return false;
     }
 
-    /**
+    /** 
      * <p>Validates that the person sending the request is a participant of the chat
      * @param token
      * @param chatID
@@ -293,5 +310,6 @@ public class ChatService {
         }
         return false;
     }
+
 
 }

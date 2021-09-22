@@ -1,9 +1,15 @@
 package com.noagility.personalcrm.mapper;
 
+
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.springframework.jdbc.core.RowMapper;
 
 public class IntegerRowMapper implements RowMapper<Integer>{
     @Override
@@ -11,3 +17,4 @@ public class IntegerRowMapper implements RowMapper<Integer>{
         return res.getInt("Integer");
     }
 }
+
