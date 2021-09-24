@@ -76,6 +76,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                 }
             }
+        } else {
+            logger.warn("JWT Token has not been included in the cookies");
         }
         chain.doFilter(request, response);
     }

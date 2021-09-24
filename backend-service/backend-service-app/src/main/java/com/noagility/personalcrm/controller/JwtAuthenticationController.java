@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 
 
 @RestController
-@CrossOrigin
 @RequestMapping(value = "/authenticate")
 public class JwtAuthenticationController {
 
@@ -47,7 +46,7 @@ public class JwtAuthenticationController {
 
         Cookie cookie = new Cookie("jwt", token);
         cookie.setMaxAge((int)JwtTokenUtil.JWT_TOKEN_VALIDITY);
-        cookie.setHttpOnly(true);
+        cookie.setHttpOnly(false);
         cookie.setPath("/");
         response.addCookie(cookie);
 

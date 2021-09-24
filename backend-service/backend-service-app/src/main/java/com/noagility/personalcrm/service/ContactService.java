@@ -21,8 +21,10 @@ public class ContactService {
     DataSource dataSource;
 
     public boolean addContact(String username, String contact) {
+        System.out.println(username + " " + contact);
         int usernameID = getIDFromUsername(username);
         int contactID = getIDFromUsername(contact);
+
 
         if(contactAdded(username,contactID)){
             System.out.println("contact already added");
