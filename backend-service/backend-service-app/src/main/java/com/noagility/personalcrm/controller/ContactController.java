@@ -31,9 +31,9 @@ public class ContactController {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<String> create(@RequestBody Map<String, Object> payload) throws Exception{
+    public ResponseEntity<String> create(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token) throws Exception{
         if(contactService.addContact(
-                jwtTokenUtil.getUsernameFromToken((String)payload.get("token")),
+                jwtTokenUtil.getUsernameFromToken(token),
                 (String)payload.get("contact")
         )){
             return ResponseEntity.ok().body("Success");
@@ -58,10 +58,10 @@ public class ContactController {
             method = RequestMethod.GET,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<List<Contact>> read(@RequestBody Map<String, Object> payload){
+    public ResponseEntity<List<Contact>> read(@CookieValue("jwt") String token){
         return ResponseEntity.ok().body(
                 contactService.getContacts(
-                        jwtTokenUtil.getUsernameFromToken((String)payload.get("token"))));
+                        jwtTokenUtil.getUsernameFromToken(token)));
     }
 
     //currently useless given cannot change info
@@ -70,10 +70,10 @@ public class ContactController {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<String> update(@RequestBody Map<String, Object> payload){
+    public ResponseEntity<String> update(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
 
         if(contactService.updateContact(
-                jwtTokenUtil.getUsernameFromToken((String)payload.get("token")),
+                jwtTokenUtil.getUsernameFromToken(token),
                 (String)payload.get("contact")
         )){
             return ResponseEntity.ok().body("Success");
@@ -87,9 +87,9 @@ public class ContactController {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<String> delete(@RequestBody Map<String, Object> payload) throws Exception {
+    public ResponseEntity<String> delete(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token) throws Exception {
         if(contactService.deleteContact(
-                jwtTokenUtil.getUsernameFromToken((String)payload.get("token")),
+                jwtTokenUtil.getUsernameFromToken(token),
                 (String)payload.get("contact")
         )){
             return ResponseEntity.ok().body("Success");
