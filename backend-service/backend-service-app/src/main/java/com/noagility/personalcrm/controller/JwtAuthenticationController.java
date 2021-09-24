@@ -48,6 +48,7 @@ public class JwtAuthenticationController {
         Cookie cookie = new Cookie("jwt", token);
         cookie.setMaxAge((int)JwtTokenUtil.JWT_TOKEN_VALIDITY);
         cookie.setHttpOnly(true);
+        cookie.setPath("/");
         response.addCookie(cookie);
 
         return ResponseEntity.ok("Success");
