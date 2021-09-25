@@ -40,21 +40,8 @@ public class PersonalCRMApplication {
 	@Bean
 	ContactRowMapper ContactClassRowMapper() {return new ContactRowMapper();}
 
+	
 
-<<<<<<< Updated upstream
-=======
-	@Bean 
-	MessageRowMapper getMessageRowMapper(){
-		return new MessageRowMapper();
-	}
-
-	@Bean
-	IntegerRowMapper getIntegerRowMapper(){
-		return new IntegerRowMapper();
-	}
-
-
->>>>>>> Stashed changes
 	@Bean
 	CommandLineRunner runner() {
 		return args -> { LOGGER.info("Application has started.");
