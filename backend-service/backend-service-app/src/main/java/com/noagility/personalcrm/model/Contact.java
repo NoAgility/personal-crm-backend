@@ -1,7 +1,7 @@
 package com.noagility.personalcrm.model;
 
 import java.time.LocalDate;
-
+// Id of user added as contact and date contact added
 public class Contact {
 
     private int contactID;
@@ -14,6 +14,10 @@ public class Contact {
 
     public Contact() {
 
+    }
+
+    public Contact(int i) {
+        this.contactID=i;
     }
 
     public int getContactID() {
