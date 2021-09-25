@@ -28,8 +28,7 @@ public class ContactController {
     //add a contact to the logged in users account
     @RequestMapping(
             value = "/create",
-            method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE
+            method = RequestMethod.POST
     )
     public ResponseEntity<String> create(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token) throws Exception{
         if(contactService.addContact(
@@ -55,8 +54,7 @@ public class ContactController {
     //get all contacts for account by username, figure out how to exclude id later or just do in front end
     @RequestMapping(
             value = "/read",
-            method = RequestMethod.GET,
-            consumes = MediaType.APPLICATION_JSON_VALUE
+            method = RequestMethod.GET
     )
     public ResponseEntity<List<Contact>> read(@CookieValue("jwt") String token){
         return ResponseEntity.ok().body(
