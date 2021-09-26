@@ -230,7 +230,7 @@ public class ChatService {
         System.out.println(String.format("getAccountChatsByID: {\"accountID\": %d}", accountID));
         try{
             //  Get all ChatIDs for account
-            String sql = "SELECT ChatID AS 'Integer' FROM Accounts_Chats WHERE AccountID = ?";
+            String sql = "SELECT ChatID AS `Integer` FROM Accounts_Chats WHERE AccountID = ?";
             List<Integer> chatIDs = jdbcTemplate.query(sql, integerRowMapper, accountID);
             
             if(chatIDs == null){
