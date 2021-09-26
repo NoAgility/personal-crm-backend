@@ -231,7 +231,7 @@ public class TaskService {
 
     public boolean deleteDeadline(int taskID){
         try {
-            String sql = "UPDATE Tasks SET TaskDeadline = NULL WHERE TaskID = ?";
+            String sql = "UPDATE Tasks SET TaskDeadline = -1 WHERE TaskID = ?";
             jdbcTemplate.update(sql, taskID);
             return true;
         }

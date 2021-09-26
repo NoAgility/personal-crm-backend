@@ -54,7 +54,7 @@ public class TaskController {
     public ResponseEntity<String> addTaskNote(@RequestBody Map<String, Object> payload){
         try {
             if(taskService.addTaskNote(
-                    Integer.parseInt((String)payload.get("taskID")),
+                    (Integer) payload.get("taskID"),
                     (String)payload.get("taskNote")
             )){
                 return ResponseEntity.ok().body("Success");
@@ -74,8 +74,8 @@ public class TaskController {
     public ResponseEntity<String> addTaskContact(@RequestBody Map<String, Object> payload){
         try {
             if(taskService.addTaskContact(
-                    Integer.parseInt((String)payload.get("taskID")),
-                    Integer.parseInt((String)payload.get("contactID"))
+                    (Integer) payload.get("taskID"),
+                    (Integer) payload.get("contactID")
             )){
                 return ResponseEntity.ok().body("Success");
             }
@@ -94,7 +94,7 @@ public class TaskController {
     )
     public ResponseEntity<List<Task>> read(@RequestBody Map<String, Object> payload){
         return ResponseEntity.ok().body(
-                taskService.getTasksByAccountID(Integer.parseInt((String) payload.get("accountID")))
+                taskService.getTasksByAccountID((Integer) payload.get("accountID"))
         );
     }
 
@@ -106,7 +106,7 @@ public class TaskController {
     public ResponseEntity<String> updateTask(@RequestBody Map<String, Object> payload){
         try {
             if(taskService.updateTask(
-                    Integer.parseInt((String)payload.get("taskID")),
+                    (Integer) payload.get("taskID"),
                     (String) payload.get("newTaskName")
             )){
                 return ResponseEntity.ok().body("Success");
@@ -126,7 +126,7 @@ public class TaskController {
     public ResponseEntity<String> updateTaskNote(@RequestBody Map<String, Object> payload){
         try {
             if(taskService.updateTaskNote(
-                    Integer.parseInt((String)payload.get("taskID")),
+                    (Integer)payload.get("taskID"),
                     (String) payload.get("oldTaskNoteID"),
                     (String) payload.get("newTaskNoteID")
             )){
@@ -148,8 +148,8 @@ public class TaskController {
     public ResponseEntity<String> updatePriority(@RequestBody Map<String, Object> payload){
         try {
             if(taskService.updatePriority(
-                    Integer.parseInt((String)payload.get("taskID")),
-                    Integer.parseInt((String)payload.get("priority"))
+                    (Integer) payload.get("taskID"),
+                    (Integer) payload.get("priority")
             )){
                 return ResponseEntity.ok().body("Success");
             }
@@ -169,7 +169,7 @@ public class TaskController {
     public ResponseEntity<String> updateDeadline(@RequestBody Map<String, Object> payload){
         try {
             if(taskService.updateDeadline(
-                    Integer.parseInt((String)payload.get("taskID")),
+                    (Integer) payload.get("taskID"),
                     (String)payload.get("deadline")
             )){
                 return ResponseEntity.ok().body("Success");
@@ -190,7 +190,7 @@ public class TaskController {
     )
     public ResponseEntity<String> deleteTask(@RequestBody Map<String, Object> payload){
         try{
-            if(taskService.deleteTask(Integer.parseInt((String)payload.get("taskID")))){
+            if(taskService.deleteTask((Integer) payload.get("taskID"))){
                 return ResponseEntity.ok().body("Success");
             }
         }
@@ -209,8 +209,8 @@ public class TaskController {
     public ResponseEntity<String> deleteContact(@RequestBody Map<String, Object> payload){
         try{
             if(taskService.deleteTaskContact(
-                    Integer.parseInt((String)payload.get("taskID")),
-                    Integer.parseInt((String)payload.get("contactID"))
+                    (Integer) payload.get("taskID"),
+                    (Integer) payload.get("contactID")
             )){
                 return ResponseEntity.ok().body("Success");
             }
@@ -229,8 +229,8 @@ public class TaskController {
     public ResponseEntity<String> deleteTaskNote(@RequestBody Map<String, Object> payload){
         try{
             if(taskService.deleteTaskNote(
-                    Integer.parseInt((String)payload.get("taskID")),
-                    (String)payload.get("noteID")
+                    (Integer) payload.get("taskID"),
+                    (String) payload.get("noteID")
             )){
                 return ResponseEntity.ok().body("Success");
             }
@@ -249,7 +249,7 @@ public class TaskController {
     public ResponseEntity<String> deletePriority(@RequestBody Map<String, Object> payload){
         try {
             if(taskService.deletePriority(
-                    Integer.parseInt((String)payload.get("taskID"))
+                    (Integer) payload.get("taskID")
             )){
                 return ResponseEntity.ok().body("Success");
             }
@@ -268,7 +268,7 @@ public class TaskController {
     public ResponseEntity<String> deleteDeadline(@RequestBody Map<String, Object> payload){
         try {
             if(taskService.deleteDeadline(
-                    Integer.parseInt((String)payload.get("taskID"))
+                    (Integer) payload.get("taskID")
             )){
                 return ResponseEntity.ok().body("Success");
             }
