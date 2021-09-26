@@ -1,15 +1,12 @@
 package com.noagility.personalcrm;
 
-import com.noagility.personalcrm.deserializer.AccountDeserializer;
-import com.noagility.personalcrm.deserializer.ContactDeserializer;
 import com.noagility.personalcrm.mapper.*;
 import com.noagility.personalcrm.service.AccountService;
 import com.noagility.personalcrm.service.ChatService;
 import com.noagility.personalcrm.service.ContactService;
-import com.noagility.personalcrm.service.JwtUserDetailsService;
+import com.noagility.personalcrm.service.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -62,6 +59,18 @@ public class PersonalCRMApplication {
 	IntegerRowMapper getIntegerRowMapper(){
 		return new IntegerRowMapper();
 	}
+
+	@Bean
+	TaskService getTaskService() { return new TaskService(); }
+
+	@Bean
+	TaskRowMapper TaskClassRowMapper() { return new TaskRowMapper(); }
+
+	@Bean
+	TaskContactRowMapper TaskContactClassRowMapper() { return new TaskContactRowMapper(); }
+
+	@Bean
+	TaskNoteRowMapper TaskNoteClassRowMapper() { return new TaskNoteRowMapper(); }
 	
 	@Bean
 	CommandLineRunner runner() {
