@@ -46,15 +46,34 @@ public class TaskService {
     }
 
 
-    public boolean createTask(List<Integer> contactIDs, List<String> taskNotes, int accountID, String taskName) {
+    public boolean createTask(List<Integer> contactIDs, List<String> taskNotes, int accountID, String taskName, int priority, String deadline) {
         // return the Task ID.
         try {
-            String sql = "INSERT INTO Tasks(TaskID, AccountID, TaskName) VALUES (?, ?, ?)";
+            // when both priority and deadline are provided.
             int taskID = ++maxTaskID;
-            jdbcTemplate.update(sql, taskID, accountID, taskName);
+            String sql;
+            if(priority >= 0 && !deadline.isBlank()){
+                sql = "INSERT INTO Tasks(TaskID, AccountID, TaskName, TaskDeadline, TaskPriority) VALUES (?, ?, ?, ?, ?)";
+                jdbcTemplate.update(sql, taskID, accountID, taskName, deadline, priority);
+            }
+            else if(priority >= 0){
+                sql = "INSERT INTO Tasks(TaskID, AccountID, TaskName, TaskPriority) VALUES (?, ?, ?, ?)";
+                jdbcTemplate.update(sql, taskID, accountID, taskName, priority);
+            }
+            else if(!deadline.isBlank()){
+                sql = "INSERT INTO Tasks(TaskID, AccountID, TaskName, TaskDeadline) VALUES (?, ?, ?, ?)";
+                jdbcTemplate.update(sql, taskID, accountID, taskName, deadline);
+            }
+            else{
+                sql = "INSERT INTO Tasks(TaskID, AccountID, TaskName) VALUES (?, ?, ?)";
+                jdbcTemplate.update(sql, taskID, accountID, taskName);
+            }
+
             System.out.println(contactIDs);
             System.out.println(taskName);
             System.out.println(taskNotes);
+            System.out.println("Priority" + priority);
+            System.out.println("deadline" + deadline);
             // add the contacts.
             for(Iterator<Integer> iter = contactIDs.iterator(); iter.hasNext(); ){
                 Integer contactID = Integer.parseInt(String.valueOf(iter.next()));
@@ -103,7 +122,7 @@ public class TaskService {
 
     public boolean updateTask(int taskID, String newTaskName) {
         try {
-            String sql = "UPDATE Tasks SET TaskName = ? WHERE taskID = ?";
+            String sql = "UPDATE Tasks SET TaskName = ? WHERE TaskID = ?";
             jdbcTemplate.update(sql, newTaskName, taskID);
             return true;
         }
@@ -127,6 +146,29 @@ public class TaskService {
         return false;
     }
 
+    public boolean updatePriority(int taskID, int newPriority){
+        try{
+            String sql = "UPDATE Tasks SET TaskPriority = ? WHERE TaskID = ?";
+            jdbcTemplate.update(sql, newPriority, taskID);
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean updateDeadline(int taskID, String newDeadline){
+        try{
+            String sql = "UPDATE Tasks SET TaskDeadline = ? WHERE TaskID = ?";
+            jdbcTemplate.update(sql, newDeadline, taskID);
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
 
 
     public boolean deleteTask(int taskID) {
@@ -174,6 +216,31 @@ public class TaskService {
         }
         return false;
     }
+
+    public boolean deletePriority(int taskID){
+        try {
+            String sql = "UPDATE Tasks SET TaskDeadline = NULL WHERE TaskID = ?";
+            jdbcTemplate.update(sql, taskID);
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean deleteDeadline(int taskID){
+        try {
+            String sql = "UPDATE Tasks SET TaskDeadline = NULL WHERE TaskID = ?";
+            jdbcTemplate.update(sql, taskID);
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 
     public List<Task> getTasksByAccountID(int accountID){
         try {

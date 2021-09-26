@@ -33,7 +33,9 @@ public class TaskController {
                     (List<Integer>)payload.get("contactIDs"),
                     (List<String>)payload.get("taskNotes"),
                     (Integer) payload.get("accountID"),
-                    (String) payload.get("taskName")
+                    (String) payload.get("taskName"),
+                    payload.containsKey("priority") ? (Integer) payload.get("priority") : -1,
+                    payload.containsKey("deadline") ? (String) payload.get("deadline") : ""
             )){
                 return ResponseEntity.ok().body("Success");
             }
@@ -138,6 +140,48 @@ public class TaskController {
     }
 
 
+    @RequestMapping(
+            value = "/updatePriority",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<String> updatePriority(@RequestBody Map<String, Object> payload){
+        try {
+            if(taskService.updatePriority(
+                    Integer.parseInt((String)payload.get("taskID")),
+                    Integer.parseInt((String)payload.get("priority"))
+            )){
+                return ResponseEntity.ok().body("Success");
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return ResponseEntity.badRequest().body("Failure");
+    }
+
+
+    @RequestMapping(
+            value = "/updateDeadline",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<String> updateDeadline(@RequestBody Map<String, Object> payload){
+        try {
+            if(taskService.updateDeadline(
+                    Integer.parseInt((String)payload.get("taskID")),
+                    (String)payload.get("deadline")
+            )){
+                return ResponseEntity.ok().body("Success");
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return ResponseEntity.badRequest().body("Failure");
+    }
+
+
 
     @RequestMapping(
             value = "/deleteTask",
@@ -195,6 +239,44 @@ public class TaskController {
             e.printStackTrace();
         }
         return ResponseEntity.badRequest().body("Success");
+    }
+
+    @RequestMapping(
+            value = "/deletePriority",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<String> deletePriority(@RequestBody Map<String, Object> payload){
+        try {
+            if(taskService.deletePriority(
+                    Integer.parseInt((String)payload.get("taskID"))
+            )){
+                return ResponseEntity.ok().body("Success");
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return ResponseEntity.badRequest().body("Failure");
+    }
+
+    @RequestMapping(
+            value = "/deleteDeadline",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<String> deleteDeadline(@RequestBody Map<String, Object> payload){
+        try {
+            if(taskService.deleteDeadline(
+                    Integer.parseInt((String)payload.get("taskID"))
+            )){
+                return ResponseEntity.ok().body("Success");
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return ResponseEntity.badRequest().body("Failure");
     }
 
 }
