@@ -50,3 +50,4 @@ SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/personalCrmDB;MYSQL_ROOT_PASSW
 5. Run the application and it should work, provided that you’ve already run docker-compose-local-soft.sh to startup the database server.
 
 
+
