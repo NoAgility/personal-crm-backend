@@ -1,8 +1,10 @@
 package com.noagility.personalcrm.controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.noagility.personalcrm.Util.JwtTokenUtil;
 import com.noagility.personalcrm.model.Account;
@@ -46,7 +48,11 @@ public class ChatController {
         try{
             List<Integer> participants = (List<Integer>)payload.get("accountIDs");
             Account account = jwtTokenUtil.getAccountFromToken(token);
-
+            participants.add(account.getAccountID());
+            Set<Integer> set = new HashSet<>(participants);
+            participants.clear();
+            participants.addAll(set);
+            
             if(
                 participants.contains(account.getAccountID())
                 && chatService.addChat(participants)
