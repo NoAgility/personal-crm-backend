@@ -230,7 +230,7 @@ public class ChatService {
         System.out.println(String.format("getAccountChatsByID: {\"accountID\": %d}", accountID));
         try{
             //  Get all ChatIDs for account
-            String sql = "SELECT ChatID AS `Integer` FROM Accounts_Chats WHERE AccountID = ?";
+            String sql = "SELECT ChatID AS `Integer` FROM Accounts_Chats WHERE AccountID = ? AND Account_ChatActive = 1";
             List<Integer> chatIDs = jdbcTemplate.query(sql, integerRowMapper, accountID);
             
             if(chatIDs == null){
@@ -292,6 +292,19 @@ public class ChatService {
             Account account = jwtTokenUtil.getAccountFromToken(token);
 
             return chat.containsAccountID(account.getAccountID());
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean leaveChat(int chatID, int accountID){
+        System.out.println(String.format("leaveChat: {\"chatID\": %d, \"accountID\": %d}", chatID, accountID));
+        try{
+            String sql = "UPDATE Accounts_Chats SET Account_ChatActive = 0 WHERE ChatID = ? AND AccountID = ?";
+            jdbcTemplate.update(sql, chatID, accountID);
+            return true;
         }
         catch(Exception e){
             e.printStackTrace();
