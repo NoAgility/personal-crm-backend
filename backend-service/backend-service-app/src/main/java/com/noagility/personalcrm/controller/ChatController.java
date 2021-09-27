@@ -218,4 +218,27 @@ public class ChatController {
 
         return ResponseEntity.badRequest().body(null);
     }
+
+    @RequestMapping(
+        value = "/leaveChat",
+        method = RequestMethod.POST,
+        consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<String> leaveChat(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
+        try{
+            int chatID = (Integer)payload.get("chatID");
+            Account account = jwtTokenUtil.getAccountFromToken(token);
+            if(
+                chatService.validateChatParticipant(token, chatID)
+                && chatService.leaveChat(chatID, account.getAccountID())
+            ){
+                return ResponseEntity.ok().body("Success");
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.badRequest().body("Failure");
+    }
 }
