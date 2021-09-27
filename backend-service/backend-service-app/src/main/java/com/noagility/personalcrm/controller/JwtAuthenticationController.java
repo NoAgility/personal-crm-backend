@@ -1,6 +1,7 @@
 package com.noagility.personalcrm.controller;
 
 import com.noagility.personalcrm.Util.JwtTokenUtil;
+import com.noagility.personalcrm.model.Account;
 import com.noagility.personalcrm.model.JwtRequest;
 import com.noagility.personalcrm.model.JwtResponse;
 import com.noagility.personalcrm.service.JwtUserDetailsService;
@@ -44,9 +45,17 @@ public class JwtAuthenticationController {
                 .loadUserByUsername((String)payload.get("username"));
         final String token = jwtTokenUtil.generateToken(userDetails);
 
+        //  JWT Cookie
         Cookie cookie = new Cookie("jwt", token);
         cookie.setMaxAge((int)JwtTokenUtil.JWT_TOKEN_VALIDITY);
         cookie.setHttpOnly(false);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        //  Set the userID as a cookie
+        Account account = jwtTokenUtil.getAccountFromToken(token);
+        cookie = new Cookie("accountID", Integer.toString(account.getAccountID()));
+        cookie.setMaxAge((int)JwtTokenUtil.JWT_TOKEN_VALIDITY);
         cookie.setPath("/");
         response.addCookie(cookie);
 
