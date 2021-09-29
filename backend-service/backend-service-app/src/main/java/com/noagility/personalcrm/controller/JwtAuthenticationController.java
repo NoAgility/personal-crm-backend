@@ -1,6 +1,7 @@
 package com.noagility.personalcrm.controller;
 
 import com.noagility.personalcrm.Util.JwtTokenUtil;
+import com.noagility.personalcrm.model.Account;
 import com.noagility.personalcrm.model.JwtRequest;
 import com.noagility.personalcrm.model.JwtResponse;
 import com.noagility.personalcrm.service.AuthenticationService;
@@ -33,7 +34,6 @@ public class JwtAuthenticationController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<?> createAuthenticationToken(@RequestBody Map<String, Object> payload, HttpServletResponse response) throws Exception {
-
         return authenticationService.authenticate((String)payload.get("username"), (String)payload.get("password"), response);
     }
 }

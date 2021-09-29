@@ -1,8 +1,10 @@
 package com.noagility.personalcrm.controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.noagility.personalcrm.Util.JwtTokenUtil;
 import com.noagility.personalcrm.model.Account;
@@ -46,7 +48,11 @@ public class ChatController {
         try{
             List<Integer> participants = (List<Integer>)payload.get("accountIDs");
             Account account = jwtTokenUtil.getAccountFromToken(token);
-
+            participants.add(account.getAccountID());
+            Set<Integer> set = new HashSet<>(participants);
+            participants.clear();
+            participants.addAll(set);
+            
             if(
                 participants.contains(account.getAccountID())
                 && chatService.addChat(participants)
@@ -217,5 +223,28 @@ public class ChatController {
         }
 
         return ResponseEntity.badRequest().body(null);
+    }
+
+    @RequestMapping(
+        value = "/leaveChat",
+        method = RequestMethod.POST,
+        consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<String> leaveChat(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
+        try{
+            int chatID = (Integer)payload.get("chatID");
+            Account account = jwtTokenUtil.getAccountFromToken(token);
+            if(
+                chatService.validateChatParticipant(token, chatID)
+                && chatService.leaveChat(chatID, account.getAccountID())
+            ){
+                return ResponseEntity.ok().body("Success");
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.badRequest().body("Failure");
     }
 }
