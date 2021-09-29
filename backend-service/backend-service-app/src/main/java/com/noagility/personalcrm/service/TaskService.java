@@ -75,14 +75,18 @@ public class TaskService {
             System.out.println("Priority" + priority);
             System.out.println("deadline" + deadline);
             // add the contacts.
-            for(Iterator<Integer> iter = contactIDs.iterator(); iter.hasNext(); ){
-                Integer contactID = Integer.parseInt(String.valueOf(iter.next()));
-                addTaskContact(taskID, contactID);
+            if (contactIDs != null) {
+                for(Iterator<Integer> iter = contactIDs.iterator(); iter.hasNext(); ){
+                    Integer contactID = Integer.parseInt(String.valueOf(iter.next()));
+                    addTaskContact(taskID, contactID);
+                }
             }
 
-            for(Iterator<String> iter = taskNotes.iterator(); iter.hasNext(); ){
-                String taskNote = iter.next();
-                addTaskNote(taskID, taskNote);
+            if (taskNotes != null) {
+                for(Iterator<String> iter = taskNotes.iterator(); iter.hasNext(); ){
+                    String taskNote = iter.next();
+                    addTaskNote(taskID, taskNote);
+                }
             }
 
             return true;
