@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Service
 @Profile("!ete")
@@ -27,19 +29,20 @@ public class AuthenticationServiceImpl extends AuthenticationService {
                 .loadUserByUsername(username);
         final String token = jwtTokenUtil.generateToken(userDetails);
 
+        Account account = jwtTokenUtil.getAccountFromToken(token);
         //  JWT Cookie
-        Cookie cookie = new Cookie("jwt", token);
-        cookie.setMaxAge((int)JwtTokenUtil.JWT_TOKEN_VALIDITY);
-        cookie.setHttpOnly(false);
-        cookie.setPath("/");
-        response.addCookie(cookie);
+        response.setHeader("set-cookie",
+            String.format("jwt=%s; Max-Age=%s; Path=%s; SameSite=%s; Secure, accountID=%s; Max-Age=%s; Path=%s; SameSite=%s; Secure",
+                token,
+                JwtTokenUtil.JWT_TOKEN_VALIDITY,
+                "/",
+                "None",
+                account.getAccountID(),
+                JwtTokenUtil.JWT_TOKEN_VALIDITY,
+                "/", "None"));
 
         //  Set the userID as a cookie
-        Account account = jwtTokenUtil.getAccountFromToken(token);
-        cookie = new Cookie("accountID", Integer.toString(account.getAccountID()));
-        cookie.setMaxAge((int)JwtTokenUtil.JWT_TOKEN_VALIDITY);
-        cookie.setPath("/");
-        response.addCookie(cookie);
+
 
         return ResponseEntity.ok("Success");
     }
