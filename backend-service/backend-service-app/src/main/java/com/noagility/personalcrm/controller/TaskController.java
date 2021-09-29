@@ -2,8 +2,6 @@ package com.noagility.personalcrm.controller;
 
 
 import com.noagility.personalcrm.Util.JwtTokenUtil;
-import com.noagility.personalcrm.model.Account;
-
 import com.noagility.personalcrm.model.Task;
 import com.noagility.personalcrm.service.ContactService;
 import com.noagility.personalcrm.service.TaskService;
@@ -113,6 +111,24 @@ public class TaskController {
         }
         return null;
     }
+
+    @RequestMapping(
+            value = "/readTask",
+            method = RequestMethod.GET
+    )
+    public ResponseEntity<Task> readTaskByID(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
+        try {
+            return ResponseEntity.ok().body(
+                    taskService.getTaskByID((Integer) payload.get("taskID"))
+            );
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 
     @RequestMapping(
             value = "/updateTask",
