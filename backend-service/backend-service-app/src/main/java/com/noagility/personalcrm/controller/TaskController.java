@@ -1,15 +1,14 @@
 package com.noagility.personalcrm.controller;
 
 
+import com.noagility.personalcrm.Util.JwtTokenUtil;
+import com.noagility.personalcrm.model.Account;
 import com.noagility.personalcrm.model.Task;
 import com.noagility.personalcrm.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -21,18 +20,21 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     @RequestMapping(
             value = "/createTask",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<String> create(@RequestBody Map<String, Object> payload){
+    public ResponseEntity<String> create(@CookieValue("jwt") String token, @RequestBody Map<String, Object> payload){
         try {
+            Account account = jwtTokenUtil.getAccountFromToken(token);
             if(taskService.createTask(
                     (List<Integer>)payload.get("contactIDs"),
                     (List<String>)payload.get("taskNotes"),
-                    (Integer) payload.get("accountID"),
+                    account.getAccountID(),
                     (String) payload.get("taskName"),
                     payload.containsKey("priority") ? (Integer) payload.get("priority") : -1,
                     payload.containsKey("deadline") ? (String) payload.get("deadline") : ""
@@ -51,7 +53,7 @@ public class TaskController {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<String> addTaskNote(@RequestBody Map<String, Object> payload){
+    public ResponseEntity<String> addTaskNote(@CookieValue("jwt") String token, @RequestBody Map<String, Object> payload){
         try {
             if(taskService.addTaskNote(
                     (Integer) payload.get("taskID"),
@@ -89,12 +91,11 @@ public class TaskController {
 
     @RequestMapping(
             value = "/readTasks",
-            method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE
+            method = RequestMethod.GET
     )
-    public ResponseEntity<List<Task>> read(@RequestBody Map<String, Object> payload){
+    public ResponseEntity<List<Task>> read(@CookieValue("jwt") String token){
         return ResponseEntity.ok().body(
-                taskService.getTasksByAccountID((Integer) payload.get("accountID"))
+                taskService.getTasksByAccountID(jwtTokenUtil.getAccountFromToken(token).getAccountID())
         );
     }
 
