@@ -2,6 +2,8 @@ package com.noagility.personalcrm.controller;
 
 
 import com.noagility.personalcrm.Util.JwtTokenUtil;
+import com.noagility.personalcrm.model.Account;
+
 import com.noagility.personalcrm.model.Task;
 import com.noagility.personalcrm.service.ContactService;
 import com.noagility.personalcrm.service.TaskService;
@@ -39,6 +41,7 @@ public class TaskController {
                     (List<Integer>)payload.get("contactIDs"),
                     (List<String>)payload.get("taskNotes"),
                     accountID,
+
                     (String) payload.get("taskName"),
                     payload.containsKey("priority") ? (Integer) payload.get("priority") : -1,
                     payload.containsKey("deadline") ? (String) payload.get("deadline") : ""
@@ -57,6 +60,7 @@ public class TaskController {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
+
     public ResponseEntity<String> addTaskNote(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
         try {
             if(taskService.addTaskNote(
@@ -95,8 +99,7 @@ public class TaskController {
 
     @RequestMapping(
             value = "/readTasks",
-            method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE
+            method = RequestMethod.GET
     )
     public ResponseEntity<List<Task>> read(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
         try {
