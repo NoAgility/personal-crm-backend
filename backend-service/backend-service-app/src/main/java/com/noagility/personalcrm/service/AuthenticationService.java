@@ -2,6 +2,7 @@ package com.noagility.personalcrm.service;
 
 import com.noagility.personalcrm.Util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,6 +22,9 @@ public abstract class AuthenticationService {
     @Autowired
     protected JwtUserDetailsService userDetailsService;
 
+    @Value("${domain:localhost}")
+    private String domain;
+
     public abstract ResponseEntity<?> authenticate(String usernmame, String password, HttpServletResponse response) throws Exception;
 
     protected void authenticate(String username, String password) throws Exception {
@@ -31,5 +35,8 @@ public abstract class AuthenticationService {
         } catch (BadCredentialsException e) {
             throw new Exception("INVALID_CREDENTIALS", e);
         }
+    }
+    protected String getDomain() {
+        return domain;
     }
 }

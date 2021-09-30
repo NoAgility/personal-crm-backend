@@ -32,14 +32,18 @@ public class AuthenticationServiceImpl extends AuthenticationService {
         Account account = jwtTokenUtil.getAccountFromToken(token);
         //  JWT Cookie
         response.setHeader("set-cookie",
-            String.format("jwt=%s; Max-Age=%s; Path=%s; SameSite=%s; Secure, accountID=%s; Max-Age=%s; Path=%s; SameSite=%s; Secure",
+            String.format("jwt=%s; Max-Age=%s; Path=%s; SameSite=%s; Domain=%s; Secure, accountID=%s; Max-Age=%s; Path=%s; SameSite=%s; Domain=%s; Secure",
                 token,
                 JwtTokenUtil.JWT_TOKEN_VALIDITY,
                 "/",
                 "None",
+                getDomain(),
                 account.getAccountID(),
                 JwtTokenUtil.JWT_TOKEN_VALIDITY,
-                "/", "None"));
+                "/",
+                "None",
+                getDomain()
+            ));
 
         //  Set the userID as a cookie
 
