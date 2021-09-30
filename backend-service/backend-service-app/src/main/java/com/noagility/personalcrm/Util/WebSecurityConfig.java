@@ -57,7 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://noagility-personal-crm.com"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://dev-noagility-personal-crm.com", "https://dev.noagility-personal-crm.com", "https://app.noagility-personal-crm.com"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("X-Requested-With", "Origin", "Content-Type", "Accept", "Authorization"));
         configuration.setAllowCredentials(true);

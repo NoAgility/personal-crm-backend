@@ -22,7 +22,7 @@ public abstract class AuthenticationService {
     @Autowired
     protected JwtUserDetailsService userDetailsService;
 
-    @Value("${domain}")
+    @Value("${domain:localhost}")
     private String domain;
 
     public abstract ResponseEntity<?> authenticate(String usernmame, String password, HttpServletResponse response) throws Exception;
