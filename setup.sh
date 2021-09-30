@@ -8,4 +8,4 @@ sudo chmod 666 /var/run/docker.sock
 sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 sudo service docker start
 cd /home/ec2-user/personal-crm-backend
-docker-compose --env-file /home/ec2-user/personal-crm-backend/config/dev.env build --no-cache
+docker-compose --file /home/ec2-user/personal-crm-backend/docker-compose-springboot.yml --env-file /home/ec2-user/personal-crm-backend/config/dev.env build --no-cache
