@@ -6,6 +6,7 @@ Development environment IP address: 3.104.226.94
 
 
 
+
 **There are multiple ways of running the Spring Boot application, three of which are listed below:**
 
 ### The slow way - docker-compose-local.sh
