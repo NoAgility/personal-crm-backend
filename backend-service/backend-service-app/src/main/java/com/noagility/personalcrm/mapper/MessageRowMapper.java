@@ -1,7 +1,5 @@
 package com.noagility.personalcrm.mapper;
 
-
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;

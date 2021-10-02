@@ -12,7 +12,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -250,7 +249,6 @@ public class TaskService {
         try {
             String sql = "SELECT * FROM Tasks WHERE AccountID = ?";
             List<Task> tasks = jdbcTemplate.query(sql, taskRowMapper, accountID);
-            ArrayList<Task> output = new ArrayList<>();
 
             for(Task task : tasks){
                 int taskID = Integer.parseInt(String.valueOf(task.getTaskID()));

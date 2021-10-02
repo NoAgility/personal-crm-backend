@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import com.noagility.personalcrm.PersonalCRMApplication;
 import com.noagility.personalcrm.Util.JwtTokenUtil;
 import com.noagility.personalcrm.mapper.AccountRowMapper;
 import com.noagility.personalcrm.mapper.ChatRowMapper;
@@ -16,8 +15,6 @@ import com.noagility.personalcrm.model.Account;
 import com.noagility.personalcrm.model.Chat;
 import com.noagility.personalcrm.model.Message;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;

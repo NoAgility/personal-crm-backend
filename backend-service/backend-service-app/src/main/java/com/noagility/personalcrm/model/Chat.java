@@ -12,11 +12,28 @@ public class Chat {
     private List<Message> messages = new ArrayList<>();
     private List<Account> chatParticipants = new ArrayList<>();
 
+    public Chat(){
+
+    }
+    
     public Chat(int chatID, LocalDateTime chatCreation){
         this.chatID = chatID;
         this.chatCreation = chatCreation;
     }
 
+    public Chat(int chatID, LocalDateTime chatCreation, List<Account> chatParticipants){
+        this.chatID = chatID;
+        this.chatCreation = chatCreation;
+        this.chatParticipants = chatParticipants;
+    }
+
+    public Chat(int chatID, LocalDateTime chatCreation, List<Account> chatParticipants, List<Message> messages){
+        this.chatID = chatID;
+        this.chatCreation = chatCreation;
+        this.chatParticipants = chatParticipants;
+        this.messages = messages;
+    }
+    
     public int getChatID(){
         return chatID;
     }
@@ -57,6 +74,31 @@ public class Chat {
             }
         }
 
+        return false;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if(this == obj){
+            return true;
+        }
+        if(obj == null){
+            return false;
+        }
+        if(getClass() != obj.getClass()){
+            return false;
+        }
+        
+        Chat chat = (Chat) obj;
+        if(
+            chatID == chat.getChatID()
+            && chatCreation.equals(chat.getChatCreation())
+            && messages.containsAll(chat.getMessages()) && chat.getMessages().containsAll(messages)
+            && chatParticipants.containsAll(chat.getChatParticipants()) && chat.getChatParticipants().containsAll(chatParticipants)
+        ){
+            return true;
+        }
+        System.out.println("==================yo");
         return false;
     }
 }
