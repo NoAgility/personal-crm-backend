@@ -1,6 +1,7 @@
 package com.noagility.personalcrm.service;
 
 import com.noagility.personalcrm.Util.JwtTokenUtil;
+import com.noagility.personalcrm.model.Account;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,9 +21,21 @@ public class AuthenticationServiceETEImpl extends AuthenticationService {
                 .loadUserByUsername(username);
         final String token = jwtTokenUtil.generateToken(userDetails);
 
-        Cookie cookie = new Cookie("jwt", token);
-        cookie.setMaxAge((int) JwtTokenUtil.JWT_TOKEN_VALIDITY);
-        cookie.setHttpOnly(false);
+        Account account = jwtTokenUtil.getAccountFromToken(token);
+
+        String cookie = String.format("jwt=%s; Max-Age=%s; Path=%s; SameSite=%s; Domain=%s; Secure; " +
+                        "accountID=%s; Max-Age=%s; Path=%s; SameSite=%s; Domain=%s; Secure",
+                token,
+                JwtTokenUtil.JWT_TOKEN_VALIDITY,
+                "/",
+                "None",
+                getDomain(),
+                account.getAccountID(),
+                JwtTokenUtil.JWT_TOKEN_VALIDITY,
+                "/",
+                "None",
+                getDomain()
+        );
         return ResponseEntity.ok(cookie);
     }
 }

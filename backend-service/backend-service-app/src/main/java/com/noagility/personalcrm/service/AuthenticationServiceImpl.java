@@ -23,6 +23,10 @@ public class AuthenticationServiceImpl extends AuthenticationService {
     @Override
     public ResponseEntity<?> authenticate(String username, String password, HttpServletResponse response) throws Exception {
 
+
+        /**
+         * Needs to be refactored out - Make a default builder method for cookies
+         */
         authenticate(username, password);
 
         final UserDetails userDetails = userDetailsService
@@ -31,21 +35,25 @@ public class AuthenticationServiceImpl extends AuthenticationService {
 
         Account account = jwtTokenUtil.getAccountFromToken(token);
         //  JWT Cookie
-        response.setHeader("set-cookie",
-            String.format("jwt=%s; Max-Age=%s; Path=%s; SameSite=%s; Domain=%s; Secure, accountID=%s; Max-Age=%s; Path=%s; SameSite=%s; Domain=%s; Secure",
-                token,
-                JwtTokenUtil.JWT_TOKEN_VALIDITY,
-                "/",
-                "None",
-                getDomain(),
-                account.getAccountID(),
-                JwtTokenUtil.JWT_TOKEN_VALIDITY,
-                "/",
-                "None",
-                getDomain()
-            ));
+        Cookie jwtCookie = new Cookie("jwt", token);
+        jwtCookie.setHttpOnly(false);
+        jwtCookie.setMaxAge((int)JwtTokenUtil.JWT_TOKEN_VALIDITY);
+        jwtCookie.setDomain(getDomain());
+        jwtCookie.setSecure(true);
+        jwtCookie.setPath("/");
 
-        //  Set the userID as a cookie
+        response.addCookie(jwtCookie);
+
+        //  AccountID Cookie
+        Cookie accountIdCookie = new Cookie("accountID", String.valueOf(account.getAccountID()));
+
+        accountIdCookie.setHttpOnly(false);
+        accountIdCookie.setMaxAge((int)JwtTokenUtil.JWT_TOKEN_VALIDITY);
+        accountIdCookie.setDomain(getDomain());
+        accountIdCookie.setSecure(true);
+        accountIdCookie.setPath("/");
+
+        response.addCookie(accountIdCookie);
 
 
         return ResponseEntity.ok("Success");
