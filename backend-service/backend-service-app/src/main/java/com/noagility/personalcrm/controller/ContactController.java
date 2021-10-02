@@ -3,7 +3,6 @@ package com.noagility.personalcrm.controller;
 
 import com.noagility.personalcrm.Util.JwtTokenUtil;
 import com.noagility.personalcrm.model.*;
-import com.noagility.personalcrm.service.AccountService;
 import com.noagility.personalcrm.service.ContactService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -18,9 +17,6 @@ import java.util.Map;
 public class ContactController {
     @Autowired
     private ContactService contactService;
-
-    @Autowired
-    private AccountService accountService;
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;

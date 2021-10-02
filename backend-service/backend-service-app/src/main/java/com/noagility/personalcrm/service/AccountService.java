@@ -4,19 +4,12 @@ import com.noagility.personalcrm.Util.JwtTokenUtil;
 import com.noagility.personalcrm.mapper.AccountRowMapper;
 import com.noagility.personalcrm.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.sql.DataSource;
-import java.sql.*;
-import java.util.List;
-
 
 public class AccountService {
     @Autowired
@@ -30,7 +23,6 @@ public class AccountService {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
-    private Object DataIntegrityViolationException;
 
     @Autowired
     JwtTokenUtil jwtTokenUtil;
