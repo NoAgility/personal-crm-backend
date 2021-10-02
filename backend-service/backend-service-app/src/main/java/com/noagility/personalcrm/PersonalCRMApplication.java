@@ -5,14 +5,16 @@ import com.noagility.personalcrm.service.AccountService;
 import com.noagility.personalcrm.service.ChatService;
 import com.noagility.personalcrm.service.ContactService;
 import com.noagility.personalcrm.service.TaskService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.junit4.SpringRunner;
 
-
+@Slf4j
 @SpringBootApplication
 public class PersonalCRMApplication {
 	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
@@ -74,8 +76,7 @@ public class PersonalCRMApplication {
 	
 	@Bean
 	CommandLineRunner runner() {
-		return args -> { LOGGER.info("Application has started.");
-		System.out.println("\n" + System.getenv("SPRING_DATASOURCE_URL")); };
+		return args -> { log.info("Application has started."); };
 	}
 
 }
