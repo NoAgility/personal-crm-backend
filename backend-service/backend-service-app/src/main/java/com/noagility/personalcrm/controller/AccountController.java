@@ -64,6 +64,14 @@ public class AccountController {
     }
 
     @RequestMapping(
+            value = "/test",
+            method = RequestMethod.GET
+    )
+    public ResponseEntity<String> getAccountByUsername(){
+        return ResponseEntity.ok().body("test");
+    }
+
+    @RequestMapping(
         value = "/get",
         method = RequestMethod.GET,
         params = {

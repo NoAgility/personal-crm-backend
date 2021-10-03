@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `Chats` (
 -- Table `Messages`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Messages` (
-  `MessageID` INT NOT NULL,
+  `MessageID` INT NOT NULL AUTO_INCREMENT,
   `ChatID` INT NOT NULL,
   `AccountID` INT NOT NULL,
   `MessageTime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -188,6 +188,7 @@ CREATE TABLE IF NOT EXISTS `PublicHolidays` (
 CREATE TABLE IF NOT EXISTS `Accounts_Chats` (
   `AccountID` INT NOT NULL,
   `ChatID` INT NOT NULL,
+  `Account_ChatActive` TINYINT NOT NULL DEFAULT 1,
   PRIMARY KEY (`AccountID`, `ChatID`),
   INDEX `fk_Chat_has_Accounts_Accounts1_idx` (`AccountID` ASC) ,
   INDEX `fk_Chat_has_Accounts_Chat1_idx` (`ChatID` ASC) ,

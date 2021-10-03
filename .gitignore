@@ -5,7 +5,7 @@ HELP.md
 !**/src/test/**
 appspec.yml
 .vscode/
-
+setup.sh
 ### STS ###
 .apt_generated
 .classpath

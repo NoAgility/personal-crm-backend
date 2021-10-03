@@ -1,18 +1,15 @@
 package com.noagility.personalcrm.service;
 
+import com.noagility.personalcrm.Util.JwtTokenUtil;
 import com.noagility.personalcrm.mapper.AccountRowMapper;
 import com.noagility.personalcrm.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.dao.DataAccessException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import javax.sql.DataSource;
-import java.sql.*;
-import java.util.List;
 
+import javax.sql.DataSource;
 
 public class AccountService {
     @Autowired
@@ -22,21 +19,22 @@ public class AccountService {
     AccountRowMapper accountRowMapper;
 
     @Autowired
-
-    BCryptPasswordEncoder passwordEncoder;
+    PasswordEncoder passwordEncoder;
 
     @Autowired
     JdbcTemplate jdbcTemplate;
-    private Object DataIntegrityViolationException;
 
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
 
     public Account getByUsername(String username) {
         try {
             String sql = "SELECT * FROM Accounts WHERE AccountUsername = ?";
             Account account = jdbcTemplate.queryForObject(sql, accountRowMapper, username);
             return account;
-        } catch (EmptyResultDataAccessException e) {
-            e.printStackTrace();
+        }
+        catch(Exception e){
+            
         }
         return null;
     }
@@ -89,4 +87,6 @@ public class AccountService {
         String sql = "UPDATE Accounts SET AccountActive = 0 WHERE AccountID = ?;";
         return jdbcTemplate.update(sql, id) != 0;
     }
+
+    
 }
