@@ -100,7 +100,7 @@ public class TaskController {
             value = "/readTasks",
             method = RequestMethod.GET
     )
-    public ResponseEntity<List<Task>> read(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
+    public ResponseEntity<List<Task>> read(@CookieValue("jwt") String token){
         try {
             int accountID = contactService.getIDFromUsername(jwtTokenUtil.getUsernameFromToken(token));
             return ResponseEntity.ok().body(
@@ -112,6 +112,24 @@ public class TaskController {
         }
         return null;
     }
+
+    @RequestMapping(
+            value = "/readTask",
+            method = RequestMethod.GET
+    )
+    public ResponseEntity<Task> readTaskByID(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
+        try {
+            return ResponseEntity.ok().body(
+                    taskService.getTaskByID((Integer) payload.get("taskID"))
+            );
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 
     @RequestMapping(
             value = "/updateTask",

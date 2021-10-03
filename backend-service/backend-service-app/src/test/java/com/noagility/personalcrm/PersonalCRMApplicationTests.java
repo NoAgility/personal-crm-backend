@@ -1,6 +1,8 @@
 package com.noagility.personalcrm;
 
+
 import com.noagility.personalcrm.deserializer.ContactDeserializer;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,10 +19,18 @@ import java.time.LocalDate;
 
 import com.noagility.personalcrm.deserializer.AccountDeserializer;
 import com.noagility.personalcrm.model.Account;
+
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import javax.servlet.http.Cookie;
+import java.time.LocalDate;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -304,5 +314,6 @@ class PersonalCRMApplicationTests {
 				.andExpect(content().json(String.format("[]",java.time.LocalDate.now())));
 
 	}
+
 
 }

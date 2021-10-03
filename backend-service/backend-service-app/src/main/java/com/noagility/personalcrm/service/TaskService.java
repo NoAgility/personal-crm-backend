@@ -139,6 +139,7 @@ public class TaskService {
     public boolean updateTaskNote(int taskID, String oldTaskNoteID, String newTaskNoteID) {
         try {
             // delete the old one and create a new one.
+            System.out.println(newTaskNoteID);
             addTaskNote(taskID, newTaskNoteID);
             deleteTaskNote(taskID, oldTaskNoteID);
             return true;
@@ -271,10 +272,10 @@ public class TaskService {
     public Task getTaskByID(int taskID) {
         try {
             // add in the Main task properties
-            String sql = "SELECT * FROM Task WHERE TaskID = ?";
+            String sql = "SELECT * FROM Tasks WHERE TaskID = ?";
             Task task = jdbcTemplate.queryForObject(sql, taskRowMapper, taskID);
             // add in the task notes
-            sql = "SELECT * FROM TaskName WHERE TaskID = ? ";
+            sql = "SELECT * FROM TaskNotes WHERE TaskID = ? ";
             List<TaskNote> taskNoteList = jdbcTemplate.query(sql, taskNoteRowMapper, taskID);
             task.setTaskNoteList(taskNoteList);
             // add in the task contacts
