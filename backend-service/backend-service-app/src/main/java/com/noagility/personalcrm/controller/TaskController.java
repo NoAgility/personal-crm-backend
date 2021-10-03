@@ -101,7 +101,7 @@ public class TaskController {
             value = "/readTasks",
             method = RequestMethod.GET
     )
-    public ResponseEntity<List<Task>> read(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
+    public ResponseEntity<List<Task>> read(@CookieValue("jwt") String token){
         try {
             int accountID = contactService.getIDFromUsername(jwtTokenUtil.getUsernameFromToken(token));
             return ResponseEntity.ok().body(
