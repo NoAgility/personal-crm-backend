@@ -60,19 +60,14 @@ public class TaskService {
                 jdbcTemplate.update(sql, taskID, accountID, taskName, priority);
             }
             else if(!deadline.isBlank()){
-                sql = "INSERT INTO Tasks(TaskID, AccountID, TaskName, TaskDeadline) VALUES (?, ?, ?, ?)";
-                jdbcTemplate.update(sql, taskID, accountID, taskName, deadline);
+                sql = "INSERT INTO Tasks(TaskID, AccountID, TaskName, TaskDeadline, TaskPriority) VALUES (?, ?, ?, ?, ?)";
+                jdbcTemplate.update(sql, taskID, accountID, taskName, deadline, -1);
             }
             else{
-                sql = "INSERT INTO Tasks(TaskID, AccountID, TaskName) VALUES (?, ?, ?)";
-                jdbcTemplate.update(sql, taskID, accountID, taskName);
+                sql = "INSERT INTO Tasks(TaskID, AccountID, TaskName, TaskPriority) VALUES (?, ?, ?, ?)";
+                jdbcTemplate.update(sql, taskID, accountID, taskName, -1);
             }
 
-            System.out.println(contactIDs);
-            System.out.println(taskName);
-            System.out.println(taskNotes);
-            System.out.println("Priority" + priority);
-            System.out.println("deadline" + deadline);
             // add the contacts.
             if (contactIDs != null) {
                 for(Iterator<Integer> iter = contactIDs.iterator(); iter.hasNext(); ){
