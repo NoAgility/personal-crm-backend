@@ -1,8 +1,8 @@
 # Personal CRM Backend
 
-Production environment IP address: 13.236.101.149
+Production environment IP address: https://api.app.noagility-personal-crm.com
 
-Development environment IP address: 3.104.226.94
+Development environment IP address: https://api.dev.noagility-personal-crm.com
 
 
 
