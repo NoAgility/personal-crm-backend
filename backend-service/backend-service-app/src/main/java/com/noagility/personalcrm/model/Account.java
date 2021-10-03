@@ -1,12 +1,8 @@
 package com.noagility.personalcrm.model;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Account {
     private int accountID;
@@ -15,8 +11,6 @@ public class Account {
     private LocalDate accountDOB;
     private LocalDate accountCreation;
     private boolean accountActive = true;
-
-    private static String DOB_DATE_FORMAT = "yyyy-MM-dd";
 
     public Account(int accountID, String accountUsername, String accountName, LocalDate accountDOB, LocalDate accountCreation) {
         this.accountID = accountID;

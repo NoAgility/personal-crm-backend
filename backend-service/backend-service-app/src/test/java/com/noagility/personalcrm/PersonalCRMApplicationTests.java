@@ -1,8 +1,8 @@
 package com.noagility.personalcrm;
 
-import com.noagility.personalcrm.deserializer.AccountDeserializer;
+
 import com.noagility.personalcrm.deserializer.ContactDeserializer;
-import com.noagility.personalcrm.model.Account;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,6 +10,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.time.LocalDate;
+
+import com.noagility.personalcrm.deserializer.AccountDeserializer;
+import com.noagility.personalcrm.model.Account;
+
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -179,6 +189,16 @@ class PersonalCRMApplicationTests {
 				.andDo(print())
 				.andExpect(status().isOk());
 
+		String returnedJson = mvc.perform(get("/account/get?username=testContactCreation2")
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andReturn()
+				.getResponse()
+				.getContentAsString();
+
+		Account returnedAccount = accountDeserializer.deserializeAccount(returnedJson);
+		int id = returnedAccount.getAccountID();
+
 		MvcResult result = mvc.perform(post("/authenticate/login")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content("{\"username\": \"testContactCreation\", \"password\":\"testingpassword\"}")
@@ -205,7 +225,94 @@ class PersonalCRMApplicationTests {
 
 		mvc.perform(get("/contact/read")
 						.cookie(cookie))
-				.andExpect(content().json(String.format("[{\"contactID\":4,\"contactCreatedOn\":\"%s\"}]",java.time.LocalDate.now())));
+				.andExpect(content().json(String.format("[{\"contactID\":%d,\"contactCreatedOn\":\"%s\"}]",id,java.time.LocalDate.now())));
+	}
+
+	@Test
+	public void testContactDeletionRead() throws Exception{
+
+		String jsonCreate = new StringBuilder()
+				.append("{")
+				.append("'username': 'testContactDeletion'")
+				.append(", 'password': 'testingpassword'")
+				.append(", 'name': 'testingname'")
+				.append(", 'dob': '2000-01-02'")
+				.append("}")
+				.toString().replaceAll("'", "\"");
+
+		mvc.perform(post("/account/create")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(jsonCreate)
+						.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isOk());
+
+		String jsonCreate2 = new StringBuilder()
+				.append("{")
+				.append("'username': 'testContactDeletion2'")
+				.append(", 'password': 'testingpassword2'")
+				.append(", 'name': 'testingname2'")
+				.append(", 'dob': '2000-01-02'")
+				.append("}")
+				.toString().replaceAll("'", "\"");
+
+		mvc.perform(post("/account/create")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(jsonCreate2)
+						.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isOk());
+
+		String returnedJson = mvc.perform(get("/account/get?username=testContactDeletion2")
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andReturn()
+				.getResponse()
+				.getContentAsString();
+
+		Account returnedAccount = accountDeserializer.deserializeAccount(returnedJson);
+		int id = returnedAccount.getAccountID();
+
+		MvcResult result = mvc.perform(post("/authenticate/login")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content("{\"username\": \"testContactDeletion\", \"password\":\"testingpassword\"}")
+						.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andReturn();
+
+		Cookie cookie = result.getResponse().getCookie("jwt");
+
+		String jsonContactCreate = new StringBuilder()
+				.append("{")
+				.append("'contact': 'testContactDeletion2'")
+				.append("}")
+				.toString().replaceAll("'", "\"");
+
+		mvc.perform(post("/contact/create")
+						.cookie(cookie)
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(jsonContactCreate)
+						.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isOk());
+
+		mvc.perform(get("/contact/read")
+						.cookie(cookie))
+				.andExpect(content().json(String.format("[{\"contactID\":%d,\"contactCreatedOn\":\"%s\"}]",id,java.time.LocalDate.now())));
+
+		mvc.perform(post("/contact/delete")
+						.cookie(cookie)
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(jsonContactCreate)
+						.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isOk());
+
+		mvc.perform(get("/contact/read")
+						.cookie(cookie))
+				.andExpect(content().json(String.format("[]",java.time.LocalDate.now())));
+
 	}
 
 

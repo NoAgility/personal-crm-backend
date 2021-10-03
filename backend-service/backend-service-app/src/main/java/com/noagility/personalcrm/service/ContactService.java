@@ -25,7 +25,10 @@ public class ContactService {
         int usernameID = getIDFromUsername(username);
         int contactID = getIDFromUsername(contact);
 
-
+        if(usernameID==contactID){
+            return false;
+            //cannot add urself
+        }
         if(contactAdded(username,contactID)){
             System.out.println("contact already added");
             //this should thow  error if db already has contact

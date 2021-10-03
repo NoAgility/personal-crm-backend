@@ -11,6 +11,10 @@ public class Message implements Comparable<Message>{
     private LocalDateTime messageTime;
     private String messageText;
 
+    public Message(){
+
+    }
+    
     public Message(int messageID, int chatID, int accountID, LocalDateTime messageTime, String messageText){
         this.messageID = messageID;
         this.chatID = chatID;

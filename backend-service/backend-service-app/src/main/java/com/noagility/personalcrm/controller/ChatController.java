@@ -1,6 +1,5 @@
 package com.noagility.personalcrm.controller;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +10,6 @@ import com.noagility.personalcrm.model.Account;
 import com.noagility.personalcrm.model.Chat;
 import com.noagility.personalcrm.service.ChatService;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;

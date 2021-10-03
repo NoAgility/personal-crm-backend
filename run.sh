@@ -1,3 +1,3 @@
 #!/bin/bash
 cd /home/ec2-user/personal-crm-backend
-docker-compose --env-file /home/ec2-user/personal-crm-backend/config/prod.env up -d
+docker-compose --file docker-compose-springboot.yml --env-file config/dev.env up -d

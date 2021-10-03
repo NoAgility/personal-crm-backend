@@ -56,4 +56,12 @@ public class AccountDeserializer extends StdDeserializer<Account> {
         mapper.registerModule(module);
         return mapper.readValue(json, Account.class);
     }
+
+    public Account[] deserializeAccounts(String json) throws JsonMappingException, JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule("AccountDeserializer", new Version(1, 0, 0, null, null, null));
+        module.addDeserializer(Account.class, new AccountDeserializer());
+        mapper.registerModule(module);
+        return mapper.readValue(json, Account[].class);
+    }
 }
