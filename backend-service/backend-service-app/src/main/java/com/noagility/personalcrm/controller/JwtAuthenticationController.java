@@ -18,7 +18,10 @@ public class JwtAuthenticationController {
     @Autowired
     private AuthenticationService authenticationService;
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @RequestMapping(
+            value = "/login",
+            method = RequestMethod.POST
+    )
     @ResponseBody
     public ResponseEntity<?> createAuthenticationToken(@RequestBody Map<String, Object> payload, HttpServletResponse response) throws Exception {
         return authenticationService.authenticate((String)payload.get("username"), (String)payload.get("password"), response);
