@@ -12,6 +12,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -242,6 +243,17 @@ public class TaskService {
 
 
     public List<Task> getTasksByAccountID(int accountID){
+        List<Task> tasks = new ArrayList<>();
+        for(Task task: getTasksOwnedByAccountID(accountID)){
+            tasks.add(task);
+        }
+        for(Task task: getTasksWithAccountID(accountID)){
+            tasks.add(task);
+        }
+        return tasks;
+    }
+
+    private List<Task> getTasksOwnedByAccountID(int accountID){
         try {
             String sql = "SELECT * FROM Tasks WHERE AccountID = ?";
             List<Task> tasks = jdbcTemplate.query(sql, taskRowMapper, accountID);
@@ -251,6 +263,7 @@ public class TaskService {
                 sql = "SELECT * FROM TaskNotes WHERE TaskID = ? ";
                 List<TaskNote> taskNoteList = jdbcTemplate.query(sql, taskNoteRowMapper, taskID);
                 task.setTaskNoteList(taskNoteList);
+                task.setOwner(true);
                 sql = "SELECT * FROM Account_Contacts_Tasks WHERE TaskID = ?";
                 List<TaskContactAccount> taskContactAccounts = jdbcTemplate.query(sql, taskContactRowMapper, taskID);
                 task.setTaskContactAccounts(taskContactAccounts);
@@ -258,6 +271,23 @@ public class TaskService {
             return tasks;
         }
         catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private List<Task> getTasksWithAccountID(int accountID){
+        try {
+            String sql = "SELECT * FROM Account_Contacts_Tasks WHERE ContactID = ?";
+            List<TaskContactAccount> accountsContactsTasks = jdbcTemplate.query(sql, taskContactRowMapper, accountID);
+            List<Task> tasks = new ArrayList<>();
+            for(TaskContactAccount taskContactAccount: accountsContactsTasks){
+                int taskID = taskContactAccount.getTaskID();
+                tasks.add(getTaskByID(taskID));
+            }
+            return tasks;
+        }
+        catch (Exception e){
             e.printStackTrace();
         }
         return null;
@@ -273,6 +303,7 @@ public class TaskService {
             sql = "SELECT * FROM TaskNotes WHERE TaskID = ? ";
             List<TaskNote> taskNoteList = jdbcTemplate.query(sql, taskNoteRowMapper, taskID);
             task.setTaskNoteList(taskNoteList);
+            task.setOwner(false);
             // add in the task contacts
             sql = "SELECT * FROM Account_Contacts_Tasks WHERE TaskID = ?";
             List<TaskContactAccount> taskContactAccounts = jdbcTemplate.query(sql, taskContactRowMapper, taskID);

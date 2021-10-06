@@ -123,7 +123,6 @@ public class TasksTesting {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(taskContent)
                     .accept(MediaType.APPLICATION_JSON))
-                    .andDo(print())
                     .andExpect(status().isOk());
         }
 
@@ -135,7 +134,15 @@ public class TasksTesting {
                     "    \"taskID\": " + String.valueOf(j) + "\n" +
                     "}";
             String output = createExpectedResponse(1, "TaskNumber" + String.valueOf(j), j);
-
+            System.out.println("abcdefg" + output);
+            String response = mvc.perform(get("/task/readTask")
+                    .cookie(cookie)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(taskContent))
+                    .andReturn()
+                    .getResponse()
+                    .getContentAsString();
+            System.out.println(response);
             mvc.perform(get("/task/readTask")
                     .cookie(cookie)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -624,9 +631,10 @@ public class TasksTesting {
                 "    \"accountID\": " + String.valueOf(accountID) + ",\n" +
                 "    \"taskName\": \"" + taskName + "\",\n" +
                 "    \"taskDeadline\": null,\n" +
-                "    \"taskPriority\": 0,\n" +
+                "    \"taskPriority\": -1,\n" +
                 "    \"taskNoteList\": [],\n" +
                 "    \"taskContactAccounts\": [],\n" +
+                "    \"owner\":false,\n" +
                 "    \"taskID\": " + String.valueOf(taskID) + "\n" +
                 "}";
         return output;
@@ -641,6 +649,7 @@ public class TasksTesting {
                 "    \"taskPriority\": " + String.valueOf(priority) + ",\n" +
                 "    \"taskNoteList\": [],\n" +
                 "    \"taskContactAccounts\": [],\n" +
+                "    \"owner\":false,\n" +
                 "    \"taskID\": " + String.valueOf(taskID) + "\n" +
                 "}";
         return output;
@@ -652,9 +661,10 @@ public class TasksTesting {
                 "    \"accountID\": " + String.valueOf(accountID) + ",\n" +
                 "    \"taskName\": \"" + taskName + "\",\n" +
                 "    \"taskDeadline\": \"" + deadline + "\",\n" +
-                "    \"taskPriority\": 0,\n" +
+                "    \"taskPriority\": -1,\n" +
                 "    \"taskNoteList\": [],\n" +
                 "    \"taskContactAccounts\": [],\n" +
+                "    \"owner\":false,\n" +
                 "    \"taskID\": " + String.valueOf(taskID) + "\n" +
                 "}";
         return output;
@@ -669,6 +679,7 @@ public class TasksTesting {
                 "    \"taskPriority\": " + String.valueOf(priority) + ",\n" +
                 "    \"taskNoteList\": [],\n" +
                 "    \"taskContactAccounts\": [],\n" +
+                "    \"owner\":false,\n" +
                 "    \"taskID\": " + String.valueOf(taskID) + "\n" +
                 "}";
         return output;

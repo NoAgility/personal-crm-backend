@@ -7,16 +7,17 @@ import java.util.List;
 
 public class Task {
     private int TaskID;
-    private int accountID;
+    private int ownerAccountID;
     private String taskName;
     private LocalDateTime taskDeadline;
     private int taskPriority;
     private List<TaskNote> taskNoteList;
     private List<TaskContactAccount> taskContactAccounts;
+    private Boolean isOwner;
 
     public Task(int taskID, int accountID, String taskName, LocalDateTime taskDeadline, int taskPriority){
         this.TaskID = taskID;
-        this.accountID = accountID;
+        this.ownerAccountID = accountID;
         this.taskName = taskName;
         this.taskDeadline = taskDeadline;
         this.taskPriority = taskPriority;
@@ -32,11 +33,11 @@ public class Task {
     }
 
     public int getAccountID() {
-        return accountID;
+        return ownerAccountID;
     }
 
     public void setAccountID(int accountID) {
-        this.accountID = accountID;
+        this.ownerAccountID = accountID;
     }
 
     public String getTaskName() {
@@ -78,5 +79,13 @@ public class Task {
 
     public void setTaskContactAccounts(List<TaskContactAccount> taskContactAccounts) {
         this.taskContactAccounts = taskContactAccounts;
+    }
+
+    public Boolean getOwner() {
+        return isOwner;
+    }
+
+    public void setOwner(Boolean owner) {
+        isOwner = owner;
     }
 }
