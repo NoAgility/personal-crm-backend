@@ -135,12 +135,10 @@ public class TasksTesting {
                     "    \"taskID\": " + String.valueOf(j) + "\n" +
                     "}";
             String output = createExpectedResponse(1, "TaskNumber" + String.valueOf(j), j);
-
             mvc.perform(get("/task/readTask")
                     .cookie(cookie)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(taskContent))
-                    .andExpect(content().json(output));
+                    .content(taskContent)).andExpect(content().json(output));
         }
 
 
@@ -514,7 +512,8 @@ public class TasksTesting {
                 "}";
 
 
-        output = "{\"accountID\":1,\"taskName\":\"TaskNumber1\",\"taskDeadline\":null,\"taskPriority\":3,\"taskNoteList\":[{\"taskID\":5,\"taskNoteID\":\"NoteNumber1\"}],\"taskContactAccounts\":[{\"taskID\":5,\"contactID\":3}],\"taskID\":5}";
+        output = "{\"accountID\":1,\"taskName\":\"TaskNumber1\",\"taskDeadline\":null,\"taskPriority\":3,\"taskComplete\":0,\"taskNoteList\":[{\"taskID\":5,\"taskNoteID\":1,\"note\":\"NoteNumber1\"}],\"taskContactAccounts\":[{\"taskID\":5,\"contactID\":3}],\"owner\":false,\"taskID\":5}";
+
 
         mvc.perform(get("/task/readTask")
                 .cookie(cookie)
@@ -526,8 +525,8 @@ public class TasksTesting {
 
         taskContent = "{\n" +
                 "    \"taskID\": 5,\n" +
-                "    \"oldTaskNoteID\": \"NoteNumber1\",\n" +
-                "    \"newTaskNoteID\": \"NEW NOTE HELLO WORLD\"\n" +
+                "    \"taskNoteID\": 1,\n" +
+                "    \"newTaskNote\": \"NEW NOTE HELLO WORLD\"\n" +
                 "}";
 
         // update the task note.
@@ -549,7 +548,7 @@ public class TasksTesting {
                 "}";
 
 
-        output = "{\"accountID\":1,\"taskName\":\"TaskNumber1\",\"taskDeadline\":null,\"taskPriority\":3,\"taskNoteList\":[{\"taskID\":5,\"taskNoteID\":\"NEW NOTE HELLO WORLD\"}],\"taskContactAccounts\":[{\"taskID\":5,\"contactID\":3}],\"taskID\":5}";
+        output = "{\"accountID\":1,\"taskName\":\"TaskNumber1\",\"taskDeadline\":null,\"taskPriority\":3,\"taskComplete\":0,\"taskNoteList\":[{\"taskID\":5,\"taskNoteID\":1,\"note\":\"NEW NOTE HELLO WORLD\"}],\"taskContactAccounts\":[{\"taskID\":5,\"contactID\":3}],\"owner\":false,\"taskID\":5}";
         mvc.perform(get("/task/readTask")
                 .cookie(cookie)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -558,8 +557,7 @@ public class TasksTesting {
 
 
         taskContent = "{\n" +
-                "    \"taskID\": 5,\n" +
-                "    \"noteID\": \"NEW NOTE HELLO WORLD\"\n" +
+                "    \"taskNoteID\": 1\n" +
                 "}";
 
         // delete the task note
@@ -624,8 +622,10 @@ public class TasksTesting {
                 "    \"accountID\": " + String.valueOf(accountID) + ",\n" +
                 "    \"taskName\": \"" + taskName + "\",\n" +
                 "    \"taskDeadline\": null,\n" +
-                "    \"taskPriority\": 0,\n" +
+                "    \"taskComplete\":0,\n" +
+                "    \"taskPriority\": -1,\n" +
                 "    \"taskNoteList\": [],\n" +
+                "    \"owner\":false,\n" +
                 "    \"taskContactAccounts\": [],\n" +
                 "    \"taskID\": " + String.valueOf(taskID) + "\n" +
                 "}";
@@ -638,8 +638,10 @@ public class TasksTesting {
                 "    \"accountID\": " + String.valueOf(accountID) + ",\n" +
                 "    \"taskName\": \"" + taskName + "\",\n" +
                 "    \"taskDeadline\": null,\n" +
+                "    \"taskComplete\":0,\n" +
                 "    \"taskPriority\": " + String.valueOf(priority) + ",\n" +
                 "    \"taskNoteList\": [],\n" +
+                "    \"owner\":false,\n" +
                 "    \"taskContactAccounts\": [],\n" +
                 "    \"taskID\": " + String.valueOf(taskID) + "\n" +
                 "}";
@@ -652,8 +654,10 @@ public class TasksTesting {
                 "    \"accountID\": " + String.valueOf(accountID) + ",\n" +
                 "    \"taskName\": \"" + taskName + "\",\n" +
                 "    \"taskDeadline\": \"" + deadline + "\",\n" +
-                "    \"taskPriority\": 0,\n" +
+                "    \"taskComplete\":0,\n" +
+                "    \"taskPriority\": -1,\n" +
                 "    \"taskNoteList\": [],\n" +
+                "    \"owner\":false,\n" +
                 "    \"taskContactAccounts\": [],\n" +
                 "    \"taskID\": " + String.valueOf(taskID) + "\n" +
                 "}";
@@ -666,8 +670,10 @@ public class TasksTesting {
                 "    \"accountID\": " + String.valueOf(accountID) + ",\n" +
                 "    \"taskName\": \"" + taskName + "\",\n" +
                 "    \"taskDeadline\": \"" + deadline + "\",\n" +
+                "    \"taskComplete\":0,\n" +
                 "    \"taskPriority\": " + String.valueOf(priority) + ",\n" +
                 "    \"taskNoteList\": [],\n" +
+                "    \"owner\":false,\n" +
                 "    \"taskContactAccounts\": [],\n" +
                 "    \"taskID\": " + String.valueOf(taskID) + "\n" +
                 "}";

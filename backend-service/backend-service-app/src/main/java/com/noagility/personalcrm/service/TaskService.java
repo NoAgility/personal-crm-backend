@@ -33,12 +33,15 @@ public class TaskService {
     TaskContactRowMapper taskContactRowMapper;
 
     private int maxTaskID;
+    private int maxTaskNoteID;
 
     @EventListener(ApplicationReadyEvent.class)
     private void loadTaskID(){
         String sql = "SELECT MAX(TaskID) as TaskID FROM Tasks";
+        String sql2 = "SELECT MAX(TaskNoteID) as TaskID FROM TaskNotes";
         try {
             maxTaskID = jdbcTemplate.queryForObject(sql, Integer.class);
+            maxTaskNoteID = jdbcTemplate.queryForObject(sql2, Integer.class);
         }
         catch (Exception e){
             maxTaskID = 0;
@@ -93,10 +96,10 @@ public class TaskService {
     }
 
 
-    public boolean addTaskNote(int taskID, String taskNoteID) {
+    public boolean addTaskNote(int taskID, String taskNote) {
         try {
-            String sql = "INSERT INTO TaskNotes(TaskID, TaskNoteID) VALUES (?, ?)";
-            jdbcTemplate.update(sql, taskID, taskNoteID);
+            String sql = "INSERT INTO TaskNotes(TaskID, TaskNoteID, Note) VALUES (?, ?, ?)";
+            jdbcTemplate.update(sql, taskID, ++maxTaskNoteID, taskNote);
             return true;
         }
         catch (Exception e) {
@@ -132,12 +135,11 @@ public class TaskService {
     }
 
 
-    public boolean updateTaskNote(int taskID, String oldTaskNoteID, String newTaskNoteID) {
+    public boolean updateTaskNote( int taskNoteID, String newTaskNoteID) {
         try {
             // delete the old one and create a new one.
-            System.out.println(newTaskNoteID);
-            addTaskNote(taskID, newTaskNoteID);
-            deleteTaskNote(taskID, oldTaskNoteID);
+            String sql = "UPDATE TaskNotes SET Note = ? WHERE TaskNoteID = ?";
+            jdbcTemplate.update(sql, newTaskNoteID, taskNoteID);
             return true;
         }
         catch (Exception e) {
@@ -192,10 +194,10 @@ public class TaskService {
     }
 
 
-    public boolean deleteTaskNote(int taskID, String noteID) {
+    public boolean deleteTaskNote(int taskNoteID) {
         try {
-            String sql = "DELETE FROM TaskNotes WHERE TaskID = ? AND TaskNoteID = ?";
-            jdbcTemplate.update(sql, taskID, noteID);
+            String sql = "DELETE FROM TaskNotes WHERE TaskNoteID = ?";
+            jdbcTemplate.update(sql, taskNoteID);
             return true;
         }
         catch (Exception e) {
@@ -311,7 +313,7 @@ public class TaskService {
             String sql = "SELECT * FROM Tasks WHERE TaskID = ?";
             Task task = jdbcTemplate.queryForObject(sql, taskRowMapper, taskID);
             // condition to make sure the task is not complete.
-            if(task.isTaskComplete() == 1 && !readAll){
+            if(task.getTaskComplete() == 1 && !readAll){
                 return null;
             }
             // add in the task notes

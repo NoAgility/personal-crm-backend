@@ -178,9 +178,8 @@ public class TaskController {
     public ResponseEntity<String> updateTaskNote(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
         try {
             if(taskService.updateTaskNote(
-                    (Integer)payload.get("taskID"),
-                    (String) payload.get("oldTaskNoteID"),
-                    (String) payload.get("newTaskNoteID")
+                    (Integer) payload.get("taskNoteID"),
+                    (String) payload.get("newTaskNote")
             )){
                 return ResponseEntity.ok().body("Success");
             }
@@ -281,8 +280,7 @@ public class TaskController {
     public ResponseEntity<String> deleteTaskNote(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
         try{
             if(taskService.deleteTaskNote(
-                    (Integer) payload.get("taskID"),
-                    (String) payload.get("noteID")
+                    (Integer) payload.get("taskNoteID")
             )){
                 return ResponseEntity.ok().body("Success");
             }

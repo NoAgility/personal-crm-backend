@@ -92,7 +92,7 @@ public class Task {
         isOwner = owner;
     }
 
-    public Byte isTaskComplete() {
+    public Byte getTaskComplete() {
         return taskComplete;
     }
 
