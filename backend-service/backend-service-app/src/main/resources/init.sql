@@ -59,6 +59,7 @@ CREATE TABLE IF NOT EXISTS `Tasks` (
   `TaskName` VARCHAR(45) NOT NULL,
   `TaskDeadline` DATETIME NULL,
   `TaskPriority` INT NULL,
+  `TaskComplete` TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`TaskID`, `AccountID`),
   INDEX `fk_Tasks_Accounts1_idx` (`AccountID` ASC) ,
   CONSTRAINT `fk_Tasks_Accounts1`
@@ -74,7 +75,8 @@ CREATE TABLE IF NOT EXISTS `Tasks` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `TaskNotes` (
   `TaskID` INT NOT NULL,
-  `TaskNoteID` VARCHAR(45) NOT NULL,
+  `TaskNoteID` INT NOT NULL,
+  `Note` VARCHAR(1000) NULL,
   PRIMARY KEY (`TaskID`, `TaskNoteID`),
   CONSTRAINT `fk_Notes_Tasks1`
     FOREIGN KEY (`TaskID`)

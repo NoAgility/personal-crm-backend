@@ -94,7 +94,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `personalCrmDB`.`TaskNotes` (
   `TaskID` INT NOT NULL,
-  `TaskNoteID` VARCHAR(45) NOT NULL,
+  `TaskNoteID` INT NOT NULL,
   `Note` VARCHAR(1000) NULL,
   PRIMARY KEY (`TaskID`, `TaskNoteID`),
   CONSTRAINT `fk_Notes_Tasks1`

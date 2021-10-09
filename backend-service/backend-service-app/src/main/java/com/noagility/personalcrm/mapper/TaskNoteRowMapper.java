@@ -11,7 +11,8 @@ public class TaskNoteRowMapper implements RowMapper<TaskNote> {
     public TaskNote mapRow(ResultSet resultSet, int i) throws SQLException {
         return new TaskNote(
                 resultSet.getInt("TaskID"),
-                resultSet.getString("TaskNoteID")
+                resultSet.getInt("TaskNoteID"),
+                resultSet.getString("note")
         );
     }
 }

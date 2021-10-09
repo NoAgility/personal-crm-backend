@@ -2,7 +2,6 @@ package com.noagility.personalcrm.controller;
 
 
 import com.noagility.personalcrm.Util.JwtTokenUtil;
-
 import com.noagility.personalcrm.model.Task;
 import com.noagility.personalcrm.service.ContactService;
 import com.noagility.personalcrm.service.TaskService;
@@ -104,7 +103,7 @@ public class TaskController {
         try {
             int accountID = contactService.getIDFromUsername(jwtTokenUtil.getUsernameFromToken(token));
             return ResponseEntity.ok().body(
-                    taskService.getTasksByAccountID(accountID)
+                    taskService.getTasksByAccountID(accountID, false)
             );
         }
         catch (Exception e){
@@ -114,13 +113,14 @@ public class TaskController {
     }
 
     @RequestMapping(
-            value = "/readTask",
+            value = "/readAllTasks",
             method = RequestMethod.GET
     )
-    public ResponseEntity<Task> readTaskByID(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
+    public ResponseEntity<List<Task>> readAll(@CookieValue("jwt") String token){
         try {
+            int accountID = contactService.getIDFromUsername(jwtTokenUtil.getUsernameFromToken(token));
             return ResponseEntity.ok().body(
-                    taskService.getTaskByID((Integer) payload.get("taskID"))
+                    taskService.getTasksByAccountID(accountID, true)
             );
         }
         catch (Exception e){
@@ -128,6 +128,25 @@ public class TaskController {
         }
         return null;
     }
+
+
+    @RequestMapping(
+            value = "/readTask",
+            method = RequestMethod.GET
+    )
+    public ResponseEntity<Task> readTaskByID(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
+        try {
+            return ResponseEntity.ok().body(
+                    taskService.getTaskByID((Integer) payload.get("taskID"), true)
+            );
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 
 
 
@@ -159,9 +178,8 @@ public class TaskController {
     public ResponseEntity<String> updateTaskNote(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
         try {
             if(taskService.updateTaskNote(
-                    (Integer)payload.get("taskID"),
-                    (String) payload.get("oldTaskNoteID"),
-                    (String) payload.get("newTaskNoteID")
+                    (Integer) payload.get("taskNoteID"),
+                    (String) payload.get("newTaskNote")
             )){
                 return ResponseEntity.ok().body("Success");
             }
@@ -262,8 +280,7 @@ public class TaskController {
     public ResponseEntity<String> deleteTaskNote(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
         try{
             if(taskService.deleteTaskNote(
-                    (Integer) payload.get("taskID"),
-                    (String) payload.get("noteID")
+                    (Integer) payload.get("taskNoteID")
             )){
                 return ResponseEntity.ok().body("Success");
             }
@@ -303,6 +320,23 @@ public class TaskController {
             if(taskService.deleteDeadline(
                     (Integer) payload.get("taskID")
             )){
+                return ResponseEntity.ok().body("Success");
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return ResponseEntity.badRequest().body("Failure");
+    }
+
+    @RequestMapping(
+            value = "/completeTask",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<String> completeTask(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
+        try{
+            if(taskService.completeTask((Integer) payload.get("taskID"))){
                 return ResponseEntity.ok().body("Success");
             }
         }
