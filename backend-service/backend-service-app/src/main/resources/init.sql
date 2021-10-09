@@ -96,6 +96,7 @@ CREATE TABLE IF NOT EXISTS `Meetings` (
   `MeetingCreatorID` INT NOT NULL,
   `MeetingStart` DATETIME NOT NULL,
   `MeetingEnd` DATETIME NOT NULL,
+  `MeetingCreation` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE INDEX `EventID_UNIQUE` (`MeetingID` ASC) ,
   PRIMARY KEY (`MeetingID`),
   INDEX `fk_Meetings_Accounts1_idx` (`MeetingCreatorID` ASC) ,
@@ -149,9 +150,9 @@ CREATE TABLE IF NOT EXISTS `Account_Contacts` (
 
 
 -- -----------------------------------------------------
--- Table `Account_Meetings`
+-- Table `Accounts_Meetings`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Account_Meetings` (
+CREATE TABLE IF NOT EXISTS `Accounts_Meetings` (
   `AccountID` INT NOT NULL,
   `MeetingID` INT NOT NULL,
   PRIMARY KEY (`AccountID`, `MeetingID`),
@@ -237,7 +238,7 @@ CREATE TABLE IF NOT EXISTS `Minutes` (
   `AccountID` INT NOT NULL,
   `MinuteText` VARCHAR(100) NOT NULL,
   `MinuteCreation` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`MinuteID`, `MeetingID`, `AccountID`),
+  PRIMARY KEY (`MinuteID`, `MeetingID`),
   INDEX `fk_Minute_Meetings1_idx` (`MeetingID` ASC),
   INDEX `fk_Minutes_Accounts1_idx` (`AccountID` ASC),
   CONSTRAINT `fk_Minute_Meetings1`

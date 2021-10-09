@@ -10,15 +10,18 @@ public class Meeting {
     private int meetingCreatorID;
     private LocalDateTime meetingStart;
     private LocalDateTime meetingEnd;
-    private List<Account> meetingParticipants;
+    private LocalDateTime meetingCreation;
+    private List<Integer> meetingParticipants;
+    private List<Minute> meetingMinutes;
 
-    public Meeting(int meetingID, String meetingName, String meetingDescription, int meetingCreatorID, LocalDateTime meetingStart, LocalDateTime meetingEnd){
+    public Meeting(int meetingID, String meetingName, String meetingDescription, int meetingCreatorID, LocalDateTime meetingStart, LocalDateTime meetingEnd, LocalDateTime meetingCreation){
         this.meetingID = meetingID;
         this.meetingName = meetingName;
         this.meetingDescription = meetingDescription;
         this.meetingCreatorID = meetingCreatorID;
         this.meetingStart = meetingStart;
         this.meetingEnd = meetingEnd;
+        this.meetingCreation = meetingCreation;
     }
 
     public Meeting(){
@@ -73,22 +76,32 @@ public class Meeting {
         this.meetingEnd = meetingEnd;
     }
 
-    public List<Account> getMeetingParticipants() {
+    public LocalDateTime getMeetingCreation() {
+        return this.meetingCreation;
+    }
+
+    public void setMeetingCreation(LocalDateTime meetingCreation) {
+        this.meetingCreation = meetingCreation;
+    }
+
+    public List<Integer> getMeetingParticipants() {
         return this.meetingParticipants;
     }
 
-    public void setMeetingParticipants(List<Account> meetingParticipants) {
+    public void setMeetingParticipants(List<Integer> meetingParticipants) {
         this.meetingParticipants = meetingParticipants;
     }
 
-    public boolean containsAccountID(int accountID){
-        for(Account account : meetingParticipants){
-            if(account.getAccountID() == accountID){
-                return true;
-            }
-        }
+    public List<Minute> getMeetingMinutes() {
+        return this.meetingMinutes;
+    }
 
-        return false;
+    public void setMeetingMinutes(List<Minute> meetingMinutes) {
+        this.meetingMinutes = meetingMinutes;
+    }
+
+    public boolean containsAccountID(int accountID){
+        return meetingParticipants.contains(accountID);
     }
 
     @Override
@@ -100,7 +113,9 @@ public class Meeting {
             ", meetingCreatorID='" + getMeetingCreatorID() + "'" +
             ", meetingStart='" + getMeetingStart() + "'" +
             ", meetingEnd='" + getMeetingEnd() + "'" +
+            ", meetingCreation='" + getMeetingCreation() + "'" +
             ", meetingParticipants='" + getMeetingParticipants() + "'" +
+            ", meetingMinutes='" + getMeetingMinutes() + "'" +
             "}";
     }
 
@@ -125,7 +140,9 @@ public class Meeting {
             && meetingCreatorID == meeting.getMeetingCreatorID()
             && meetingStart.equals(meeting.getMeetingStart())
             && meetingEnd.equals(meeting.getMeetingEnd())
+            && meetingCreation.equals(meeting.getMeetingCreation())
             && meetingParticipants.equals(meeting.getMeetingParticipants())
+            && meetingMinutes.equals(meeting.getMeetingMinutes())
         ){
             return true;
         }
