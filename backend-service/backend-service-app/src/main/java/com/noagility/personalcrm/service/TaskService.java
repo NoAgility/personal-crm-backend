@@ -12,6 +12,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -241,9 +242,28 @@ public class TaskService {
     }
 
 
-    public List<Task> getTasksByAccountID(int accountID){
+    public List<Task> getTasksByAccountID(int accountID, Boolean readAll){
+        List<Task> tasks = new ArrayList<>();
+        for(Task task: getTasksOwnedByAccountID(accountID, readAll)){
+            tasks.add(task);
+        }
+        for(Task task: getTasksWithAccountID(accountID, readAll)){
+            tasks.add(task);
+        }
+        return tasks;
+    }
+
+    private List<Task> getTasksOwnedByAccountID(int accountID, Boolean readAll){
         try {
-            String sql = "SELECT * FROM Tasks WHERE AccountID = ?";
+            String sql;
+
+            if(readAll){
+                sql = "SELECT * FROM Tasks WHERE AccountID = ?";
+            }
+            else{
+                sql = "SELECT * FROM Tasks WHERE AccountID = ? AND TaskComplete = 0";
+            }
+
             List<Task> tasks = jdbcTemplate.query(sql, taskRowMapper, accountID);
 
             for(Task task : tasks){
@@ -251,6 +271,7 @@ public class TaskService {
                 sql = "SELECT * FROM TaskNotes WHERE TaskID = ? ";
                 List<TaskNote> taskNoteList = jdbcTemplate.query(sql, taskNoteRowMapper, taskID);
                 task.setTaskNoteList(taskNoteList);
+                task.setOwner(true);
                 sql = "SELECT * FROM Account_Contacts_Tasks WHERE TaskID = ?";
                 List<TaskContactAccount> taskContactAccounts = jdbcTemplate.query(sql, taskContactRowMapper, taskID);
                 task.setTaskContactAccounts(taskContactAccounts);
@@ -263,16 +284,41 @@ public class TaskService {
         return null;
     }
 
+    private List<Task> getTasksWithAccountID(int accountID, Boolean readAll){
+        try {
+            String sql = "SELECT * FROM Account_Contacts_Tasks WHERE ContactID = ?";
+            List<TaskContactAccount> accountsContactsTasks = jdbcTemplate.query(sql, taskContactRowMapper, accountID);
+            List<Task> tasks = new ArrayList<>();
+            for(TaskContactAccount taskContactAccount: accountsContactsTasks){
+                int taskID = taskContactAccount.getTaskID();
+                Task nextTask = getTaskByID(taskID, readAll);
+                if(nextTask != null){
+                    tasks.add(nextTask);
+                }
+            }
+            return tasks;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-    public Task getTaskByID(int taskID) {
+
+    public Task getTaskByID(int taskID, Boolean readAll) {
         try {
             // add in the Main task properties
             String sql = "SELECT * FROM Tasks WHERE TaskID = ?";
             Task task = jdbcTemplate.queryForObject(sql, taskRowMapper, taskID);
+            // condition to make sure the task is not complete.
+            if(task.isTaskComplete() == 1 && !readAll){
+                return null;
+            }
             // add in the task notes
-            sql = "SELECT * FROM TaskNotes WHERE TaskID = ? ";
+            sql = "SELECT * FROM TaskNotes WHERE TaskID = ?";
             List<TaskNote> taskNoteList = jdbcTemplate.query(sql, taskNoteRowMapper, taskID);
             task.setTaskNoteList(taskNoteList);
+            task.setOwner(false);
             // add in the task contacts
             sql = "SELECT * FROM Account_Contacts_Tasks WHERE TaskID = ?";
             List<TaskContactAccount> taskContactAccounts = jdbcTemplate.query(sql, taskContactRowMapper, taskID);
@@ -283,5 +329,17 @@ public class TaskService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public boolean completeTask(int taskID){
+        try {
+            String sql = "UPDATE Tasks SET TaskComplete = 1 WHERE TaskID = ?";
+            jdbcTemplate.update(sql, taskID);
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
     }
 }

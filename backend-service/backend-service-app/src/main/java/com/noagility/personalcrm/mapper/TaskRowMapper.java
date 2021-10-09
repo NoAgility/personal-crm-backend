@@ -19,7 +19,8 @@ public class TaskRowMapper implements RowMapper<Task>{
                 resultSet.getInt("AccountID"),
                 resultSet.getString("TaskName"),
                 asLocalDateTime(resultSet.getTimestamp("TaskDeadline")),
-                resultSet.getInt("TaskPriority")
+                resultSet.getInt("TaskPriority"),
+                resultSet.getByte("TaskComplete")
         );
     }
 
