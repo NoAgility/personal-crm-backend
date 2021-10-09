@@ -59,6 +59,7 @@ CREATE TABLE IF NOT EXISTS `Tasks` (
   `TaskName` VARCHAR(45) NOT NULL,
   `TaskDeadline` DATETIME NULL,
   `TaskPriority` INT NULL,
+  `TaskComplete` TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`TaskID`, `AccountID`),
   INDEX `fk_Tasks_Accounts1_idx` (`AccountID` ASC) ,
   CONSTRAINT `fk_Tasks_Accounts1`
@@ -74,7 +75,8 @@ CREATE TABLE IF NOT EXISTS `Tasks` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `TaskNotes` (
   `TaskID` INT NOT NULL,
-  `TaskNoteID` VARCHAR(45) NOT NULL,
+  `TaskNoteID` INT NOT NULL,
+  `Note` VARCHAR(1000) NULL,
   PRIMARY KEY (`TaskID`, `TaskNoteID`),
   CONSTRAINT `fk_Notes_Tasks1`
     FOREIGN KEY (`TaskID`)
@@ -225,3 +227,29 @@ CREATE TABLE IF NOT EXISTS `Account_Contacts_Tasks` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ;
+
+-- -----------------------------------------------------
+-- Table `personalCrmDB`.`Minutes`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Minutes` (
+  `MinuteID` INT NOT NULL,
+  `MeetingID` INT NOT NULL,
+  `AccountID` INT NOT NULL,
+  `MinuteText` VARCHAR(100) NOT NULL,
+  `MinuteCreation` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`MinuteID`, `MeetingID`, `AccountID`),
+  INDEX `fk_Minute_Meetings1_idx` (`MeetingID` ASC),
+  INDEX `fk_Minutes_Accounts1_idx` (`AccountID` ASC),
+  CONSTRAINT `fk_Minute_Meetings1`
+    FOREIGN KEY (`MeetingID`)
+    REFERENCES `Meetings` (`MeetingID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Minutes_Accounts1`
+    FOREIGN KEY (`AccountID`)
+    REFERENCES `Accounts` (`AccountID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+;
+
+
