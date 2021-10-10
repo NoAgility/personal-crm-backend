@@ -1,11 +1,10 @@
 package com.noagility.personalcrm.service;
 
-package com.noagility.personalcrm.service;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -65,7 +64,7 @@ public class MeetingService {
         System.out.println(String.format("createMeeting: {\"accountIDs\": %s, \"meetingCreatorID\": %d, \"meetingName\": \"%s\", \"meetingDescription\": \"%s\", \"meetingStart\": %s, \"meetingEnd\": %s", accountIDs.toString(), meetingCreatorID, meetingName, meetingDescription, meetingStart, meetingEnd));
         try{
             //  Insert new meeting into Meetings table
-            String sql = "INSERT INTO Meetings(MeetingID, MeetingName, MeetingDescription, MeetingCreatorID, MeetingStart, MeetingEnd) VALUES (?, ?)";
+            String sql = "INSERT INTO Meetings(MeetingID, MeetingName, MeetingDescription, MeetingCreatorID, MeetingStart, MeetingEnd) VALUES (?, ?, ?, ?, ?, ?)";
             int meetingID = ++maxMeetingID;
             jdbcTemplate.update(sql, meetingID, meetingName, meetingDescription, meetingCreatorID, meetingStart, meetingEnd);
 
@@ -132,7 +131,7 @@ public class MeetingService {
             meeting.setMeetingMinutes(minutes);
 
             //  Get accountIDs by meetingID
-            List<Integer> accountIDs = getMeetingParticipantIDs(meetingID);
+            Map<Integer, Boolean> accountIDs = getMeetingParticipant(meetingID);
             meeting.setMeetingParticipants(accountIDs);
 
             return meeting;
@@ -174,7 +173,83 @@ public class MeetingService {
         return null;
     }
 
-    public boolean createMinute()
+    public boolean createMinute(int meetingID, String minuteText){
+        System.out.println(String.format("createMinute: {\"meetingID\": %d, \"minuteText\": \"%s\"}", meetingID, minuteText));
+        try{
+            //  Insert new minute to Minutes table
+            String sql = "INSERT INTO Minutes(MinuteID, MinuteText) = VALUES (?, ?)";
+            jdbcTemplate.update(sql, meetingID, minuteText);
+
+            return true;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean editMinute(int meetingID, int minuteID, String minuteText){
+        System.out.println(String.format("editMinute: {\"meetingID\": %d, \"minuteID\": %d, \"minuteText\": \"%s\"}", meetingID, minuteID, minuteText));
+        try{
+            //  Edit minute by meetingID and minuteID
+            String sql = "UPDATE Minutes SET MinuteText = ? WHERE MeetingID = ? AND MinuteID = ?";
+            jdbcTemplate.update(sql, minuteText, meetingID, minuteID);
+
+            return true;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean deleteMinute(int meetingID, int minuteID){
+        System.out.println(String.format("deleteMinute: {\"meetingID\": %d, \"minuteID\": %d}", meetingID, minuteID));
+        try{
+            //  Delete minute by meetingID and minuteID
+            String sql = "DELETE FROM Minutes WHERE MeetingID = ? AND MinuteID = ?";
+            jdbcTemplate.update(sql, meetingID, minuteID);
+
+            return true;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean acceptMeeting(int meetingID, int accountID){
+        System.out.println(String.format("acceptMeeting: {\"meetingID\": %d, \"accountID\": %d}", meetingID, accountID));
+        try{
+            String sql = "UPDATE Accounts_Meetings SET Accounts_MeetingsAccepted = 1 WHERE MeetingID = ? AND AccountID = ?";
+            jdbcTemplate.update(sql, meetingID, accountID);
+
+            return true;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean declineMeeting(int meetingID, int accountID){
+        System.out.println(String.format("declineMeeting: {\"meetingID\": %d, \"accoundID\": %d}", meetingID, accountID));
+        try{
+            String sql = "DELETE FROM Accounts_Meetings WHERE meetingID = ? AND accountID = ?";
+            jdbcTemplate.update(sql, meetingID, accountID);
+
+            return true;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 
     public Minute getMinuteByID(int meetingID, int minuteID){
         System.out.println(String.format("getMinuteByID: {\"meetingID\": %d, \"minuteID\": %d}", meetingID, minuteID));
@@ -208,14 +283,19 @@ public class MeetingService {
         return null;
     }
 
-    public List<Integer> getMeetingParticipantIDs(int meetingID){
+    public Map<Integer, Boolean> getMeetingParticipants(int meetingID){
         System.out.println(String.format("getMeetingParticipantIDs: {\"meetingID\": %d}", meetingID));
         try{
             //  Get accoundIDs by meetingID
-            String sql = "SELECT AccountID AS `Integer` FROM Accounts_Meetings WHERE MeetingID = ?";
-            List<Integer> meetingParticipantIDs = jdbcTemplate.query(sql, integerRowMapper, meetingID);
+            String sql = "SELECT DISTINCT AccountID, Accounts_MeetingsAccepted FROM Accounts_Meetings WHERE MeetingID = ?";
+            List<Map<String, Object>> results = jdbcTemplate.queryForList(sql, meetingID);
+            Map<Integer, Boolean> meetingParticipants;
 
-            return meetingParticipantIDs;
+            for(Map<String, Object> m : results){
+                meetingParticipants.put((int)m.get("AccountID"), (boolean)m.get("Accounts_MeetingsAccepted"));    
+            }
+
+            return meetingParticipants;
         }
         catch(Exception e){
             e.printStackTrace();

@@ -155,6 +155,7 @@ CREATE TABLE IF NOT EXISTS `Account_Contacts` (
 CREATE TABLE IF NOT EXISTS `Accounts_Meetings` (
   `AccountID` INT NOT NULL,
   `MeetingID` INT NOT NULL,
+  `Accounts_MeetingsAccepted` TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`AccountID`, `MeetingID`),
   INDEX `fk_Accounts_has_Event_Event1_idx` (`MeetingID` ASC) ,
   INDEX `fk_Accounts_has_Event_Accounts1_idx` (`AccountID` ASC) ,

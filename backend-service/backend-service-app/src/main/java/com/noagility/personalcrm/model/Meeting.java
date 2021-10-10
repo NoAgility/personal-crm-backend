@@ -2,6 +2,7 @@ package com.noagility.personalcrm.model;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public class Meeting {
     private int meetingID;
@@ -11,7 +12,7 @@ public class Meeting {
     private LocalDateTime meetingStart;
     private LocalDateTime meetingEnd;
     private LocalDateTime meetingCreation;
-    private List<Integer> meetingParticipants;
+    private Map<Integer, Boolean> meetingParticipants;
     private List<Minute> meetingMinutes;
 
     public Meeting(int meetingID, String meetingName, String meetingDescription, int meetingCreatorID, LocalDateTime meetingStart, LocalDateTime meetingEnd, LocalDateTime meetingCreation){
@@ -84,11 +85,11 @@ public class Meeting {
         this.meetingCreation = meetingCreation;
     }
 
-    public List<Integer> getMeetingParticipants() {
+    public Map<Integer, Boolean> getMeetingParticipants() {
         return this.meetingParticipants;
     }
 
-    public void setMeetingParticipants(List<Integer> meetingParticipants) {
+    public void setMeetingParticipants(Map<Integer, Boolean> meetingParticipants) {
         this.meetingParticipants = meetingParticipants;
     }
 
@@ -101,7 +102,7 @@ public class Meeting {
     }
 
     public boolean containsAccountID(int accountID){
-        return meetingParticipants.contains(accountID);
+        return meetingParticipants.keySet().contains(accountID);
     }
 
     @Override
