@@ -263,7 +263,7 @@ public class MeetingService {
     }
 
     public List<Minute> getMeetingMinutes(int meetingID){
-        System.out.println(String.format("getMeetingMinutes: {\"meetingID\": %d}"));
+        System.out.println(String.format("getMeetingMinutes: {\"meetingID\": %d}", meetingID));
         try{
             //  Get minutes by meetingID
             String sql = "SELECT * FROM Minutes WHERE MeetingID = ? ORDER BY MinuteCreation ASC";

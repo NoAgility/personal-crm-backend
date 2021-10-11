@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class Meeting {
     private int meetingID;
     private String meetingName;
@@ -61,6 +63,7 @@ public class Meeting {
         this.meetingCreatorID = meetingCreatorID;
     }
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     public LocalDateTime getMeetingStart() {
         return this.meetingStart;
     }
@@ -69,6 +72,7 @@ public class Meeting {
         this.meetingStart = meetingStart;
     }
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     public LocalDateTime getMeetingEnd() {
         return this.meetingEnd;
     }
@@ -77,6 +81,7 @@ public class Meeting {
         this.meetingEnd = meetingEnd;
     }
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     public LocalDateTime getMeetingCreation() {
         return this.meetingCreation;
     }

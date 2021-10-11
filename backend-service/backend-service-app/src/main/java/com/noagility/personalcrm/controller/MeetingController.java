@@ -7,12 +7,9 @@ import java.util.Set;
 
 import com.noagility.personalcrm.Util.JwtTokenUtil;
 import com.noagility.personalcrm.model.Account;
-import com.noagility.personalcrm.model.Chat;
 import com.noagility.personalcrm.model.Meeting;
-import com.noagility.personalcrm.service.ChatService;
 import com.noagility.personalcrm.service.MeetingService;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,11 +48,11 @@ public class MeetingController {
                 participants.contains(account.getAccountID())
                 && meetingService.createMeeting(
                     participants,
-                    (int)payload.get("meetingCreatorID"), 
+                    account.getAccountID(),
                     (String)payload.get("meetingName"), 
                     (String)payload.get("meetingDescription"), 
                     (String)payload.get("meetingStart"), 
-                    (String)payload.get("accoumeetingEndntIDs")
+                    (String)payload.get("meetingEnd")
                 )
             ){
                 return ResponseEntity.ok().body("Sucess");
