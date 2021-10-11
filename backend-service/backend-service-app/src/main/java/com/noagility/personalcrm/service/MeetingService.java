@@ -1,24 +1,19 @@
 package com.noagility.personalcrm.service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
 import com.noagility.personalcrm.Util.JwtTokenUtil;
-import com.noagility.personalcrm.mapper.AccountRowMapper;
-import com.noagility.personalcrm.mapper.ChatRowMapper;
 import com.noagility.personalcrm.mapper.IntegerRowMapper;
 import com.noagility.personalcrm.mapper.MeetingRowMapper;
-import com.noagility.personalcrm.mapper.MessageRowMapper;
 import com.noagility.personalcrm.mapper.MinuteRowMapper;
 import com.noagility.personalcrm.model.Account;
-import com.noagility.personalcrm.model.Chat;
 import com.noagility.personalcrm.model.Meeting;
-import com.noagility.personalcrm.model.Message;
 import com.noagility.personalcrm.model.Minute;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,7 +126,7 @@ public class MeetingService {
             meeting.setMeetingMinutes(minutes);
 
             //  Get accountIDs by meetingID
-            Map<Integer, Boolean> accountIDs = getMeetingParticipant(meetingID);
+            Map<Integer, Boolean> accountIDs = getMeetingParticipants(meetingID);
             meeting.setMeetingParticipants(accountIDs);
 
             return meeting;
@@ -289,7 +284,7 @@ public class MeetingService {
             //  Get accoundIDs by meetingID
             String sql = "SELECT DISTINCT AccountID, Accounts_MeetingsAccepted FROM Accounts_Meetings WHERE MeetingID = ?";
             List<Map<String, Object>> results = jdbcTemplate.queryForList(sql, meetingID);
-            Map<Integer, Boolean> meetingParticipants;
+            Map<Integer, Boolean> meetingParticipants = new HashMap<>();
 
             for(Map<String, Object> m : results){
                 meetingParticipants.put((int)m.get("AccountID"), (boolean)m.get("Accounts_MeetingsAccepted"));    
@@ -318,6 +313,29 @@ public class MeetingService {
     }
 
     public boolean validateMinuteCreator(String token, int meetingID, int minuteID){
+        System.out.println(String.format("validateMinuteCreator: {\"token\": \"%s\", \"meetingID\": %d, \"minuteID\": %d}", token, meetingID, minuteID));
+        try{
+            Minute minute = getMinuteByID(meetingID, minuteID);
+            return jwtTokenUtil.validateTokenSender(token, minute.getAccountID());
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
 
+        return false;
+    }
+
+    public boolean validateMeetingParticipant(String token, int meetingID){
+        System.out.println(String.format("validateMeetingParticipant: {\"token\": \"%s\", \"meetingID\": %d}", token, meetingID));
+        try{
+            Meeting meeting = getMeetingByID(meetingID);
+            Account account = jwtTokenUtil.getAccountFromToken(token);
+            return meeting.containsAccountID(account.getAccountID());
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return false;
     }
 }

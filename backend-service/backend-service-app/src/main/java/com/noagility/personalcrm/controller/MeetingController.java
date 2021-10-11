@@ -8,9 +8,11 @@ import java.util.Set;
 import com.noagility.personalcrm.Util.JwtTokenUtil;
 import com.noagility.personalcrm.model.Account;
 import com.noagility.personalcrm.model.Chat;
+import com.noagility.personalcrm.model.Meeting;
 import com.noagility.personalcrm.service.ChatService;
 import com.noagility.personalcrm.service.MeetingService;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,9 +49,257 @@ public class MeetingController {
 
             if(
                 participants.contains(account.getAccountID())
-                && meetingService.createMeeting()
+                && meetingService.createMeeting(
+                    participants,
+                    (int)payload.get("meetingCreatorID"), 
+                    (String)payload.get("meetingName"), 
+                    (String)payload.get("meetingDescription"), 
+                    (String)payload.get("meetingStart"), 
+                    (String)payload.get("accoumeetingEndntIDs")
+                )
             ){
                 return ResponseEntity.ok().body("Sucess");
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.badRequest().body("Failure");
+    }
+
+    @RequestMapping(
+        value = "/editMeeting",
+        method = RequestMethod.POST,
+        consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<String> editMeeting(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
+        try{
+            if(
+                meetingService.validateMeetingCreator(
+                    token, 
+                    (int)payload.get("meetingID")
+                )
+                && meetingService.editMeeting(
+                    (int)payload.get("meetingID"), 
+                    (String)payload.get("meetingName"), 
+                    (String)payload.get("meetingDescription"), 
+                    (String)payload.get("meetingStart"), 
+                    (String)payload.get("meetingEnd)")
+                )
+            ){
+                return ResponseEntity.ok().body("Success");
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.badRequest().body("Failure");
+    }
+
+    @RequestMapping(
+        value = "/deleteMeeting",
+        method = RequestMethod.POST,
+        consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<String> deleteMeeting(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
+        try{
+            if(
+                meetingService.validateMeetingCreator(
+                    token, 
+                    (int)payload.get("meetingID")
+                )
+                && meetingService.deleteMeeting(
+                    (int)payload.get("meetingID")
+                )
+            ){
+                return ResponseEntity.ok().body("Success");
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.badRequest().body("Failure");
+    }
+
+    @RequestMapping(
+        value = "/getMeetingByID",
+        method = RequestMethod.GET
+    )
+    public ResponseEntity<Meeting> editMeeting(@RequestParam int meetingID, @CookieValue("jwt") String token){
+        try{
+            if(
+                meetingService.validateMeetingParticipant(token, meetingID)
+            ){
+                return ResponseEntity.ok().body(meetingService.getMeetingByID(meetingID));
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.badRequest().body(null);
+    }
+
+    @RequestMapping(
+        value = "/getAccountMeetings",
+        method = RequestMethod.GET
+    )
+    public ResponseEntity<List<Meeting>> getAccountMeetings(@CookieValue("jwt") String token){
+        try{
+            Account account = jwtTokenUtil.getAccountFromToken(token);
+            return ResponseEntity.ok().body(meetingService.getAccountMeetingsByID(account.getAccountID()));
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.badRequest().body(null);
+    }
+
+    @RequestMapping(
+        value = "/createMinute",
+        method = RequestMethod.POST,
+        consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<String> createMinute(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
+        try{
+            if(
+                meetingService.validateMeetingParticipant(
+                    token, 
+                    (int)payload.get("meetingID")
+                )
+                && meetingService.createMinute(
+                    (int)payload.get("meetingID"), 
+                    (String)payload.get("minuteText")
+                )
+            ){
+                return ResponseEntity.ok().body("Success");
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.badRequest().body("Failure");
+    }
+
+    @RequestMapping(
+        value = "/deleteMinute",
+        method = RequestMethod.POST,
+        consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<String> deleteMinute(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
+        try{
+            if(
+                meetingService.validateMeetingParticipant(
+                    token, 
+                    (int)payload.get("meetingID")
+                )
+                && meetingService.validateMinuteCreator(
+                    token, 
+                    (int)payload.get("meetingID"), 
+                    (int)payload.get("minuteID")
+                )
+                && meetingService.deleteMinute(
+                    (int)payload.get("meetingID"), 
+                    (int)payload.get("minuteID")
+                )
+            ){
+                return ResponseEntity.ok().body("Success");
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.badRequest().body("Failure");
+    }
+
+    @RequestMapping(
+        value = "/editMinute",
+        method = RequestMethod.POST,
+        consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<String> editMinute(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
+        try{
+            if(
+                meetingService.validateMeetingParticipant(
+                    token, 
+                    (int)payload.get("meetingID")
+                )
+                && meetingService.validateMinuteCreator(
+                    token, 
+                    (int)payload.get("meetingID"), 
+                    (int)payload.get("minuteID")
+                )
+                && meetingService.editMinute(
+                    (int)payload.get("meetingID"), 
+                    (int)payload.get("minuteID"), 
+                    (String)payload.get("minuteText")
+                )
+            ){
+                return ResponseEntity.ok().body("Success");
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.badRequest().body("Failure");
+    }
+
+    @RequestMapping(
+        value = "/acceptMeeting",
+        method = RequestMethod.POST,
+        consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<String> acceptMeeting(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
+        try{
+            Account account = jwtTokenUtil.getAccountFromToken(token);
+
+            if(
+                meetingService.validateMeetingParticipant(
+                    token, 
+                    (int)payload.get("meetingID")
+                )
+                && meetingService.acceptMeeting(
+                    (int)payload.get("meetingID"), 
+                    account.getAccountID()
+                )
+            ){
+                return ResponseEntity.ok().body("Success");
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.badRequest().body("Failure");
+    }
+
+    @RequestMapping(
+        value = "/declineMeeting",
+        method = RequestMethod.POST,
+        consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<String> declineMeeting(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
+        try{
+            Account account = jwtTokenUtil.getAccountFromToken(token);
+
+            if(
+                meetingService.validateMeetingParticipant(
+                    token, 
+                    (int)payload.get("meetingID")
+                )
+                && meetingService.declineMeeting(
+                    (int)payload.get("meetingID"), 
+                    account.getAccountID()
+                )
+            ){
+                return ResponseEntity.ok().body("Success");
             }
         }
         catch(Exception e){
