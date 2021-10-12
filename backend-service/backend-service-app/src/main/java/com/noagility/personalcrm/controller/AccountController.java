@@ -3,6 +3,8 @@ package com.noagility.personalcrm.controller;
 
 import com.noagility.personalcrm.model.*;
 import com.noagility.personalcrm.service.AccountService;
+import com.noagility.personalcrm.service.ContactService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +19,15 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    ContactService contactService;
+
     @RequestMapping(
         value = "/create",
         method = RequestMethod.POST,
         consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<String> create(@RequestBody Map<String, Object> payload) throws Exception{
+    public ResponseEntity<String> create(@RequestBody Map<String, Object> payload, @RequestParam(value="referral", defaultValue = "") String referral) throws Exception{
         System.out.println((String)payload.get("username"));
         System.out.println((String)payload.get("password"));
         System.out.println((String)payload.get("name"));
@@ -33,6 +38,10 @@ public class AccountController {
             (String)payload.get("name"),
             (String)payload.get("dob")
         )){
+            System.out.println("???? " + referral);
+            if(referral != "" && accountService.getByUsername(referral) != null){
+                contactService.addContact((String)payload.get("username"), referral);
+            }
             return ResponseEntity.ok().body("Success");
         }
         return ResponseEntity.badRequest().body("Failure");
