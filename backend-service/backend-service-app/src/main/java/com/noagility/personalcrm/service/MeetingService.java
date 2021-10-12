@@ -64,11 +64,11 @@ public class MeetingService {
             jdbcTemplate.update(sql, meetingID, meetingName, meetingDescription, meetingCreatorID, meetingStart, meetingEnd);
 
             //  Link each accound to the new meeting
-            sql = "INSERT INTO Accounts_Meetings(AccountID, MeetingID) VALUES (?, ?)";
+            sql = "INSERT INTO Accounts_Meetings(AccountID, MeetingID, Accounts_MeetingsAccepted) VALUES (?, ?, ?)";
             List<Object[]> rows = new ArrayList<>();
 
             for(int accountID : accountIDs){
-                rows.add(new Object[] {accountID, meetingID});
+                rows.add(new Object[] {accountID, meetingID, accountID == meetingCreatorID ? true : false});
             }
 
             jdbcTemplate.batchUpdate(sql, rows);
@@ -101,8 +101,14 @@ public class MeetingService {
     public boolean deleteMeeting(int meetingID){
         System.out.println(String.format("deleteMeeting: {\"meetingID\": %d}", meetingID));
         try{
+            //  Delete minutes by meetingID
+            String sql = "DELETE FROM Minutes WHERE MeetingID = ?";
+            jdbcTemplate.update(sql, meetingID);
+            //  Delete accounts_meetings by meetingID
+            sql = "DELETE FROM Accounts_Meetings WHERE MeetingID = ?";
+            jdbcTemplate.update(sql, meetingID);
             //  Delete meeting by meetingID
-            String sql = "DELETE FROM Meetings WHERE MeetingID = ?";
+            sql = "DELETE FROM Meetings WHERE MeetingID = ?";
             jdbcTemplate.update(sql, meetingID);
 
             return true;
@@ -168,12 +174,12 @@ public class MeetingService {
         return null;
     }
 
-    public boolean createMinute(int meetingID, String minuteText){
+    public boolean createMinute(int meetingID, String minuteText, int accountID){
         System.out.println(String.format("createMinute: {\"meetingID\": %d, \"minuteText\": \"%s\"}", meetingID, minuteText));
         try{
             //  Insert new minute to Minutes table
-            String sql = "INSERT INTO Minutes(MinuteID, MinuteText) = VALUES (?, ?)";
-            jdbcTemplate.update(sql, meetingID, minuteText);
+            String sql = "INSERT INTO Minutes(MeetingID, MinuteText, AccountID) VALUES (?, ?, ?)";
+            jdbcTemplate.update(sql, meetingID, minuteText, accountID);
 
             return true;
         }
@@ -219,10 +225,11 @@ public class MeetingService {
     public boolean acceptMeeting(int meetingID, int accountID){
         System.out.println(String.format("acceptMeeting: {\"meetingID\": %d, \"accountID\": %d}", meetingID, accountID));
         try{
-            String sql = "UPDATE Accounts_Meetings SET Accounts_MeetingsAccepted = 1 WHERE MeetingID = ? AND AccountID = ?";
-            jdbcTemplate.update(sql, meetingID, accountID);
+            String sql = "UPDATE Accounts_Meetings SET Accounts_MeetingsAccepted = 1 WHERE MeetingID = ? AND AccountID = ? AND Accounts_MeetingsAccepted = 0";
 
-            return true;
+            if(jdbcTemplate.update(sql, meetingID, accountID) > 0){
+                return true;
+            }
         }
         catch(Exception e){
             e.printStackTrace();
@@ -232,12 +239,13 @@ public class MeetingService {
     }
 
     public boolean declineMeeting(int meetingID, int accountID){
-        System.out.println(String.format("declineMeeting: {\"meetingID\": %d, \"accoundID\": %d}", meetingID, accountID));
+        System.out.println(String.format("declineMeeting: {\"meetingID\": %d, \"accountID\": %d}", meetingID, accountID));
         try{
-            String sql = "DELETE FROM Accounts_Meetings WHERE meetingID = ? AND accountID = ?";
-            jdbcTemplate.update(sql, meetingID, accountID);
+            String sql = "DELETE FROM Accounts_Meetings WHERE MeetingID = ? AND AccountID = ? AND Accounts_MeetingsAccepted = 0";
 
-            return true;
+            if(jdbcTemplate.update(sql, meetingID, accountID) > 0){
+                return true;
+            }
         }
         catch(Exception e){
             e.printStackTrace();
@@ -287,9 +295,8 @@ public class MeetingService {
             Map<Integer, Boolean> meetingParticipants = new HashMap<>();
 
             for(Map<String, Object> m : results){
-                meetingParticipants.put((int)m.get("AccountID"), (boolean)m.get("Accounts_MeetingsAccepted"));    
+                meetingParticipants.put((int)m.get("AccountID"), (boolean)((Byte)m.get("Accounts_MeetingsAccepted")!= 0));    
             }
-
             return meetingParticipants;
         }
         catch(Exception e){
@@ -331,6 +338,20 @@ public class MeetingService {
             Meeting meeting = getMeetingByID(meetingID);
             Account account = jwtTokenUtil.getAccountFromToken(token);
             return meeting.containsAccountID(account.getAccountID());
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean validateMeetingAccepted(String token, int meetingID){
+        System.out.println(String.format("validateMeetingAccepted: {\"token\": \"%s\", \"meetingID\": %d}", token, meetingID));
+        try{
+            Meeting meeting = getMeetingByID(meetingID);
+            Account account = jwtTokenUtil.getAccountFromToken(token);
+            return meeting.containsAccountID(account.getAccountID()) && meeting.getMeetingParticipants().get(account.getAccountID()) == true;
         }
         catch(Exception e){
             e.printStackTrace();

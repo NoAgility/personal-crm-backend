@@ -234,7 +234,7 @@ CREATE TABLE IF NOT EXISTS `Account_Contacts_Tasks` (
 -- Table `personalCrmDB`.`Minutes`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Minutes` (
-  `MinuteID` INT NOT NULL,
+  `MinuteID` INT NOT NULL AUTO_INCREMENT,
   `MeetingID` INT NOT NULL,
   `AccountID` INT NOT NULL,
   `MinuteText` VARCHAR(100) NOT NULL,

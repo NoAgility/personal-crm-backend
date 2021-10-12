@@ -82,7 +82,7 @@ public class MeetingController {
                     (String)payload.get("meetingName"), 
                     (String)payload.get("meetingDescription"), 
                     (String)payload.get("meetingStart"), 
-                    (String)payload.get("meetingEnd)")
+                    (String)payload.get("meetingEnd")
                 )
             ){
                 return ResponseEntity.ok().body("Success");
@@ -163,14 +163,16 @@ public class MeetingController {
     )
     public ResponseEntity<String> createMinute(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
         try{
+            Account account = jwtTokenUtil.getAccountFromToken(token);
             if(
-                meetingService.validateMeetingParticipant(
+                meetingService.validateMeetingAccepted(
                     token, 
                     (int)payload.get("meetingID")
                 )
                 && meetingService.createMinute(
                     (int)payload.get("meetingID"), 
-                    (String)payload.get("minuteText")
+                    (String)payload.get("minuteText"),
+                    account.getAccountID()
                 )
             ){
                 return ResponseEntity.ok().body("Success");
@@ -191,7 +193,7 @@ public class MeetingController {
     public ResponseEntity<String> deleteMinute(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
         try{
             if(
-                meetingService.validateMeetingParticipant(
+                meetingService.validateMeetingAccepted(
                     token, 
                     (int)payload.get("meetingID")
                 )
@@ -223,7 +225,7 @@ public class MeetingController {
     public ResponseEntity<String> editMinute(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
         try{
             if(
-                meetingService.validateMeetingParticipant(
+                meetingService.validateMeetingAccepted(
                     token, 
                     (int)payload.get("meetingID")
                 )

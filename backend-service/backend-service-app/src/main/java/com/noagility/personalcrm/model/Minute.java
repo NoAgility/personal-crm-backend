@@ -2,6 +2,8 @@ package com.noagility.personalcrm.model;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class Minute {
     private int minuteID;
     private int meetingID;
@@ -52,6 +54,7 @@ public class Minute {
         this.minuteText = minuteText;
     }
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     public LocalDateTime getMinuteCreation() {
         return this.minuteCreation;
     }
