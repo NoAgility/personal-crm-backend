@@ -39,41 +39,30 @@ public class PersonalCRMApplication {
 	}
 	@Bean
 	ContactRowMapper ContactClassRowMapper() {return new ContactRowMapper();}
-
-
 	@Bean
 	ChatService getChatService(){
 		return new ChatService();
 	}
-
 	@Bean 
 	ChatRowMapper getChatRowMapper(){
 		return new ChatRowMapper();
 	}
-
-
 	@Bean 
 	MessageRowMapper getMessageRowMapper(){
 		return new MessageRowMapper();
 	}
-
 	@Bean
 	IntegerRowMapper getIntegerRowMapper(){
 		return new IntegerRowMapper();
 	}
-
 	@Bean
 	TaskService getTaskService() { return new TaskService(); }
-
 	@Bean
 	TaskRowMapper TaskClassRowMapper() { return new TaskRowMapper(); }
-
 	@Bean
 	TaskContactRowMapper TaskContactClassRowMapper() { return new TaskContactRowMapper(); }
-
 	@Bean
 	TaskNoteRowMapper TaskNoteClassRowMapper() { return new TaskNoteRowMapper(); }
-	
 	@Bean
 	MeetingRowMapper MeetingRowMapper(){
 		return new MeetingRowMapper();
