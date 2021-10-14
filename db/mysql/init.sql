@@ -59,13 +59,13 @@ CREATE TABLE IF NOT EXISTS `personalCrmDB`.`Messages` (
   CONSTRAINT `fk_Messages_Chat1`
     FOREIGN KEY (`ChatID`)
     REFERENCES `personalCrmDB`.`Chats` (`ChatID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Messages_Accounts1`
     FOREIGN KEY (`AccountID`)
     REFERENCES `personalCrmDB`.`Accounts` (`AccountID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -84,8 +84,8 @@ CREATE TABLE IF NOT EXISTS `personalCrmDB`.`Tasks` (
   CONSTRAINT `fk_Tasks_Accounts1`
     FOREIGN KEY (`AccountID`)
     REFERENCES `personalCrmDB`.`Accounts` (`AccountID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -100,8 +100,8 @@ CREATE TABLE IF NOT EXISTS `personalCrmDB`.`TaskNotes` (
   CONSTRAINT `fk_Notes_Tasks1`
     FOREIGN KEY (`TaskID`)
     REFERENCES `personalCrmDB`.`Tasks` (`TaskID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -121,8 +121,8 @@ CREATE TABLE IF NOT EXISTS `personalCrmDB`.`Meetings` (
   CONSTRAINT `fk_Meetings_Accounts1`
     FOREIGN KEY (`MeetingCreatorID`)
     REFERENCES `personalCrmDB`.`Accounts` (`AccountID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -140,8 +140,8 @@ CREATE TABLE IF NOT EXISTS `personalCrmDB`.`AccountLoginDetails` (
   CONSTRAINT `fk_AccountLogin_Accounts`
     FOREIGN KEY (`AccountID` , `AccountUsername`)
     REFERENCES `personalCrmDB`.`Accounts` (`AccountID` , `AccountUsername`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -157,13 +157,13 @@ CREATE TABLE IF NOT EXISTS `personalCrmDB`.`Account_Contacts` (
   CONSTRAINT `fk_Account_Contacts_Accounts1`
     FOREIGN KEY (`AccountID`)
     REFERENCES `personalCrmDB`.`Accounts` (`AccountID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Account_Contacts_Accounts2`
     FOREIGN KEY (`ContactID`)
     REFERENCES `personalCrmDB`.`Accounts` (`AccountID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -179,13 +179,13 @@ CREATE TABLE IF NOT EXISTS `personalCrmDB`.`Account_Meetings` (
   CONSTRAINT `fk_Accounts_has_Event_Accounts1`
     FOREIGN KEY (`AccountID`)
     REFERENCES `personalCrmDB`.`Accounts` (`AccountID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Accounts_has_Event_Event1`
     FOREIGN KEY (`MeetingID`)
     REFERENCES `personalCrmDB`.`Meetings` (`MeetingID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -216,13 +216,13 @@ CREATE TABLE IF NOT EXISTS `personalCrmDB`.`Accounts_Chats` (
   CONSTRAINT `fk_Chat_has_Accounts_Chat1`
     FOREIGN KEY (`ChatID`)
     REFERENCES `personalCrmDB`.`Chats` (`ChatID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Chat_has_Accounts_Accounts1`
     FOREIGN KEY (`AccountID`)
     REFERENCES `personalCrmDB`.`Accounts` (`AccountID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -238,13 +238,13 @@ CREATE TABLE IF NOT EXISTS `personalCrmDB`.`Account_Contacts_Tasks` (
   CONSTRAINT `fk_Account_Contacts_has_Tasks_Account_Contacts1`
     FOREIGN KEY (`ContactID`)
     REFERENCES `personalCrmDB`.`Account_Contacts` (`ContactID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Account_Contacts_has_Tasks_Tasks1`
     FOREIGN KEY (`TaskID`)
     REFERENCES `personalCrmDB`.`Tasks` (`TaskID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 

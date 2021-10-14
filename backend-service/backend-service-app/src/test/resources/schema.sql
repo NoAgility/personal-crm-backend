@@ -40,13 +40,13 @@ CREATE TABLE IF NOT EXISTS `Messages` (
   CONSTRAINT `fk_Messages_Chat1`
     FOREIGN KEY (`ChatID`)
     REFERENCES `Chats` (`ChatID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Messages_Accounts1`
     FOREIGN KEY (`AccountID`)
     REFERENCES `Accounts` (`AccountID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ;
 
 
@@ -65,8 +65,8 @@ CREATE TABLE IF NOT EXISTS `Tasks` (
   CONSTRAINT `fk_Tasks_Accounts1`
     FOREIGN KEY (`AccountID`)
     REFERENCES `Accounts` (`AccountID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ;
 
 
@@ -81,8 +81,8 @@ CREATE TABLE IF NOT EXISTS `TaskNotes` (
   CONSTRAINT `fk_Notes_Tasks1`
     FOREIGN KEY (`TaskID`)
     REFERENCES `Tasks` (`TaskID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ;
 
 
@@ -102,8 +102,8 @@ CREATE TABLE IF NOT EXISTS `Meetings` (
   CONSTRAINT `fk_Meetings_Accounts1`
     FOREIGN KEY (`MeetingCreatorID`)
     REFERENCES `Accounts` (`AccountID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ;
 
 
@@ -138,13 +138,13 @@ CREATE TABLE IF NOT EXISTS `Account_Contacts` (
   CONSTRAINT `fk_Account_Contacts_Accounts1`
     FOREIGN KEY (`AccountID`)
     REFERENCES `Accounts` (`AccountID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Account_Contacts_Accounts2`
     FOREIGN KEY (`ContactID`)
     REFERENCES `Accounts` (`AccountID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ;
 
 
@@ -160,13 +160,13 @@ CREATE TABLE IF NOT EXISTS `Account_Meetings` (
   CONSTRAINT `fk_Accounts_has_Event_Accounts1`
     FOREIGN KEY (`AccountID`)
     REFERENCES `Accounts` (`AccountID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Accounts_has_Event_Event1`
     FOREIGN KEY (`MeetingID`)
     REFERENCES `Meetings` (`MeetingID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ;
 
 
@@ -197,13 +197,13 @@ CREATE TABLE IF NOT EXISTS `Accounts_Chats` (
   CONSTRAINT `fk_Chat_has_Accounts_Chat1`
     FOREIGN KEY (`ChatID`)
     REFERENCES `Chats` (`ChatID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Chat_has_Accounts_Accounts1`
     FOREIGN KEY (`AccountID`)
     REFERENCES `Accounts` (`AccountID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ;
 
 
@@ -219,11 +219,11 @@ CREATE TABLE IF NOT EXISTS `Account_Contacts_Tasks` (
   CONSTRAINT `fk_Account_Contacts_has_Tasks_Account_Contacts1`
     FOREIGN KEY (`ContactID`)
     REFERENCES `Account_Contacts` (`ContactID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Account_Contacts_has_Tasks_Tasks1`
     FOREIGN KEY (`TaskID`)
     REFERENCES `Tasks` (`TaskID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ;
