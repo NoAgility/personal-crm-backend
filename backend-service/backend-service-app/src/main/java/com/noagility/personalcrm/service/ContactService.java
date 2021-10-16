@@ -54,16 +54,9 @@ public class ContactService {
 
         Integer accountID = getIDFromUsername(username);
         try {
-            if (email != null)
-                jdbcTemplate.update("UPDATE Account_Contacts SET ContactEmail = ? WHERE ContactID = ? AND AccountID = ?", email, contactID, accountID);
-            if (address != null)
-                jdbcTemplate.update("UPDATE Account_Contacts SET ContactAddress = ? WHERE ContactID = ? AND AccountID = ?", address, contactID, accountID);
-            if (phone != null)
-                jdbcTemplate.update("UPDATE Account_Contacts SET ContactPhone = ? WHERE ContactID = ? AND AccountID = ?", phone, contactID, accountID);
-            if (jobTitle != null)
-                jdbcTemplate.update("UPDATE Account_Contacts SET ContactJobTitle = ? WHERE ContactID = ? AND AccountID = ?", jobTitle, contactID, accountID);
-            if (company != null)
-                jdbcTemplate.update("UPDATE Account_Contacts SET ContactCompany = ? WHERE ContactID = ? AND AccountID = ?", company, contactID, accountID);
+                jdbcTemplate.update("UPDATE Account_Contacts SET ContactEmail = ?, ContactAddress = ?," +
+                        " ContactPhone = ?, ContactJobTitle = ?, ContactCompany = ? " +
+                        "WHERE ContactID = ? AND AccountID = ?", email, address, phone, jobTitle, company, contactID, accountID);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
