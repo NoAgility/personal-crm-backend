@@ -19,7 +19,8 @@ public class ContactRowMapper implements RowMapper<Contact> {
         res.setContactAddress(resultSet.getString("ContactAddress"));
         res.setContactEmail(resultSet.getString("ContactEmail"));
         res.setContactPhone(resultSet.getString("ContactPhone"));
-        res.setContactRole(resultSet.getString("ContactRole"));
+        res.setContactJobTitle(resultSet.getString("ContactJobTitle"));
+        res.setContactCompany(resultSet.getString("ContactCompany"));
         return res;
     }
     public static LocalDate asLocalDate(Date date) {

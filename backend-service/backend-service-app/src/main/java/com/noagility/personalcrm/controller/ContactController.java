@@ -72,7 +72,8 @@ public class ContactController {
                 (String)payload.getOrDefault("contactEmail", null),
                 (String)payload.getOrDefault("contactAddress", null),
                 (String)payload.getOrDefault("contactPhone", null),
-                (String)payload.getOrDefault("contactRole", null)
+                (String)payload.getOrDefault("contactJobTitle", null),
+                (String)payload.getOrDefault("contactCompany", null)
         )) {
             return ResponseEntity.ok().body("Success");
         }

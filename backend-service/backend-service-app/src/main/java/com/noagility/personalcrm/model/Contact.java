@@ -13,8 +13,8 @@ public class Contact {
     private String contactEmail;
     private String contactAddress;
     private String contactPhone;
-    private String contactRole;
-
+    private String contactJobTitle;
+    private String contactCompany;
     public Contact(int contactID, LocalDate contactCreatedOn) {
         this.contactID = contactID;
         this.contactCreatedOn = contactCreatedOn;

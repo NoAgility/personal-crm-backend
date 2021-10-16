@@ -50,7 +50,7 @@ public class ContactService {
 
 
 
-    public boolean updateContact(String username, int contactID, String email, String address, String phone, String role) {
+    public boolean updateContact(String username, int contactID, String email, String address, String phone, String jobTitle, String company) {
 
         Integer accountID = getIDFromUsername(username);
         try {
@@ -60,8 +60,10 @@ public class ContactService {
                 jdbcTemplate.update("UPDATE Account_Contacts SET ContactAddress = ? WHERE ContactID = ? AND AccountID = ?", address, contactID, accountID);
             if (phone != null)
                 jdbcTemplate.update("UPDATE Account_Contacts SET ContactPhone = ? WHERE ContactID = ? AND AccountID = ?", phone, contactID, accountID);
-            if (role != null)
-                jdbcTemplate.update("UPDATE Account_Contacts SET ContactRole = ? WHERE ContactID = ? AND AccountID = ?", role, contactID, accountID);
+            if (jobTitle != null)
+                jdbcTemplate.update("UPDATE Account_Contacts SET ContactJobTitle = ? WHERE ContactID = ? AND AccountID = ?", jobTitle, contactID, accountID);
+            if (company != null)
+                jdbcTemplate.update("UPDATE Account_Contacts SET ContactCompany = ? WHERE ContactID = ? AND AccountID = ?", company, contactID, accountID);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
