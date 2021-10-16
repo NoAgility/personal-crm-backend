@@ -42,7 +42,7 @@ public class CalendarController {
         for (Iterator i = calendar.getComponents().iterator(); i.hasNext();) {
             Component component = (Component) i.next();
             //jankiest line in the project
-            if(component.getName().equals("VEVENT") && component.getProperties().get(2).getValue().substring(0,4).equals(Year.now().toString())) {
+            if(component.getName().equals("VEVENT")) {
                 String date = component.getProperties().get(2).getValue();
                 holidays.add(new Holiday(component.getProperties().get(4).getValue(), LocalDate.parse(date.substring(0,4)+"-"+date.substring(4,6)+"-"+date.substring(6))));
             }

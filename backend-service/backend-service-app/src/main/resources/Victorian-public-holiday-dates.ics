@@ -235,7 +235,7 @@ DTSTAMP:20210907T043707Z
 UID:20210907T043707Z-1848848428@marudot.com
 DTSTART;VALUE=DATE:20201228
 DTEND;VALUE=DATE:20201229
-SUMMARY:Boxing Day
+SUMMARY:Day off for Boxing Day
 DESCRIPTION:As Boxing Day falls on a Saturday\, this is an additional public holiday
 END:VEVENT
 BEGIN:VEVENT
@@ -338,7 +338,7 @@ DTSTAMP:20210907T043707Z
 UID:20210907T043707Z-261676214@marudot.com
 DTSTART;VALUE=DATE:20211227
 DTEND;VALUE=DATE:20211228
-SUMMARY:Christmas Day
+SUMMARY:Day off for Christmas Day
 DESCRIPTION:As Christmas Day falls on a Saturday\, an additional public holiday is given on the following Monday
 END:VEVENT
 BEGIN:VEVENT
@@ -346,7 +346,7 @@ DTSTAMP:20210907T043707Z
 UID:20210907T043707Z-1914379163@marudot.com
 DTSTART;VALUE=DATE:20211228
 DTEND;VALUE=DATE:20211229
-SUMMARY:Boxing Day
+SUMMARY:Day off for Boxing Day
 DESCRIPTION:As Boxing Day falls on a Sunday\, an additional public holiday is given on the following Tuesday
 END:VEVENT
 BEGIN:VEVENT
@@ -361,7 +361,7 @@ DTSTAMP:20210907T043707Z
 UID:20210907T043707Z-2104484434@marudot.com
 DTSTART;VALUE=DATE:20220103
 DTEND;VALUE=DATE:20220104
-SUMMARY:New Year's Day
+SUMMARY: Day off for New Year's Day
 DESCRIPTION:As New Year's Day falls on a Saturday\, the following Monday is an additional public holiday
 END:VEVENT
 BEGIN:VEVENT
@@ -450,7 +450,7 @@ DTSTAMP:20210907T043707Z
 UID:20210907T043707Z-1042842981@marudot.com
 DTSTART;VALUE=DATE:20221227
 DTEND;VALUE=DATE:20221228
-SUMMARY:Christmas Day
+SUMMARY:Day off for Christmas Day
 DESCRIPTION:As Christmas Day falls on a Sunday\, the following Tuesday is an additional public holiday
 END:VEVENT
 BEGIN:VEVENT
@@ -465,7 +465,7 @@ DTSTAMP:20210907T043707Z
 UID:20210907T043707Z-721980424@marudot.com
 DTSTART;VALUE=DATE:20230102
 DTEND;VALUE=DATE:20230103
-SUMMARY:New Year's Day
+SUMMARY:Day off for New Year's Day
 DESCRIPTION:As New Year's Day falls on a Sunday\, the Monday is an additional public holiday
 END:VEVENT
 BEGIN:VEVENT
@@ -656,7 +656,7 @@ DTSTAMP:20210907T043707Z
 UID:20210907T043707Z-280654026@marudot.com
 DTSTART;VALUE=DATE:20250127
 DTEND;VALUE=DATE:20250128
-SUMMARY:Australia Day
+SUMMARY:Day off for Australia Day
 DESCRIPTION:As Australia Day falls on a Sunday\, the public holiday is on the following Monday
 END:VEVENT
 BEGIN:VEVENT
