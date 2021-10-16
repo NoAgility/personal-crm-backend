@@ -7,7 +7,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ContactService {
 
@@ -49,8 +50,23 @@ public class ContactService {
 
 
 
-    public boolean updateContact(String username, String contact) {
-       return false;
+    public boolean updateContact(String username, int contactID, String email, String address, String phone, String role) {
+
+        Integer accountID = getIDFromUsername(username);
+        try {
+            if (email != null)
+                jdbcTemplate.update("UPDATE Account_Contacts SET ContactEmail = ? WHERE ContactID = ? AND AccountID = ?", email, contactID, accountID);
+            if (address != null)
+                jdbcTemplate.update("UPDATE Account_Contacts SET ContactAddress = ? WHERE ContactID = ? AND AccountID = ?", address, contactID, accountID);
+            if (phone != null)
+                jdbcTemplate.update("UPDATE Account_Contacts SET ContactPhone = ? WHERE ContactID = ? AND AccountID = ?", phone, contactID, accountID);
+            if (role != null)
+                jdbcTemplate.update("UPDATE Account_Contacts SET ContactRole = ? WHERE ContactID = ? AND AccountID = ?", role, contactID, accountID);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public boolean deleteContact(String username, String contact) {
@@ -76,7 +92,7 @@ public class ContactService {
 
         try {
 
-            String sql = "SELECT ContactID, ContactCreatedOn FROM Account_Contacts WHERE AccountID = ?";
+            String sql = "SELECT * FROM Account_Contacts WHERE AccountID = ?";
 
             List<Contact> contacts = jdbcTemplate.query(sql, contactRowMapper, usernameID);
 

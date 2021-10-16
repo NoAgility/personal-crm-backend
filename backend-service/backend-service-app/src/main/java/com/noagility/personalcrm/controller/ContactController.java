@@ -66,10 +66,14 @@ public class ContactController {
     )
     public ResponseEntity<String> update(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
 
-        if(contactService.updateContact(
+        if (contactService.updateContact(
                 jwtTokenUtil.getUsernameFromToken(token),
-                (String)payload.get("contact")
-        )){
+                (Integer)payload.get("contactID"),
+                (String)payload.getOrDefault("contactEmail", null),
+                (String)payload.getOrDefault("contactAddress", null),
+                (String)payload.getOrDefault("contactPhone", null),
+                (String)payload.getOrDefault("contactRole", null)
+        )) {
             return ResponseEntity.ok().body("Success");
         }
         return ResponseEntity.badRequest().body("Failure");

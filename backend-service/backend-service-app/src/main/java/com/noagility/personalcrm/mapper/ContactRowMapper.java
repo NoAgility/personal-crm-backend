@@ -16,7 +16,10 @@ public class ContactRowMapper implements RowMapper<Contact> {
         Contact res = new Contact();
         res.setContactID(resultSet.getInt("ContactID"));
         res.setContactCreatedOn(asLocalDate(resultSet.getDate("ContactCreatedOn")));
-        System.out.println(res.toString());
+        res.setContactAddress(resultSet.getString("ContactAddress"));
+        res.setContactEmail(resultSet.getString("ContactEmail"));
+        res.setContactPhone(resultSet.getString("ContactPhone"));
+        res.setContactRole(resultSet.getString("ContactRole"));
         return res;
     }
     public static LocalDate asLocalDate(Date date) {
