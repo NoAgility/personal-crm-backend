@@ -23,11 +23,13 @@ public class JwtUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
-            String sql = "SELECT * FROM AccountLoginDetails WHERE AccountUsername = ?";
-            JwtRequest jwtRequest = jdbcTemplate.queryForObject(sql, loginRowMapper, username);
 
+            String sql = "SELECT AccountLoginDetails.AccountUsername, AccountLoginDetails.AccountPassword " +
+                    "FROM AccountLoginDetails INNER JOIN Accounts ON " +
+                    "AccountLoginDetails.AccountID = Accounts.AccountID WHERE AccountLoginDetails.AccountUsername = ? AND AccountActive = 1";
+            JwtRequest jwtRequest = jdbcTemplate.queryForObject(sql, loginRowMapper, username);
             return new User(jwtRequest.getUsername(), jwtRequest.getPassword(), new ArrayList<>());
-        } catch (EmptyResultDataAccessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
