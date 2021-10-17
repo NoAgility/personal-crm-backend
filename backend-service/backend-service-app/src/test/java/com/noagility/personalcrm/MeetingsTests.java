@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -41,6 +42,7 @@ import com.noagility.personalcrm.service.MeetingService;
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "/application-test.properties")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@ActiveProfiles("local")
 public class MeetingsTests {
     @Autowired
     MockMvc mvc;
