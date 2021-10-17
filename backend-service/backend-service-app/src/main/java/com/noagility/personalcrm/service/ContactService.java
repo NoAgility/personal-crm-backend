@@ -21,16 +21,15 @@ public class ContactService {
     @Autowired
     DataSource dataSource;
 
-    public boolean addContact(String username, String contact) {
-        System.out.println(username + " " + contact);
-        int usernameID = getIDFromUsername(username);
+    public boolean addContact(int accountID, String contact) {
+
         int contactID = getIDFromUsername(contact);
 
-        if(usernameID==contactID){
+        if(accountID==contactID){
             return false;
             //cannot add urself
         }
-        if(contactAdded(username,contactID)){
+        if(contactAdded(accountID ,contactID)){
             System.out.println("contact already added");
             //this should thow  error if db already has contact
             return false;
@@ -39,7 +38,7 @@ public class ContactService {
             //  Insert new contact into Contacts table
 
             String sql = "INSERT INTO Account_Contacts(AccountID, ContactID) VALUES (?, ?)";
-            jdbcTemplate.update(sql, usernameID, contactID);
+            jdbcTemplate.update(sql, accountID, contactID);
             return true;
 
         } catch (Exception e) {
@@ -48,11 +47,14 @@ public class ContactService {
         return false;
     }
 
+    public boolean addContactWithUsername(String username, String contact) {
+        int accountID = getIDFromUsername(username);
+        return addContact(accountID, contact);
+    }
 
 
-    public boolean updateContact(String username, int contactID, String email, String address, String phone, String jobTitle, String company) {
+    public boolean updateContact(int accountID, int contactID, String email, String address, String phone, String jobTitle, String company) {
 
-        Integer accountID = getIDFromUsername(username);
         try {
                 jdbcTemplate.update("UPDATE Account_Contacts SET ContactEmail = ?, ContactAddress = ?," +
                         " ContactPhone = ?, ContactJobTitle = ?, ContactCompany = ? " +
@@ -64,16 +66,15 @@ public class ContactService {
         return false;
     }
 
-    public boolean deleteContact(String username, String contact) {
+    public boolean deleteContact(int accountID, String contact) {
 
-        int usernameID = getIDFromUsername(username);
         int contactID = getIDFromUsername(contact);
 
         try {
             //  Insert new contact into Contacts table
 
             String sql = "DELETE FROM Account_Contacts WHERE AccountID = ? AND ContactID = ?";
-            jdbcTemplate.update(sql, usernameID, contactID);
+            jdbcTemplate.update(sql, accountID, contactID);
             return true;
 
         } catch (Exception e) {
@@ -82,15 +83,13 @@ public class ContactService {
         return false;
     }
 
-    public List<Contact> getContacts(String username) {
-        int usernameID = getIDFromUsername(username);
+    public List<Contact> getContacts(int accountID) {
 
         try {
 
-            String sql = "SELECT ContactID, ContactCreatedOn, ContactEmail, ContactAddress, ContactPhone, " +
-                    "ContactCompany, ContactJobTitle FROM Account_Contacts WHERE AccountID = ?";
+            String sql = "SELECT ContactID, ContactCreatedOn, ContactEmail, ContactAddress, ContactPhone, ContactCompany, ContactJobTitle FROM Account_Contacts WHERE AccountID = ?";
 
-            List<Contact> contacts = jdbcTemplate.query(sql, contactRowMapper, usernameID);
+            List<Contact> contacts = jdbcTemplate.query(sql, contactRowMapper, accountID);
 
             return contacts;
 
@@ -100,10 +99,10 @@ public class ContactService {
         return null;
     }
 
-    private boolean contactAdded(String username, int contactID) {
-        List<Contact> contacts = getContacts(username);
+    private boolean contactAdded(int accountID, int contactID) {
+        List<Contact> contacts = getContacts(accountID);
         for(int i=0; i<contacts.size(); i++){
-            if(contacts.get(i).getContactID() ==contactID){
+            if(contacts.get(i).getContactID() == contactID){
                 return true;
             }
         }

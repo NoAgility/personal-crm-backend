@@ -11,10 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 import java.time.LocalDate;
 
 import com.noagility.personalcrm.deserializer.AccountDeserializer;
@@ -34,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "/application-test.properties")
-class PersonalCRMApplicationTests {
+public class PersonalCRMApplicationTests {
 
 	@Autowired
 	MockMvc mvc;

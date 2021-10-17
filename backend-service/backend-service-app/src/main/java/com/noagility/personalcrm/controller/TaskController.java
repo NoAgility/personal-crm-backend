@@ -34,7 +34,7 @@ public class TaskController {
     )
     public ResponseEntity<String> create(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token) throws Exception {
         try {
-            int accountID = contactService.getIDFromUsername(jwtTokenUtil.getUsernameFromToken(token));
+            int accountID = jwtTokenUtil.getAccountFromToken(token).getAccountID();
             if(taskService.createTask(
                     (List<Integer>)payload.get("contactIDs"),
                     (List<String>)payload.get("taskNotes"),
@@ -101,7 +101,7 @@ public class TaskController {
     )
     public ResponseEntity<List<Task>> read(@CookieValue("jwt") String token){
         try {
-            int accountID = contactService.getIDFromUsername(jwtTokenUtil.getUsernameFromToken(token));
+            int accountID = jwtTokenUtil.getAccountFromToken(token).getAccountID();
             return ResponseEntity.ok().body(
                     taskService.getTasksByAccountID(accountID, false)
             );
@@ -118,7 +118,7 @@ public class TaskController {
     )
     public ResponseEntity<List<Task>> readAll(@CookieValue("jwt") String token){
         try {
-            int accountID = contactService.getIDFromUsername(jwtTokenUtil.getUsernameFromToken(token));
+            int accountID = jwtTokenUtil.getAccountFromToken(token).getAccountID();
             return ResponseEntity.ok().body(
                     taskService.getTasksByAccountID(accountID, true)
             );
