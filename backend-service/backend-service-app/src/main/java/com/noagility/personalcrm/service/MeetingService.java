@@ -40,6 +40,8 @@ public class MeetingService {
     @Autowired
     MinuteRowMapper minuteRowMapper;
 
+    @Autowired
+    TinyintMapperService tinyintMapperService;
 
     private int maxMeetingID;
 
@@ -295,7 +297,7 @@ public class MeetingService {
             Map<Integer, Boolean> meetingParticipants = new HashMap<>();
 
             for(Map<String, Object> m : results){
-                meetingParticipants.put((int)m.get("AccountID"), (boolean)((Byte)m.get("Accounts_MeetingsAccepted")!= 0));    
+                meetingParticipants.put((int)m.get("AccountID"), tinyintMapperService.map(m.get("Accounts_MeetingsAccepted")));
             }
             return meetingParticipants;
         }
