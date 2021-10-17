@@ -28,7 +28,7 @@ public class ContactController {
     )
     public ResponseEntity<String> create(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token) throws Exception{
         if(contactService.addContact(
-                jwtTokenUtil.getUsernameFromToken(token),
+                jwtTokenUtil.getAccountFromToken(token).getAccountID(),
                 (String)payload.get("contact")
         )){
             return ResponseEntity.ok().body("Success");
@@ -55,7 +55,7 @@ public class ContactController {
     public ResponseEntity<List<Contact>> read(@CookieValue("jwt") String token){
         return ResponseEntity.ok().body(
                 contactService.getContacts(
-                        jwtTokenUtil.getUsernameFromToken(token)));
+                        jwtTokenUtil.getAccountFromToken(token).getAccountID()));
     }
 
     //currently useless given cannot change info
@@ -66,10 +66,15 @@ public class ContactController {
     )
     public ResponseEntity<String> update(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
 
-        if(contactService.updateContact(
-                jwtTokenUtil.getUsernameFromToken(token),
-                (String)payload.get("contact")
-        )){
+        if (contactService.updateContact(
+                jwtTokenUtil.getAccountFromToken(token).getAccountID(),
+                (Integer)payload.get("contactID"),
+                (String)payload.getOrDefault("contactEmail", null),
+                (String)payload.getOrDefault("contactAddress", null),
+                (String)payload.getOrDefault("contactPhone", null),
+                (String)payload.getOrDefault("contactJobTitle", null),
+                (String)payload.getOrDefault("contactCompany", null)
+        )) {
             return ResponseEntity.ok().body("Success");
         }
         return ResponseEntity.badRequest().body("Failure");
@@ -83,7 +88,7 @@ public class ContactController {
     )
     public ResponseEntity<String> delete(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token) throws Exception {
         if(contactService.deleteContact(
-                jwtTokenUtil.getUsernameFromToken(token),
+                jwtTokenUtil.getAccountFromToken(token).getAccountID(),
                 (String)payload.get("contact")
         )){
             return ResponseEntity.ok().body("Success");

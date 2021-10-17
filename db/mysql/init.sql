@@ -152,6 +152,11 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `personalCrmDB`.`Account_Contacts` (
   `AccountID` INT NOT NULL,
   `ContactID` INT NOT NULL,
+  `ContactEmail` VARCHAR(255),
+  `ContactAddress` VARCHAR(255),
+  `ContactPhone` VARCHAR(20),
+  `ContactCompany` VARCHAR(255),
+  `ContactJobTitle` VARCHAR(255),
   `ContactCreatedOn` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`AccountID`, `ContactID`),
   INDEX `fk_Account_Contacts_Accounts2_idx` (`ContactID` ASC) VISIBLE,

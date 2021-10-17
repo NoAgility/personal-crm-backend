@@ -40,7 +40,7 @@ public class AccountController {
         )){
             System.out.println("???? " + referral);
             if(referral != "" && accountService.getByUsername(referral) != null){
-                contactService.addContact((String)payload.get("username"), referral);
+                contactService.addContactWithUsername((String)payload.get("username"), referral);
             }
             return ResponseEntity.ok().body("Success");
         }
