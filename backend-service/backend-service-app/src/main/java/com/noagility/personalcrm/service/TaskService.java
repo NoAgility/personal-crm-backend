@@ -41,10 +41,13 @@ public class TaskService {
         String sql2 = "SELECT MAX(TaskNoteID) as TaskID FROM TaskNotes";
         try {
             maxTaskID = jdbcTemplate.queryForObject(sql, Integer.class);
-            maxTaskNoteID = jdbcTemplate.queryForObject(sql2, Integer.class);
-        }
-        catch (Exception e){
+        } catch (Exception e){
             maxTaskID = 0;
+        }
+        try {
+            maxTaskNoteID = jdbcTemplate.queryForObject(sql2, Integer.class);
+        } catch (Exception e) {
+            maxTaskNoteID = 0;
         }
     }
 
