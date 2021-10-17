@@ -3,6 +3,7 @@ package com.noagility.personalcrm;
 import com.noagility.personalcrm.Util.JwtTokenUtil;
 import com.noagility.personalcrm.deserializer.AccountDeserializer;
 import com.noagility.personalcrm.deserializer.ContactDeserializer;
+import com.noagility.personalcrm.service.AccountService;
 import org.hamcrest.Matchers;
 import org.junit.FixMethodOrder;
 import org.junit.runner.RunWith;
@@ -41,7 +42,8 @@ public class TasksTests {
     @Autowired
     JwtTokenUtil jwtTokenUtil;
     // Basic API Testing first before performance testing.
-
+    @Autowired
+    AccountService accountService;
 
 
     // to run faster or to test more performance change the number of accounts created.
@@ -455,11 +457,11 @@ public class TasksTests {
 
 
         // add a contact.
-
-        taskContent = "{\n" +
+        int contactId3 = accountService.getByUsername("taskAccount3").getAccountID();
+        taskContent = String.format("{\n" +
                 "    \"taskID\": 5,\n" +
-                "    \"contactID\": 3\n" +
-                "}";
+                "    \"contactID\": %d\n" +
+                "}", contactId3);
 
         mvc.perform(post("/task/addTaskContact")
                 .cookie(cookie)
@@ -489,7 +491,7 @@ public class TasksTests {
                 "}";
 
 
-        output = "\"taskName\":\"TaskNumber1\",\"taskDeadline\":null,\"taskPriority\":3,\"taskComplete\":0,\"taskNoteList\":[{\"taskID\":5,\"taskNoteID\":1,\"note\":\"NoteNumber1\"}],\"taskContactAccounts\":[{\"taskID\":5,\"contactID\":3}],\"owner\":false,\"taskID\":5}";
+        output = String.format("\"taskName\":\"TaskNumber1\",\"taskDeadline\":null,\"taskPriority\":3,\"taskComplete\":0,\"taskNoteList\":[{\"taskID\":5,\"taskNoteID\":1,\"note\":\"NoteNumber1\"}],\"taskContactAccounts\":[{\"taskID\":5,\"contactID\":%d}],\"owner\":false,\"taskID\":5}", contactId3);
 
 
         mvc.perform(get("/task/readTask")
@@ -524,8 +526,7 @@ public class TasksTests {
                 "    \"taskID\": 5\n" +
                 "}";
 
-
-        output = "\"taskName\":\"TaskNumber1\",\"taskDeadline\":null,\"taskPriority\":3,\"taskComplete\":0,\"taskNoteList\":[{\"taskID\":5,\"taskNoteID\":1,\"note\":\"NEW NOTE HELLO WORLD\"}],\"taskContactAccounts\":[{\"taskID\":5,\"contactID\":3}],\"owner\":false,\"taskID\":5}";
+        output = String.format("\"taskName\":\"TaskNumber1\",\"taskDeadline\":null,\"taskPriority\":3,\"taskComplete\":0,\"taskNoteList\":[{\"taskID\":5,\"taskNoteID\":1,\"note\":\"NEW NOTE HELLO WORLD\"}],\"taskContactAccounts\":[{\"taskID\":5,\"contactID\":%d}],\"owner\":false,\"taskID\":5}", contactId3);
         mvc.perform(get("/task/readTask")
                 .cookie(cookie)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -553,7 +554,7 @@ public class TasksTests {
                 "}";
 
 
-        output = "\"taskName\":\"TaskNumber1\",\"taskDeadline\":null,\"taskPriority\":3,\"taskComplete\":0,\"taskNoteList\":[],\"taskContactAccounts\":[{\"taskID\":5,\"contactID\":3}],\"owner\":false,\"taskID\":5}";
+        output = String.format("\"taskName\":\"TaskNumber1\",\"taskDeadline\":null,\"taskPriority\":3,\"taskComplete\":0,\"taskNoteList\":[],\"taskContactAccounts\":[{\"taskID\":5,\"contactID\":%d}],\"owner\":false,\"taskID\":5}", contactId3);
         mvc.perform(get("/task/readTask")
                 .cookie(cookie)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -562,10 +563,10 @@ public class TasksTests {
 
         // Delete the Task Contact.
 
-        taskContent = "{\n" +
+        taskContent = String.format("{\n" +
                 "    \"taskID\": 5,\n" +
-                "    \"contactID\": 3\n" +
-                "}";
+                "    \"contactID\": %d\n" +
+                "}", contactId3);
 
         // delete the task note
 

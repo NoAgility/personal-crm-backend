@@ -1,5 +1,6 @@
 package com.noagility.personalcrm;
 
+import com.noagility.personalcrm.service.AccountService;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +41,8 @@ public class MessagesTests {
     AccountDeserializer accountDeserializer;
     @Autowired
     ChatDeserializer chatDeserializer;
-
+    @Autowired
+    AccountService accountService;
     @Test
     public void test1_createChatTest() throws Exception{
         String jsonCreate = new StringBuilder()
@@ -238,14 +240,16 @@ public class MessagesTests {
             .getResponse()
             .getContentAsString();
 
+        Account account1 = accountService.getByUsername("testChatCreation");
+        Account account2 = accountService.getByUsername("testChatCreation2");
         Chat chats[] = chatDeserializer.deserializeChats(returnedJson);
         Chat testChats[] = {
             new Chat(1, chats[0].getChatCreation(), chats[0].getChatParticipants(), Arrays.asList(new Message[] {
-                new Message(1, 1, 1, chats[0].getMessages().get(0).getMessageTime(), messageText1),
-                new Message(3, 1, 2, chats[0].getMessages().get(1).getMessageTime(), messageText3)
+                new Message(1, 1, account1.getAccountID(), chats[0].getMessages().get(0).getMessageTime(), messageText1),
+                new Message(3, 1, account2.getAccountID(), chats[0].getMessages().get(1).getMessageTime(), messageText3)
             })),
             new Chat(2, chats[1].getChatCreation(), chats[1].getChatParticipants(), Arrays.asList(new Message[] {
-                new Message(2, 2, 1, chats[1].getMessages().get(0).getMessageTime(), messageText2)
+                new Message(2, 2, account1.getAccountID(), chats[1].getMessages().get(0).getMessageTime(), messageText2)
             })),
             new Chat(3, chats[2].getChatCreation(), chats[2].getChatParticipants(), Arrays.asList(new Message[] {}))
         };
