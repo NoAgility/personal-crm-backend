@@ -69,11 +69,11 @@ public class ContactController {
         if (contactService.updateContact(
                 jwtTokenUtil.getUsernameFromToken(token),
                 (Integer)payload.get("contactID"),
-                (String)payload.getOrDefault("contactEmail", ""),
-                (String)payload.getOrDefault("contactAddress", ""),
-                (String)payload.getOrDefault("contactPhone", ""),
-                (String)payload.getOrDefault("contactJobTitle", ""),
-                (String)payload.getOrDefault("contactCompany", "")
+                (String)payload.get("contactEmail"),
+                (String)payload.get("contactAddress"),
+                (String)payload.get("contactPhone"),
+                (String)payload.get("contactJobTitle"),
+                (String)payload.get("contactCompany")
         )) {
             return ResponseEntity.ok().body("Success");
         }

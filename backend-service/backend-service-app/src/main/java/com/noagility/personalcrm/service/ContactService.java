@@ -87,7 +87,8 @@ public class ContactService {
 
         try {
 
-            String sql = "SELECT * FROM Account_Contacts WHERE AccountID = ?";
+            String sql = "SELECT ContactID, ContactCreatedOn, ContactEmail, ContactAddress, ContactPhone, " +
+                    "ContactCompany, ContactJobTitle FROM Account_Contacts WHERE AccountID = ?";
 
             List<Contact> contacts = jdbcTemplate.query(sql, contactRowMapper, usernameID);
 
