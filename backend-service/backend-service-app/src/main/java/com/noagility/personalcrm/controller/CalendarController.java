@@ -10,10 +10,13 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import net.fortuna.ical4j.model.Calendar;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.lang.reflect.Array;
 import java.time.LocalDate;
@@ -32,7 +35,8 @@ public class CalendarController {
     )
     public ResponseEntity<ArrayList<Holiday>> create() throws Exception{
 
-        FileInputStream fin = new FileInputStream("src/main/resources/Victorian-public-holiday-dates.ics");
+        File file = ResourceUtils.getFile("classpath:Victorian-public-holiday-dates.ics");
+        FileInputStream fin = new FileInputStream(file);
 
         CalendarBuilder builder = new CalendarBuilder();
 
