@@ -4,20 +4,14 @@ package com.noagility.personalcrm.controller;
 import com.noagility.personalcrm.model.Holiday;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Component;
-import net.fortuna.ical4j.model.Property;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import net.fortuna.ical4j.model.Calendar;
-import java.io.FileInputStream;
-import java.lang.reflect.Array;
+
+import java.io.InputStream;
 import java.time.LocalDate;
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -32,7 +26,7 @@ public class CalendarController {
     )
     public ResponseEntity<ArrayList<Holiday>> create() throws Exception{
 
-        FileInputStream fin = new FileInputStream("src/main/resources/Victorian-public-holiday-dates.ics");
+        InputStream fin = getClass().getResourceAsStream("/Victorian-public-holiday-dates.ics");
 
         CalendarBuilder builder = new CalendarBuilder();
 
