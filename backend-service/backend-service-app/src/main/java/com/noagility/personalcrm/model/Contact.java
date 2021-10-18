@@ -1,12 +1,20 @@
 package com.noagility.personalcrm.model;
 
+import lombok.Data;
+
 import java.time.LocalDate;
 // Id of user added as contact and date contact added
+
+@Data
 public class Contact {
 
     private int contactID;
     private LocalDate contactCreatedOn;
-
+    private String contactEmail;
+    private String contactAddress;
+    private String contactPhone;
+    private String contactJobTitle;
+    private String contactCompany;
     public Contact(int contactID, LocalDate contactCreatedOn) {
         this.contactID = contactID;
         this.contactCreatedOn = contactCreatedOn;
@@ -14,26 +22,6 @@ public class Contact {
 
     public Contact() {
 
-    }
-
-    public Contact(int i) {
-        this.contactID=i;
-    }
-
-    public int getContactID() {
-        return contactID;
-    }
-
-    public LocalDate getContactCreatedOn() {
-        return contactCreatedOn;
-    }
-
-    public void setContactID(int contactID) {
-        this.contactID = contactID;
-    }
-
-    public void setContactCreatedOn(LocalDate contactCreatedOn) {
-        this.contactCreatedOn = contactCreatedOn;
     }
 
     @Override

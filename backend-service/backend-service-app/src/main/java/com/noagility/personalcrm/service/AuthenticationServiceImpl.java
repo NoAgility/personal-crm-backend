@@ -49,7 +49,6 @@ public class AuthenticationServiceImpl extends AuthenticationService {
 
         response.addCookie(accountIdCookie);
 
-
         return ResponseEntity.ok("Success");
     }
 }

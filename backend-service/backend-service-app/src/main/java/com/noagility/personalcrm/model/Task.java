@@ -11,15 +11,19 @@ public class Task {
     private String taskName;
     private LocalDateTime taskDeadline;
     private int taskPriority;
+    private Byte taskComplete;
     private List<TaskNote> taskNoteList;
     private List<TaskContactAccount> taskContactAccounts;
+    private Boolean isOwner;
 
-    public Task(int taskID, int accountID, String taskName, LocalDateTime taskDeadline, int taskPriority){
+    public Task(int taskID, int accountID, String taskName, LocalDateTime taskDeadline, int taskPriority, Byte taskComplete){
         this.TaskID = taskID;
         this.accountID = accountID;
         this.taskName = taskName;
         this.taskDeadline = taskDeadline;
         this.taskPriority = taskPriority;
+        this.taskComplete = taskComplete;
+
     }
 
 
@@ -78,5 +82,21 @@ public class Task {
 
     public void setTaskContactAccounts(List<TaskContactAccount> taskContactAccounts) {
         this.taskContactAccounts = taskContactAccounts;
+    }
+
+    public Boolean getOwner() {
+        return isOwner;
+    }
+
+    public void setOwner(Boolean owner) {
+        isOwner = owner;
+    }
+
+    public Byte getTaskComplete() {
+        return taskComplete;
+    }
+
+    public void setTaskComplete(Byte taskComplete) {
+        this.taskComplete = taskComplete;
     }
 }

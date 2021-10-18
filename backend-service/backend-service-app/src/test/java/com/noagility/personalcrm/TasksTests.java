@@ -1,13 +1,21 @@
 package com.noagility.personalcrm;
 
+import com.noagility.personalcrm.Util.JwtTokenUtil;
 import com.noagility.personalcrm.deserializer.AccountDeserializer;
 import com.noagility.personalcrm.deserializer.ContactDeserializer;
-import org.junit.jupiter.api.Test;
+import com.noagility.personalcrm.service.AccountService;
+import org.hamcrest.Matchers;
+import org.junit.FixMethodOrder;
+import org.junit.runner.RunWith;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -19,10 +27,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "/application-test.properties")
-public class TasksTesting {
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@ActiveProfiles("local")
+public class TasksTests {
 
     @Autowired
     MockMvc mvc;
@@ -30,9 +41,11 @@ public class TasksTesting {
     AccountDeserializer accountDeserializer;
     @Autowired
     ContactDeserializer contactDeserializer;
-
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
     // Basic API Testing first before performance testing.
-
+    @Autowired
+    AccountService accountService;
 
 
     // to run faster or to test more performance change the number of accounts created.
@@ -40,10 +53,21 @@ public class TasksTesting {
     private int numberOfAccountsWithTasks = 11;
     private int largeNumberOfTasks = 5;
 
+    public Cookie getCookie(String username, String password) throws Exception{
+        return mvc.perform(post("/authenticate/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(String.format("{\"username\": \"%s\", \"password\":\"%s\"}", username, password))
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getCookie("jwt");
+    }
     // create numberOfAccounts test accounts which will be used in the integration testing for adding to tasks.
     // Have all users add each other as contacts for later.
     @Test
-    public void createUsers() throws Exception {
+    public void test1_createUsers() throws Exception {
         for(int i = 1; i < numberOfAccounts; i++){
             String jsonCreate = new StringBuilder()
                     .append("{")
@@ -63,15 +87,8 @@ public class TasksTesting {
                     .andExpect(status().isOk());
         }
         for(int i = 1; i < numberOfAccounts; i++){
-            String loginContent = "{\"username\": \"taskAccount"+ String.valueOf(i) + "\", \"password\":\"password\"}";
-            MvcResult result = mvc.perform(post("/authenticate/login")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(loginContent)
-                    .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andReturn();
 
-            Cookie cookie = result.getResponse().getCookie("jwt");
+            Cookie cookie = getCookie("taskAccount" + String.valueOf(i), "password");
 
             for(int j = 1; j < numberOfAccountsWithTasks; j++){
                 if(i == j){
@@ -98,16 +115,9 @@ public class TasksTesting {
 
     // first performance testing will create a large number of tasks for 1 user (no Deadline, priority, contacts or notes)
     @Test
-    public void taskAPITest1() throws Exception {
-        String loginContent = "{\"username\": \"taskAccount1\", \"password\":\"password\"}";
-        MvcResult result = mvc.perform(post("/authenticate/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(loginContent)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
+    public void test2_taskAPIPerformanceTest() throws Exception {
 
-        Cookie cookie = result.getResponse().getCookie("jwt");
+        Cookie cookie = getCookie("taskAccount1", "password");
 
         for (int j = 1; j < largeNumberOfTasks; j++) {
 
@@ -134,13 +144,11 @@ public class TasksTesting {
             String taskContent = "{\n" +
                     "    \"taskID\": " + String.valueOf(j) + "\n" +
                     "}";
-            String output = createExpectedResponse(1, "TaskNumber" + String.valueOf(j), j);
-
+            String output = createExpectedResponse(jwtTokenUtil.getAccountFromToken(cookie.getValue()).getAccountID(), "TaskNumber" + String.valueOf(j), j);
             mvc.perform(get("/task/readTask")
                     .cookie(cookie)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(taskContent))
-                    .andExpect(content().json(output));
+                    .content(taskContent)).andExpect(content().json(output));
         }
 
 
@@ -168,7 +176,7 @@ public class TasksTesting {
 
     // the second performance test will create a large number of tasks for 1 user with deadline
     @Test
-    public void taskAPITest2() throws Exception {
+    public void test3_taskAPIWithDeadline() throws Exception {
         String loginContent = "{\"username\": \"taskAccount1\", \"password\":\"password\"}";
         MvcResult result = mvc.perform(post("/authenticate/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -217,16 +225,9 @@ public class TasksTesting {
 
     // the 3rd performance test will create a large number of tasks for 1 user with deadline
     @Test
-    public void taskAPITest3() throws Exception {
-        String loginContent = "{\"username\": \"taskAccount1\", \"password\":\"password\"}";
-        MvcResult result = mvc.perform(post("/authenticate/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(loginContent)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
+    public void test4_taskAPIWithDeadline_2() throws Exception {
 
-        Cookie cookie = result.getResponse().getCookie("jwt");
+        Cookie cookie = getCookie("taskAccount1", "password");
 
         for (int j = 1; j < largeNumberOfTasks; j++) {
 
@@ -266,16 +267,9 @@ public class TasksTesting {
 
     // the 4th performance test will create a large number of tasks for 1 user with deadline and priority
     @Test
-    public void taskAPITest4() throws Exception {
-        String loginContent = "{\"username\": \"taskAccount1\", \"password\":\"password\"}";
-        MvcResult result = mvc.perform(post("/authenticate/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(loginContent)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
+    public void test5_taskAPIWithDeadlinePriority() throws Exception {
 
-        Cookie cookie = result.getResponse().getCookie("jwt");
+        Cookie cookie = getCookie("taskAccount1", "password");
 
         for (int j = 1; j < largeNumberOfTasks; j++) {
 
@@ -316,16 +310,9 @@ public class TasksTesting {
 
     // Will bunch create tasks, add priorities and deadlines, then delete them again.
     @Test
-    public void taskAPITest5() throws Exception {
-        String loginContent = "{\"username\": \"taskAccount1\", \"password\":\"password\"}";
-        MvcResult result = mvc.perform(post("/authenticate/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(loginContent)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
+    public void test6_taskAPICreateDelete() throws Exception {
 
-        Cookie cookie = result.getResponse().getCookie("jwt");
+        Cookie cookie = getCookie("taskAccount1", "password");
 
         for (int j = 1; j < largeNumberOfTasks; j++) {
 
@@ -426,17 +413,9 @@ public class TasksTesting {
     }
 
     @Test
-    public void taskAPITest6() throws Exception {
+    public void test7_taskAPITest() throws Exception {
         // log into the first user.
-        String loginContent = "{\"username\": \"taskAccount1\", \"password\":\"password\"}";
-        MvcResult result = mvc.perform(post("/authenticate/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(loginContent)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        Cookie cookie = result.getResponse().getCookie("jwt");
+        Cookie cookie = getCookie("taskAccount1", "password");
 
         // create the task
         String taskContent = "{\n" +
@@ -480,11 +459,11 @@ public class TasksTesting {
 
 
         // add a contact.
-
-        taskContent = "{\n" +
+        int contactId3 = accountService.getByUsername("taskAccount3").getAccountID();
+        taskContent = String.format("{\n" +
                 "    \"taskID\": 5,\n" +
-                "    \"contactID\": 3\n" +
-                "}";
+                "    \"contactID\": %d\n" +
+                "}", contactId3);
 
         mvc.perform(post("/task/addTaskContact")
                 .cookie(cookie)
@@ -514,20 +493,21 @@ public class TasksTesting {
                 "}";
 
 
-        output = "{\"accountID\":1,\"taskName\":\"TaskNumber1\",\"taskDeadline\":null,\"taskPriority\":3,\"taskNoteList\":[{\"taskID\":5,\"taskNoteID\":\"NoteNumber1\"}],\"taskContactAccounts\":[{\"taskID\":5,\"contactID\":3}],\"taskID\":5}";
+        output = String.format("\"taskName\":\"TaskNumber1\",\"taskDeadline\":null,\"taskPriority\":3,\"taskComplete\":0,\"taskNoteList\":[{\"taskID\":5,\"taskNoteID\":1,\"note\":\"NoteNumber1\"}],\"taskContactAccounts\":[{\"taskID\":5,\"contactID\":%d}],\"owner\":false,\"taskID\":5}", contactId3);
+
 
         mvc.perform(get("/task/readTask")
                 .cookie(cookie)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(taskContent))
-                .andExpect(content().json(output));
+                .andExpect(content().string(Matchers.containsString(output)));
 
         // update the task note
 
         taskContent = "{\n" +
                 "    \"taskID\": 5,\n" +
-                "    \"oldTaskNoteID\": \"NoteNumber1\",\n" +
-                "    \"newTaskNoteID\": \"NEW NOTE HELLO WORLD\"\n" +
+                "    \"taskNoteID\": 1,\n" +
+                "    \"newTaskNote\": \"NEW NOTE HELLO WORLD\"\n" +
                 "}";
 
         // update the task note.
@@ -548,18 +528,16 @@ public class TasksTesting {
                 "    \"taskID\": 5\n" +
                 "}";
 
-
-        output = "{\"accountID\":1,\"taskName\":\"TaskNumber1\",\"taskDeadline\":null,\"taskPriority\":3,\"taskNoteList\":[{\"taskID\":5,\"taskNoteID\":\"NEW NOTE HELLO WORLD\"}],\"taskContactAccounts\":[{\"taskID\":5,\"contactID\":3}],\"taskID\":5}";
+        output = String.format("\"taskName\":\"TaskNumber1\",\"taskDeadline\":null,\"taskPriority\":3,\"taskComplete\":0,\"taskNoteList\":[{\"taskID\":5,\"taskNoteID\":1,\"note\":\"NEW NOTE HELLO WORLD\"}],\"taskContactAccounts\":[{\"taskID\":5,\"contactID\":%d}],\"owner\":false,\"taskID\":5}", contactId3);
         mvc.perform(get("/task/readTask")
                 .cookie(cookie)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(taskContent))
-                .andExpect(content().json(output));
+                .andExpect(content().string(Matchers.containsString(output)));
 
 
         taskContent = "{\n" +
-                "    \"taskID\": 5,\n" +
-                "    \"noteID\": \"NEW NOTE HELLO WORLD\"\n" +
+                "    \"taskNoteID\": 1\n" +
                 "}";
 
         // delete the task note
@@ -578,19 +556,19 @@ public class TasksTesting {
                 "}";
 
 
-        output = "{\"accountID\":1,\"taskName\":\"TaskNumber1\",\"taskDeadline\":null,\"taskPriority\":3,\"taskNoteList\":[],\"taskContactAccounts\":[{\"taskID\":5,\"contactID\":3}],\"taskID\":5}";
+        output = String.format("\"taskName\":\"TaskNumber1\",\"taskDeadline\":null,\"taskPriority\":3,\"taskComplete\":0,\"taskNoteList\":[],\"taskContactAccounts\":[{\"taskID\":5,\"contactID\":%d}],\"owner\":false,\"taskID\":5}", contactId3);
         mvc.perform(get("/task/readTask")
                 .cookie(cookie)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(taskContent))
-                .andExpect(content().json(output));
+                .andExpect(content().string(Matchers.containsString(output)));
 
         // Delete the Task Contact.
 
-        taskContent = "{\n" +
+        taskContent = String.format("{\n" +
                 "    \"taskID\": 5,\n" +
-                "    \"contactID\": 3\n" +
-                "}";
+                "    \"contactID\": %d\n" +
+                "}", contactId3);
 
         // delete the task note
 
@@ -608,12 +586,12 @@ public class TasksTesting {
                 "}";
 
 
-        output = "{\"accountID\":1,\"taskName\":\"TaskNumber1\",\"taskDeadline\":null,\"taskPriority\":3,\"taskNoteList\":[],\"taskContactAccounts\":[],\"taskID\":5}";
+        output = "\"taskName\":\"TaskNumber1\",\"taskDeadline\":null,\"taskPriority\":3,\"taskComplete\":0,\"taskNoteList\":[],\"taskContactAccounts\":[],\"owner\":false,\"taskID\":5}";
         mvc.perform(get("/task/readTask")
                 .cookie(cookie)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(taskContent))
-                .andExpect(content().json(output));
+                .andExpect(content().string(Matchers.containsString(output)));
 
 
     }
@@ -624,8 +602,10 @@ public class TasksTesting {
                 "    \"accountID\": " + String.valueOf(accountID) + ",\n" +
                 "    \"taskName\": \"" + taskName + "\",\n" +
                 "    \"taskDeadline\": null,\n" +
-                "    \"taskPriority\": 0,\n" +
+                "    \"taskComplete\":0,\n" +
+                "    \"taskPriority\": -1,\n" +
                 "    \"taskNoteList\": [],\n" +
+                "    \"owner\":false,\n" +
                 "    \"taskContactAccounts\": [],\n" +
                 "    \"taskID\": " + String.valueOf(taskID) + "\n" +
                 "}";
@@ -638,8 +618,10 @@ public class TasksTesting {
                 "    \"accountID\": " + String.valueOf(accountID) + ",\n" +
                 "    \"taskName\": \"" + taskName + "\",\n" +
                 "    \"taskDeadline\": null,\n" +
+                "    \"taskComplete\":0,\n" +
                 "    \"taskPriority\": " + String.valueOf(priority) + ",\n" +
                 "    \"taskNoteList\": [],\n" +
+                "    \"owner\":false,\n" +
                 "    \"taskContactAccounts\": [],\n" +
                 "    \"taskID\": " + String.valueOf(taskID) + "\n" +
                 "}";
@@ -652,8 +634,10 @@ public class TasksTesting {
                 "    \"accountID\": " + String.valueOf(accountID) + ",\n" +
                 "    \"taskName\": \"" + taskName + "\",\n" +
                 "    \"taskDeadline\": \"" + deadline + "\",\n" +
-                "    \"taskPriority\": 0,\n" +
+                "    \"taskComplete\":0,\n" +
+                "    \"taskPriority\": -1,\n" +
                 "    \"taskNoteList\": [],\n" +
+                "    \"owner\":false,\n" +
                 "    \"taskContactAccounts\": [],\n" +
                 "    \"taskID\": " + String.valueOf(taskID) + "\n" +
                 "}";
@@ -666,8 +650,10 @@ public class TasksTesting {
                 "    \"accountID\": " + String.valueOf(accountID) + ",\n" +
                 "    \"taskName\": \"" + taskName + "\",\n" +
                 "    \"taskDeadline\": \"" + deadline + "\",\n" +
+                "    \"taskComplete\":0,\n" +
                 "    \"taskPriority\": " + String.valueOf(priority) + ",\n" +
                 "    \"taskNoteList\": [],\n" +
+                "    \"owner\":false,\n" +
                 "    \"taskContactAccounts\": [],\n" +
                 "    \"taskID\": " + String.valueOf(taskID) + "\n" +
                 "}";
