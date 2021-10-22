@@ -55,7 +55,7 @@ public class MeetingController {
                     (String)payload.get("meetingEnd")
                 )
             ){
-                return ResponseEntity.ok().body("Sucess");
+                return ResponseEntity.ok().body("Success");
             }
         }
         catch(Exception e){

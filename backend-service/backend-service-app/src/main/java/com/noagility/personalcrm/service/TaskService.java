@@ -6,16 +6,20 @@ import com.noagility.personalcrm.mapper.TaskRowMapper;
 import com.noagility.personalcrm.model.Task;
 import com.noagility.personalcrm.model.TaskContactAccount;
 import com.noagility.personalcrm.model.TaskNote;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+@Slf4j
 public class TaskService {
     @Autowired
     DataSource dataSource;
@@ -49,6 +53,7 @@ public class TaskService {
         } catch (Exception e) {
             maxTaskNoteID = 0;
         }
+        log.info("TaskService has started, incrementing TaskID counter from {} and TaskNoteID counter from {}", maxTaskID, maxTaskNoteID);
     }
 
 
@@ -60,19 +65,27 @@ public class TaskService {
             String sql;
             if(priority >= 0 && !deadline.isBlank()){
                 sql = "INSERT INTO Tasks(TaskID, AccountID, TaskName, TaskDeadline, TaskPriority) VALUES (?, ?, ?, ?, ?)";
-                jdbcTemplate.update(sql, taskID, accountID, taskName, deadline, priority);
+                if (jdbcTemplate.update(sql, taskID, accountID, taskName, deadline, priority) == 0) {
+                    throw new Exception("Failed to insert task into database");
+                }
             }
             else if(priority >= 0){
                 sql = "INSERT INTO Tasks(TaskID, AccountID, TaskName, TaskPriority) VALUES (?, ?, ?, ?)";
-                jdbcTemplate.update(sql, taskID, accountID, taskName, priority);
+                if (jdbcTemplate.update(sql, taskID, accountID, taskName, priority) == 0) {
+                    throw new Exception("Failed to insert task into database");
+                }
             }
             else if(!deadline.isBlank()){
                 sql = "INSERT INTO Tasks(TaskID, AccountID, TaskName, TaskDeadline, TaskPriority) VALUES (?, ?, ?, ?, ?)";
-                jdbcTemplate.update(sql, taskID, accountID, taskName, deadline, -1);
+                if (jdbcTemplate.update(sql, taskID, accountID, taskName, deadline, -1) == 0) {
+                    throw new Exception("Failed to insert task into database");
+                }
             }
             else{
                 sql = "INSERT INTO Tasks(TaskID, AccountID, TaskName, TaskPriority) VALUES (?, ?, ?, ?)";
-                jdbcTemplate.update(sql, taskID, accountID, taskName, -1);
+                if (jdbcTemplate.update(sql, taskID, accountID, taskName, -1) == 0) {
+                    throw new Exception("Failed to insert task into database");
+                };
             }
 
             // add the contacts.
@@ -89,11 +102,11 @@ public class TaskService {
                     addTaskNote(taskID, taskNote);
                 }
             }
-
+            log.info("Task created for account (id: {}) - TaskID: {}, details: Name={}, Priority={}, Deadline={}, Contacts involved={}", accountID, taskID, taskName, priority, deadline, Arrays.toString(contactIDs.toArray()));
             return true;
         }
         catch(Exception e){
-            e.printStackTrace();
+            log.error("Failed to create task for account (id: {}) with details: Name={}, Priority={}, Deadline={}, Contacts involved={}", accountID, taskName, priority, deadline, Arrays.toString(contactIDs.toArray()), e);
         }
         return false;
     }
@@ -102,11 +115,14 @@ public class TaskService {
     public boolean addTaskNote(int taskID, String taskNote) {
         try {
             String sql = "INSERT INTO TaskNotes(TaskID, TaskNoteID, Note) VALUES (?, ?, ?)";
-            jdbcTemplate.update(sql, taskID, ++maxTaskNoteID, taskNote);
+            if (jdbcTemplate.update(sql, taskID, ++maxTaskNoteID, taskNote) == 0) {
+                throw new Exception("Could not find Task from given TaskID");
+            }
+            log.info("Task note created for task (id: {}), TaskNoteID: {}", taskID, maxTaskNoteID);
             return true;
         }
         catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to create task note for task (id: {})", taskID, e);
         }
         return false;
     }
@@ -115,11 +131,14 @@ public class TaskService {
     public boolean addTaskContact(int taskID, int contactID) {
         try {
             String sql = "INSERT INTO Account_Contacts_Tasks(TaskId, ContactID) VALUES (?, ?)";
-            jdbcTemplate.update(sql, taskID, contactID);
+            if (jdbcTemplate.update(sql, taskID, contactID) == 0) {
+                throw new Exception("Could not find Task from given TaskID");
+            }
+            log.info("Adding accountID {} to task {} as contact", contactID, taskID);
             return true;
         }
         catch (Exception e){
-            e.printStackTrace();
+            log.error("Failed to add contact (id: {}) to task (id: {})", contactID, taskID);
         }
         return false;
     }
@@ -128,11 +147,14 @@ public class TaskService {
     public boolean updateTask(int taskID, String newTaskName) {
         try {
             String sql = "UPDATE Tasks SET TaskName = ? WHERE TaskID = ?";
-            jdbcTemplate.update(sql, newTaskName, taskID);
+            if (jdbcTemplate.update(sql, newTaskName, taskID) == 0) {
+                throw new Exception("Could not find Task from given TaskID");
+            }
+            log.info("Updated task name for taskID (id: {}) to {}", taskID, newTaskName);
             return true;
         }
         catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to update task (id: {}) with new name: {}", taskID, newTaskName, e);
         }
         return false;
     }
@@ -142,11 +164,14 @@ public class TaskService {
         try {
             // delete the old one and create a new one.
             String sql = "UPDATE TaskNotes SET Note = ? WHERE TaskNoteID = ?";
-            jdbcTemplate.update(sql, newTaskNoteID, taskNoteID);
+            if (jdbcTemplate.update(sql, newTaskNoteID, taskNoteID) == 0) {
+                throw new Exception("Could not find Task from given TaskID");
+            }
+            log.info("Updated task note for task note (id: {}), new note: {}", taskNoteID, newTaskNoteID);
             return true;
         }
         catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to update taskNote (id: {}) with new name: {}", taskNoteID, newTaskNoteID, e);
         }
         return false;
     }
@@ -154,11 +179,14 @@ public class TaskService {
     public boolean updatePriority(int taskID, int newPriority){
         try{
             String sql = "UPDATE Tasks SET TaskPriority = ? WHERE TaskID = ?";
-            jdbcTemplate.update(sql, newPriority, taskID);
+            if (jdbcTemplate.update(sql, newPriority, taskID) == 0) {
+                throw new Exception("Could not find Task from given TaskID");
+            }
+            log.info("Updated priority for task (id: {}), new priority: {}", taskID, newPriority);
             return true;
         }
         catch (Exception e){
-            e.printStackTrace();
+            log.error("Failed to update task (id: {}) with new priority: {}", taskID, newPriority, e);
         }
         return false;
     }
@@ -166,11 +194,14 @@ public class TaskService {
     public boolean updateDeadline(int taskID, String newDeadline){
         try{
             String sql = "UPDATE Tasks SET TaskDeadline = ? WHERE TaskID = ?";
-            jdbcTemplate.update(sql, newDeadline, taskID);
+            if (jdbcTemplate.update(sql, newDeadline, taskID) == 0) {
+                throw new Exception("Could not find Task from given TaskID");
+            }
+            log.info("Updated deadline for task (id: {}), new deadline: {}", taskID, newDeadline);
             return true;
         }
         catch (Exception e){
-            e.printStackTrace();
+            log.error("Failed to update task (id: {}) with new deadline: {}", taskID, newDeadline, e);
         }
         return false;
     }
@@ -186,12 +217,14 @@ public class TaskService {
             jdbcTemplate.update(sql, taskID);
             // delete the Task
             sql = "DELETE FROM Tasks WHERE TaskID = ?";
-            System.out.println("DELETING TASK ID: " + taskID);
-            jdbcTemplate.update(sql, taskID);
+            if (jdbcTemplate.update(sql, taskID) == 0) {
+                throw new Exception("TaskID does not exist");
+            };
+            log.info("Deleted task (id: {})", taskID);
             return true;
         }
         catch (Exception e){
-            e.printStackTrace();
+            log.error("Failed to delete task (id: {})", taskID, e);
         }
         return false;
     }
@@ -200,11 +233,14 @@ public class TaskService {
     public boolean deleteTaskNote(int taskNoteID) {
         try {
             String sql = "DELETE FROM TaskNotes WHERE TaskNoteID = ?";
-            jdbcTemplate.update(sql, taskNoteID);
+            if (jdbcTemplate.update(sql, taskNoteID) == 0) {
+                throw new Exception("Could not find Task from given TaskID");
+            }
+            log.info("Deleted task note (id: {})", taskNoteID);
             return true;
         }
         catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to delete task note (id: {})", taskNoteID, e);
         }
         return false;
     }
@@ -213,11 +249,14 @@ public class TaskService {
     public boolean deleteTaskContact(int taskID, int contactID) {
         try {
             String sql = "DELETE FROM Account_Contacts_Tasks WHERE TaskID = ? AND ContactID = ?";
-            jdbcTemplate.update(sql, taskID, contactID);
+            if (jdbcTemplate.update(sql, taskID, contactID) == 0) {
+                throw new Exception("Could not find Task from given TaskID");
+            }
+            log.info("Deleted task contact (id: {}) from task (id: {})", contactID, taskID);
             return true;
         }
         catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to delete contact (id: {}) from task (id: {})", taskID, contactID, e);
         }
         return false;
     }
@@ -225,23 +264,28 @@ public class TaskService {
     public boolean deletePriority(int taskID){
         try {
             String sql = "UPDATE Tasks SET TaskDeadline = NULL WHERE TaskID = ?";
-            jdbcTemplate.update(sql, taskID);
+            if (jdbcTemplate.update(sql, taskID) == 0) {
+                throw new Exception("Could not find Task from given TaskID");
+            };
             return true;
         }
         catch (Exception e){
-            e.printStackTrace();
+            log.error("Failed to delete task (id: {}) priority", taskID, e);
         }
         return false;
     }
 
     public boolean deleteDeadline(int taskID){
         try {
-            String sql = "UPDATE Tasks SET TaskDeadline = -1 WHERE TaskID = ?";
-            jdbcTemplate.update(sql, taskID);
+            String sql = "UPDATE Tasks SET TaskDeadline = NULL WHERE TaskID = ?";
+            if (jdbcTemplate.update(sql, taskID) == 0) {
+                throw new Exception("Could not find Task from given TaskID");
+            }
+            log.info("Deleted deadline for task (id: {}", taskID);
             return true;
         }
         catch (Exception e){
-            e.printStackTrace();
+            log.error("Failed to delete task (id: {}) deadline", taskID, e);
         }
         return false;
     }
@@ -284,7 +328,7 @@ public class TaskService {
             return tasks;
         }
         catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to get tasks owned by account (id: {})", accountID, e);
         }
         return null;
     }
@@ -304,7 +348,7 @@ public class TaskService {
             return tasks;
         }
         catch (Exception e){
-            e.printStackTrace();
+            log.error("Failed to get tasks with account (id: {})", accountID, e);
         }
         return null;
     }
@@ -331,7 +375,7 @@ public class TaskService {
             return task;
         }
         catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to get task by id {})", taskID, e);
         }
         return null;
     }
@@ -340,10 +384,11 @@ public class TaskService {
         try {
             String sql = "UPDATE Tasks SET TaskComplete = 1 WHERE TaskID = ?";
             jdbcTemplate.update(sql, taskID);
+            log.info("Setting task (id: {}) as complete", taskID);
             return true;
         }
         catch (Exception e){
-            e.printStackTrace();
+            log.error("Failed to set task (id: {}) as complete", taskID, e);
         }
         return false;
     }

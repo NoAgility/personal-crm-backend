@@ -2,6 +2,7 @@ package com.noagility.personalcrm.service;
 
 import com.noagility.personalcrm.Util.JwtTokenUtil;
 import com.noagility.personalcrm.model.Account;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +12,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 
+@Slf4j
 @Service
 @Profile("!ete")
 public class AuthenticationServiceImpl extends AuthenticationService {
@@ -49,6 +51,7 @@ public class AuthenticationServiceImpl extends AuthenticationService {
 
         response.addCookie(accountIdCookie);
 
+        log.info("Received authentication request from username {}, sending JWT set-cookie header response", username);
         return ResponseEntity.ok("Success");
     }
 }

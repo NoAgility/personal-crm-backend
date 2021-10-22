@@ -2,6 +2,7 @@ package com.noagility.personalcrm.Util;
 
 import com.noagility.personalcrm.service.JwtUserDetailsService;
 import io.jsonwebtoken.ExpiredJwtException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
+@Slf4j
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
@@ -49,9 +51,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 try {
                     username = jwtTokenUtil.getUsernameFromToken(jwtToken);
                 } catch (IllegalArgumentException e) {
-                    System.out.println("Unable to get JWT Token");
+                    log.info("Unable to get JWT Token from request");
                 } catch (ExpiredJwtException e) {
-                    System.out.println("JWT Token has expired");
+                    log.info("JWT Token contained in request has expired");
                 }
             } else {
                 logger.warn("JWT Token has not been included in the cookies");
@@ -76,8 +78,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                 }
             }
-        } else {
-            logger.warn("JWT Token has not been included in the cookies");
         }
         chain.doFilter(request, response);
     }

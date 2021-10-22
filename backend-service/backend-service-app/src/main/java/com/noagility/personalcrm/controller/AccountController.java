@@ -28,17 +28,12 @@ public class AccountController {
         consumes = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<String> create(@RequestBody Map<String, Object> payload, @RequestParam(value="referral", defaultValue = "") String referral) throws Exception{
-        System.out.println((String)payload.get("username"));
-        System.out.println((String)payload.get("password"));
-        System.out.println((String)payload.get("name"));
-        System.out.println((String)payload.get("dob"));
         if(accountService.registerAccount(
             (String)payload.get("username"), 
             (String)payload.get("password"),
             (String)payload.get("name"),
             (String)payload.get("dob")
         )){
-            System.out.println("???? " + referral);
             if(referral != "" && accountService.getByUsername(referral) != null){
                 contactService.addContactWithUsername((String)payload.get("username"), referral);
             }
