@@ -17,7 +17,6 @@ import org.springframework.context.annotation.Bean;
 @Slf4j
 @SpringBootApplication
 public class PersonalCRMApplication {
-	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
 	public static void main(String[] args) {
 		SpringApplication.run(PersonalCRMApplication.class, args);
@@ -80,7 +79,14 @@ public class PersonalCRMApplication {
 	
 	@Bean
 	CommandLineRunner runner() {
-		return args -> { LOGGER.info("Application has started."); };
+		return args -> {
+			log.info("   _  __     ___       _ ___ __         ___                             __  _____        \n" +
+					"  / |/ /__  / _ |___ _(_) (_) /___ __  / _ \\___ _______ ___  ___  ___ _/ / / ___/_____ _ \n" +
+					" /    / _ \\/ __ / _ `/ / / / __/ // / / ___/ -_) __(_-</ _ \\/ _ \\/ _ `/ / / /__/ __/  ' \\\n" +
+					"/_/|_/\\___/_/ |_\\_, /_/_/_/\\__/\\_, / /_/   \\__/_/ /___/\\___/_//_/\\_,_/_/  \\___/_/ /_/_/_/\n" +
+					"               /___/          /___/                                                      ");
+			log.info("NoAgility Personal CRM Backend Application has started");
+		};
 	}
 
 }

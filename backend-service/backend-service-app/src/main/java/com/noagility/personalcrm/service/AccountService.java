@@ -3,6 +3,7 @@ package com.noagility.personalcrm.service;
 import com.noagility.personalcrm.Util.JwtTokenUtil;
 import com.noagility.personalcrm.mapper.AccountRowMapper;
 import com.noagility.personalcrm.model.Account;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -11,6 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 
+@Slf4j
 public class AccountService {
     @Autowired
     DataSource dataSource;
@@ -34,7 +36,7 @@ public class AccountService {
             return account;
         }
         catch(Exception e){
-            
+            log.error("Tried to fetch account by username {}, does not exist", username);
         }
         return null;
     }
@@ -45,15 +47,15 @@ public class AccountService {
             Account account = jdbcTemplate.queryForObject(sql, accountRowMapper, id);
             return account;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to fetch account by id {}", id, e);
         }
         return null;
     }
 
     public boolean registerAccount(String username, String password, String name, String dateOfBirth){
         if(getByUsername(username)!=null){
-            System.out.println("username taken");
-            //this should thow the error for repeated usename below
+            log.info(String.format("Tried to register account with username that already exists, Username=%s", username));
+            //this should throw the error for repeated username below
             return false;
         }
         try {
@@ -69,24 +71,30 @@ public class AccountService {
             //  Insert new account login details into AccountLoginDetials
             sql = "INSERT INTO AccountLoginDetails(AccountID, AccountUsername, AccountPassword) VALUES (?, ?, ?)";
             jdbcTemplate.update(sql, account.getAccountID(), username, passwordEncoder.encode(password));
+
+            log.info("Account has been registered with details: Username={}, Name={}, DateOfBirth={}", username, name, dateOfBirth);
+
             return true;
 
         } catch (DataIntegrityViolationException e) {
-            e.printStackTrace();
+            log.error("Failed to create new account with username={} because it already exists", username);
             //Log failure to create new account due to existing username
 
         } catch (IncorrectResultSizeDataAccessException e) {
-            e.printStackTrace();
+            log.error("Failed to retrieve account with username={} after inserting account into DB", username);
             //Log failure to retrieve account after insertion
         }
         return false;
     }
-    
+
     public boolean deactivateAccount(int id) {
         //  Insert new account into Accounts table
         String sql = "UPDATE Accounts SET AccountActive = 0 WHERE AccountID = ?;";
+
+        log.info("Account (id: {}) has been deactivated", id);
+
         return jdbcTemplate.update(sql, id) != 0;
     }
 
-    
+
 }

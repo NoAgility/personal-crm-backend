@@ -2,6 +2,7 @@ package com.noagility.personalcrm.service;
 
 import com.noagility.personalcrm.mapper.ContactRowMapper;
 import com.noagility.personalcrm.model.Contact;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,6 +11,7 @@ import javax.sql.DataSource;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class ContactService {
 
     @Autowired
@@ -23,14 +25,15 @@ public class ContactService {
 
     public boolean addContact(int accountID, String contact) {
 
-        int contactID = getIDFromUsername(contact);
+        Integer contactID = getIDFromUsername(contact);
 
         if(accountID==contactID){
+            log.info("Account (id: {}) attempted to add themselves", accountID);
             return false;
             //cannot add urself
         }
         if(contactAdded(accountID ,contactID)){
-            System.out.println("contact already added");
+            log.info("Attempted to add contact (id: {}) by account (id: {}), however already has been added", contactID, accountID);
             //this should thow  error if db already has contact
             return false;
         }
@@ -39,10 +42,11 @@ public class ContactService {
 
             String sql = "INSERT INTO Account_Contacts(AccountID, ContactID) VALUES (?, ?)";
             jdbcTemplate.update(sql, accountID, contactID);
+            log.info("Contact (id: {}) added by account (id: {})", contactID, accountID);
             return true;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to add contact (id: {}) for account (id: {})", contactID, accountID);
         }
         return false;
     }
@@ -59,9 +63,10 @@ public class ContactService {
                 jdbcTemplate.update("UPDATE Account_Contacts SET ContactEmail = ?, ContactAddress = ?," +
                         " ContactPhone = ?, ContactJobTitle = ?, ContactCompany = ? " +
                         "WHERE ContactID = ? AND AccountID = ?", email, address, phone, jobTitle, company, contactID, accountID);
+            log.info("Contact (id: {}) updated by account (id: {}), new details: email={}, address={}, phone={}, jobTitle={}, company={}", contactID, accountID, email, address, phone, jobTitle, company);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to update contact (id: {}) for account (id: {})", contactID, accountID, e);
         }
         return false;
     }
@@ -75,10 +80,11 @@ public class ContactService {
 
             String sql = "DELETE FROM Account_Contacts WHERE AccountID = ? AND ContactID = ?";
             jdbcTemplate.update(sql, accountID, contactID);
+            log.info("Contact (id: {}) deleted by account (id: {})", contactID, accountID);
             return true;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to delete contact (id: {}) for account (id: {})", contactID, accountID, e);
         }
         return false;
     }
@@ -94,7 +100,7 @@ public class ContactService {
             return contacts;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to fetch contacts for account (id: {})", accountID, e);
         }
         return null;
     }
@@ -115,7 +121,7 @@ public class ContactService {
             int id = jdbcTemplate.queryForObject(sql,Integer.class, username);
             return id;
         } catch (EmptyResultDataAccessException e) {
-            e.printStackTrace();
+            log.error("Failed to get id from username {}", username, e);
         }
         return null;
     }

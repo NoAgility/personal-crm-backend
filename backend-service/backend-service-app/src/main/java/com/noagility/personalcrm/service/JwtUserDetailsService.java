@@ -2,6 +2,7 @@ package com.noagility.personalcrm.service;
 
 import com.noagility.personalcrm.mapper.LoginRowMapper;
 import com.noagility.personalcrm.model.JwtRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
+@Slf4j
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
 
@@ -27,8 +29,13 @@ public class JwtUserDetailsService implements UserDetailsService {
             String sql = "SELECT AccountLoginDetails.AccountUsername, AccountLoginDetails.AccountPassword " +
                     "FROM AccountLoginDetails INNER JOIN Accounts ON " +
                     "AccountLoginDetails.AccountID = Accounts.AccountID WHERE AccountLoginDetails.AccountUsername = ? AND AccountActive = 1";
-            JwtRequest jwtRequest = jdbcTemplate.queryForObject(sql, loginRowMapper, username);
-            return new User(jwtRequest.getUsername(), jwtRequest.getPassword(), new ArrayList<>());
+            try {
+                JwtRequest jwtRequest = jdbcTemplate.queryForObject(sql, loginRowMapper, username);
+                return new User(jwtRequest.getUsername(), jwtRequest.getPassword(), new ArrayList<>());
+            } catch (Exception e) {
+                log.error("Failed to fetch userDetails from username and password encoded in JWT token - username={}", username, e);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
