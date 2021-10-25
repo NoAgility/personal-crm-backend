@@ -1,6 +1,7 @@
 package com.noagility.personalcrm.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -15,11 +16,13 @@ import com.noagility.personalcrm.model.Account;
 import com.noagility.personalcrm.model.Chat;
 import com.noagility.personalcrm.model.Message;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+@Slf4j
 public class ChatService {
     @Autowired
     DataSource dataSource;
@@ -44,6 +47,10 @@ public class ChatService {
 
     private int maxChatID;
 
+    /**
+     * Method on application start, reads from the database the current max ID and increments it to insert future
+     * entries
+     */
     @EventListener(ApplicationReadyEvent.class)
     private void loadChatID(){
         String sql = "SELECT MAX(ChatID) as ChatID FROM Chats";
@@ -54,27 +61,27 @@ public class ChatService {
         catch(Exception e){
             maxChatID = 0;
         }
+        log.info("ChatService has started, incrementing ChatID from {}", maxChatID);
     }
 
     
     /** 
      * <p>Adds a message to a given chat
-     * @param chatID
-     * @param accountID
-     * @param messageText
+     * @param chatID The chat to add message to
+     * @param accountID The account that created the message
+     * @param messageText The text of the message
      * @return boolean
      */
     public boolean addMessage(int chatID, int accountID, String messageText){
-        System.out.println(String.format("addMessage: {\"chatID\":%d,\"accountID\":%d,\"messageText\":\"%s\"}", chatID, accountID, messageText));
         try{
             //  Insert new message into Messages table
             String sql = "INSERT INTO Messages(ChatID, AccountID, MessageText) VALUES (?, ?, ?)";
             jdbcTemplate.update(sql, chatID, accountID, messageText);
-
+            log.info("Message added for chat (id: {}) from account (id: {}), message: {}", chatID, accountID, messageText);
             return true;
         }
         catch(Exception e){
-            e.printStackTrace();
+            log.error("Failed to create message for chat (id: {}) from account (id: {})", chatID, accountID, e);
         }
         return false;
     }
@@ -82,11 +89,10 @@ public class ChatService {
     
     /** 
      * <p>Creates a chat with the given accountIDs
-     * @param accountIDs
-     * @return boolean
+     * @param accountIDs The ids of the accounts involved
+     * @return a boolean indicating the success of the transaction
      */
     public boolean addChat(Collection<Integer> accountIDs){
-        System.out.println(String.format("addChat: {\"accountIDs\":%s}", accountIDs.toString()));
         try{
             //  Insert new chat into Chats table
             String sql = "INSERT INTO Chats(ChatID) VALUES (?)";
@@ -100,36 +106,35 @@ public class ChatService {
             for(int accountID : accountIDs){
                 rows.add(new Object[] {accountID, chatID});
             }
-
+            log.info("Chat {} created for accounts IDs: {}", chatID, Arrays.toString(accountIDs.toArray()));
             jdbcTemplate.batchUpdate(sql, rows);
 
             return true;
         }
         catch(Exception e){
-            e.printStackTrace();
+            log.error("Failed to create chat for account IDs: {}", Arrays.toString(accountIDs.toArray()), e);
         }
 
         return false;
     }
 
-    
-    /** 
+
+    /**
      * <p>Deletes a message with the given messageID and chatID
-     * @param messageID
-     * @param chatID
-     * @return boolean
+     * @param messageID The id of the message to be deleted
+     * @param chatID The id of the chat that contains the message
+     * @return a boolean indicating the success of the transaction
      */
     public boolean deleteMessage(int messageID, int chatID){
-        System.out.println(String.format("removeMessage: {\"messageID\": %d, \"chatID\": %d}", messageID, chatID));
         try{
             //  Delete message by messageID and chatID
             String sql = "DELETE FROM Messages WHERE MessageID = ? AND ChatID = ?";
             jdbcTemplate.update(sql, messageID, chatID);
-
+            log.info("Message {} deleted for chat {}", messageID, chatID);
             return true;
         }
         catch(Exception e){
-            e.printStackTrace();
+            log.error("Failed to delete message (id: {})", messageID, e);
         }
 
         return false;
@@ -138,22 +143,21 @@ public class ChatService {
     
     /** 
      * <p>Edits a message with the given messageID and chatID
-     * @param messageID
-     * @param chatID
-     * @param newText
-     * @return boolean
+     * @param messageID The id of the message to be edited
+     * @param chatID The id of the chat that contains the message
+     * @param newText The new text of the message
+     * @return a boolean indicating the success of the transaction
      */
     public boolean editMessage(int messageID, int chatID, String newText){
-        System.out.println(String.format("editMessage: {\"messageID\": %d, \"chatID\": %d, \"newText\": \"%s\"}", messageID, chatID, newText));
         try{
             //  Edit message by messageID and chatID
             String sql = "UPDATE Messages SET MessageText = ? WHERE MessageID = ? AND ChatID = ?";
             jdbcTemplate.update(sql, newText, messageID, chatID);
-            
+            log.info("Message {} edited for chat {}, new text: \"{}\"", messageID, chatID, newText);
             return true;
         }
         catch(Exception e){
-            e.printStackTrace();
+            log.error("Failed to edit message (id: {})", messageID, e);
         }
 
         return false;
@@ -162,11 +166,10 @@ public class ChatService {
     
     /** 
      * <p>Returns the specified chat object for the given chatID
-     * @param chatID
-     * @return Chat
+     * @param chatID The id of the chat to look for
+     * @return A Chat object
      */
     public Chat getChatByID(int chatID){
-        System.out.println(String.format("getChatByID: {\"chatID\": %d}", chatID));
         try{
             //  Get chat by chatID
             String sql = "SELECT * FROM Chats WHERE ChatID = ?";
@@ -189,7 +192,7 @@ public class ChatService {
             return chat;
         }
         catch(Exception e){
-            e.printStackTrace();
+            log.error("Failed to fetch chat by id {}", chatID, e);
         }
 
         return null;
@@ -197,12 +200,11 @@ public class ChatService {
 
     /** 
      * <p>Returns the specified Message object by the messageID and chatID
-     * @param messageID
-     * @param chatID
+     * @param messageID The id of the message to look for
+     * @param chatID The id of the chat to look for the message in
      * @return Message
      */
     public Message getMessageByID(int messageID, int chatID){
-        System.out.println(String.format("getMessageByID: {\"messageID\": %d, \"chatID\": %d}", messageID, chatID));
         try{
             //  Get message by messageID and chatID
             String sql = "SELECT * FROM Messages WHERE MessageID = ? AND ChatID = ?";
@@ -211,7 +213,7 @@ public class ChatService {
             return message;
         }
         catch(Exception e){
-            e.printStackTrace();
+            log.error("Failed to fetch message by id {} from chat (id: {})", messageID, chatID, e);
         }
 
         return null;
@@ -220,11 +222,10 @@ public class ChatService {
     
     /** 
      * <p>Gets all of the chats a user is in
-     * @param accountID
+     * @param accountID The account to fetch the chats for
      * @return List<Chat>
      */
     public List<Chat> getAccountChatsByID(int accountID){
-        System.out.println(String.format("getAccountChatsByID: {\"accountID\": %d}", accountID));
         try{
             //  Get all ChatIDs for account
             String sql = "SELECT ChatID AS `Integer` FROM Accounts_Chats WHERE AccountID = ? AND Account_ChatActive = 1";
@@ -246,7 +247,7 @@ public class ChatService {
             return chats;
         }
         catch(Exception e){
-            e.printStackTrace();
+            log.error("Failed to fetch chats of account (id: {})", accountID, e);
         }
 
         return null;
@@ -255,21 +256,19 @@ public class ChatService {
     
     /** 
      * <p>Validates that the person sending the request has created the messsage
-     * @param token
-     * @param messageID
-     * @param chatID
+     * @param token The JWT token from the request
+     * @param messageID The id of the message
+     * @param chatID The id of the chat containing the message
      * @return boolean
      */
     public boolean validateMessageCreator(String token, int messageID, int chatID){
-        
-        System.out.println(String.format("validateMessageCreator: {\"token\": \"%s\", \"messageID\": %d, \"chatID\": %d}", token, messageID, chatID));
         try{
             //  Get message by messageID and chatID
             Message message = getMessageByID(messageID, chatID);
             return jwtTokenUtil.validateTokenSender(token, message.getAccountID());
         }
         catch(Exception e){
-            e.printStackTrace();
+            log.error("Failed to validate message creator for chat (id: {})", chatID, e);
         }
         
         return false;
@@ -277,12 +276,11 @@ public class ChatService {
 
     /** 
      * <p>Validates that the person sending the request is a participant of the chat
-     * @param token
-     * @param chatID
+     * @param token The JWT token from the request
+     * @param chatID The id of the chat containing the message
      * @return boolean
      */
     public boolean validateChatParticipant(String token, int chatID){
-        System.out.println(String.format("validateChatParticipant: {\"token\": \"%s\", \"chatID\": %d}", token, chatID));
         try{
             //  Get chat by chatID
             Chat chat = getChatByID(chatID);
@@ -291,20 +289,26 @@ public class ChatService {
             return chat.containsAccountID(account.getAccountID());
         }
         catch(Exception e){
-            e.printStackTrace();
+            log.error("Failed to validate chat participant for chat (id: {})", chatID, e);
         }
         return false;
     }
 
+    /**
+     * Method to leave an chat for an account
+     * @param chatID The id of the chat to leave
+     * @param accountID The id of the account to leave
+     * @return boolean indicating the success of the transaction
+     */
     public boolean leaveChat(int chatID, int accountID){
-        System.out.println(String.format("leaveChat: {\"chatID\": %d, \"accountID\": %d}", chatID, accountID));
         try{
             String sql = "UPDATE Accounts_Chats SET Account_ChatActive = 0 WHERE ChatID = ? AND AccountID = ?";
             jdbcTemplate.update(sql, chatID, accountID);
+            log.info("Account (id: {}) has left chat (id: {})", accountID, chatID);
             return true;
         }
         catch(Exception e){
-            e.printStackTrace();
+            log.error("Failed to leave chat (id: {}) - account (id: {})", chatID, accountID, e);
         }
         return false;
     }

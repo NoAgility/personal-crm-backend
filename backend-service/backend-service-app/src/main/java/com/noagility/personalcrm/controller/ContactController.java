@@ -21,7 +21,14 @@ public class ContactController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-    //add a contact to the logged in users account
+
+    /**
+     * API endpoint to create a contact for a user from another account
+     * @param payload The payload of the request containing the contact username
+     * @param token The JWT token used to authenticate the request and indicate the owner
+     * @return A ResponseEntity indicating the success of the request
+     * @throws Exception Indicates that the server failed to create the contact for the user
+     */
     @RequestMapping(
             value = "/create",
             method = RequestMethod.POST
@@ -36,18 +43,11 @@ public class ContactController {
         return ResponseEntity.badRequest().body("Failure");
     }
 
-    //get all contacts for account by username, figure out how to exclude id later or just do in front end
-//    @RequestMapping(
-//            value = "/read/single",
-//            method = RequestMethod.GET,
-//            params = {
-//                    "username"
-//            }
-//    )
-//    public ResponseEntity<List<Account>> read(@RequestParam String username){
-//        return ResponseEntity.ok().body(accountService.getAccounts(username));
-//    }
-    //get all contacts for account by username, figure out how to exclude id later or just do in front end
+    /**
+     * API endpoint to fetch all the contacts of an account based on their token
+     * @param token The JWT token used to authenticate the request and fetch the accounts
+     * @return A ResponseEntity containing the contacts and their details
+     */
     @RequestMapping(
             value = "/read",
             method = RequestMethod.GET
@@ -58,7 +58,12 @@ public class ContactController {
                         jwtTokenUtil.getAccountFromToken(token).getAccountID()));
     }
 
-    //currently useless given cannot change info
+    /**
+     * API endpoint to update the custom information of a contact
+     * @param payload The payload containing the contact details to be updated with
+     * @param token The JWT token used to authenticate the request
+     * @return A ResponseEntity indicating the success of the request
+     */
     @RequestMapping(
             value = "/update",
             method = RequestMethod.POST,
@@ -80,7 +85,13 @@ public class ContactController {
         return ResponseEntity.badRequest().body("Failure");
     }
 
-    //currently just deletes the contact from the database may be subject to change
+    /**
+     * API endpoint to delete a contact from an account
+     * @param payload The payload of the request containing the username of the contact to delete
+     * @param token The JWT token used to authenticate the request
+     * @return A ResponseEntity indicating the success of the request
+     * @throws Exception Indicates that an issue has occurred in deleting a contact for a user
+     */
     @RequestMapping(
             value = "/delete",
             method = RequestMethod.POST,

@@ -35,17 +35,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("local")
 public class TasksTests {
 
+    private static int taskIDCounter = 1;
     @Autowired
-    MockMvc mvc;
+    private MockMvc mvc;
     @Autowired
-    AccountDeserializer accountDeserializer;
+    private AccountDeserializer accountDeserializer;
     @Autowired
-    ContactDeserializer contactDeserializer;
+    private ContactDeserializer contactDeserializer;
     @Autowired
-    JwtTokenUtil jwtTokenUtil;
+    private JwtTokenUtil jwtTokenUtil;
     // Basic API Testing first before performance testing.
     @Autowired
-    AccountService accountService;
+    private AccountService accountService;
 
 
     // to run faster or to test more performance change the number of accounts created.
@@ -119,7 +120,7 @@ public class TasksTests {
 
         Cookie cookie = getCookie("taskAccount1", "password");
 
-        for (int j = 1; j < largeNumberOfTasks; j++) {
+        for (int j = taskIDCounter; j < largeNumberOfTasks + taskIDCounter; j++) {
 
             // create the tasks for each account.
             String taskContent = "{\n" +
@@ -138,13 +139,13 @@ public class TasksTests {
         }
 
         // go through and check that the tasks are created correctly.
-        for (int j = 1; j < largeNumberOfTasks; j++) {
+        for (int j = taskIDCounter; j < largeNumberOfTasks + taskIDCounter; j++) {
 
             // create the tasks for each account.
             String taskContent = "{\n" +
                     "    \"taskID\": " + String.valueOf(j) + "\n" +
                     "}";
-            String output = createExpectedResponse(jwtTokenUtil.getAccountFromToken(cookie.getValue()).getAccountID(), "TaskNumber" + String.valueOf(j), j);
+            String output = createExpectedResponse(accountService.getByUsername("taskAccount1").getAccountID(), "TaskNumber" + String.valueOf(j), j);
             mvc.perform(get("/task/readTask")
                     .cookie(cookie)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -153,7 +154,7 @@ public class TasksTests {
 
 
         // go through and delete the tasks created.
-        for (int j = 1; j < largeNumberOfTasks; j++) {
+        for (int j = taskIDCounter; j < largeNumberOfTasks + taskIDCounter; j++) {
             // create the tasks for each account.
             String taskContent = "{\n" +
                     "    \"taskID\": " + String.valueOf(j) + "\n" +
@@ -172,6 +173,7 @@ public class TasksTests {
         mvc.perform(get("/task/readTasks")
                 .cookie(cookie))
                 .andExpect(content().string("[]"));
+        taskIDCounter += largeNumberOfTasks;
     }
 
     // the second performance test will create a large number of tasks for 1 user with deadline
@@ -186,8 +188,7 @@ public class TasksTests {
                 .andReturn();
 
         Cookie cookie = result.getResponse().getCookie("jwt");
-
-        for (int j = 1; j < largeNumberOfTasks; j++) {
+        for (int j = taskIDCounter; j < largeNumberOfTasks + taskIDCounter; j++) {
 
             // create the tasks for each account.
             String taskContent = "{\n" +
@@ -207,7 +208,7 @@ public class TasksTests {
         }
 
         // go through and delete the tasks created.
-        for (int j = 1; j < largeNumberOfTasks; j++) {
+        for (int j = taskIDCounter; j < largeNumberOfTasks + taskIDCounter; j++) {
             // create the tasks for each account.
             String taskContent = "{\n" +
                     "    \"taskID\": " + String.valueOf(j) + "\n" +
@@ -221,6 +222,7 @@ public class TasksTests {
                     .andDo(print())
                     .andExpect(status().isOk());
         }
+        taskIDCounter += largeNumberOfTasks;
     }
 
     // the 3rd performance test will create a large number of tasks for 1 user with deadline
@@ -229,7 +231,7 @@ public class TasksTests {
 
         Cookie cookie = getCookie("taskAccount1", "password");
 
-        for (int j = 1; j < largeNumberOfTasks; j++) {
+        for (int j = taskIDCounter; j < largeNumberOfTasks + taskIDCounter; j++) {
 
             // create the tasks for each account.
             String taskContent = "{\n" +
@@ -249,7 +251,7 @@ public class TasksTests {
         }
 
         // go through and delete the tasks created.
-        for (int j = 1; j < largeNumberOfTasks; j++) {
+        for (int j = taskIDCounter; j < largeNumberOfTasks + taskIDCounter; j++) {
             // create the tasks for each account.
             String taskContent = "{\n" +
                     "    \"taskID\": " + String.valueOf(j) + "\n" +
@@ -263,6 +265,7 @@ public class TasksTests {
                     .andDo(print())
                     .andExpect(status().isOk());
         }
+        taskIDCounter += largeNumberOfTasks;
     }
 
     // the 4th performance test will create a large number of tasks for 1 user with deadline and priority
@@ -271,7 +274,7 @@ public class TasksTests {
 
         Cookie cookie = getCookie("taskAccount1", "password");
 
-        for (int j = 1; j < largeNumberOfTasks; j++) {
+        for (int j = taskIDCounter; j < largeNumberOfTasks + taskIDCounter; j++) {
 
             // create the tasks for each account.
             String taskContent = "{\n" +
@@ -292,7 +295,7 @@ public class TasksTests {
         }
 
         // go through and delete the tasks created.
-        for (int j = 1; j < largeNumberOfTasks; j++) {
+        for (int j = taskIDCounter; j < largeNumberOfTasks + taskIDCounter; j++) {
             // create the tasks for each account.
             String taskContent = "{\n" +
                     "    \"taskID\": " + String.valueOf(j) + "\n" +
@@ -306,6 +309,7 @@ public class TasksTests {
                     .andDo(print())
                     .andExpect(status().isOk());
         }
+        taskIDCounter += largeNumberOfTasks;
     }
 
     // Will bunch create tasks, add priorities and deadlines, then delete them again.
@@ -314,7 +318,7 @@ public class TasksTests {
 
         Cookie cookie = getCookie("taskAccount1", "password");
 
-        for (int j = 1; j < largeNumberOfTasks; j++) {
+        for (int j = taskIDCounter; j < largeNumberOfTasks + taskIDCounter; j++) {
 
             // create the tasks for each account.
             String taskContent = "{\n" +
@@ -333,7 +337,7 @@ public class TasksTests {
         }
 
         // add priorities to each task
-        for (int j = 1; j < largeNumberOfTasks; j++) {
+        for (int j = taskIDCounter; j < largeNumberOfTasks + taskIDCounter; j++) {
             // create the tasks for each account.
             String taskContent = "{\n" +
                     "    \"taskID\": " + String.valueOf(j) + ",\n" +
@@ -349,7 +353,7 @@ public class TasksTests {
         }
 
         // add deadline to each task
-        for (int j = 1; j < largeNumberOfTasks; j++) {
+        for (int j = taskIDCounter; j < largeNumberOfTasks + taskIDCounter; j++) {
             // create the tasks for each account.
             String taskContent = "{\n" +
                     "    \"taskID\": " + String.valueOf(j) + ",\n" +
@@ -365,7 +369,7 @@ public class TasksTests {
         }
 
         // go through and delete priorities.
-        for (int j = 1; j < largeNumberOfTasks; j++) {
+        for (int j = taskIDCounter; j < largeNumberOfTasks + taskIDCounter; j++) {
             // create the tasks for each account.
             String taskContent = "{\n" +
                     "    \"taskID\": " + String.valueOf(j) + "\n" +
@@ -380,7 +384,7 @@ public class TasksTests {
         }
 
         // go through and delete deadlines.
-        for (int j = 1; j < largeNumberOfTasks; j++) {
+        for (int j = taskIDCounter; j < largeNumberOfTasks + taskIDCounter; j++) {
             // create the tasks for each account.
             String taskContent = "{\n" +
                     "    \"taskID\": " + String.valueOf(j) + "\n" +
@@ -396,7 +400,7 @@ public class TasksTests {
 
 
         // go through and delete the tasks created.
-        for (int j = 1; j < largeNumberOfTasks; j++) {
+        for (int j = taskIDCounter; j < largeNumberOfTasks + taskIDCounter; j++) {
             // create the tasks for each account.
             String taskContent = "{\n" +
                     "    \"taskID\": " + String.valueOf(j) + "\n" +
@@ -410,6 +414,7 @@ public class TasksTests {
                     .andDo(print())
                     .andExpect(status().isOk());
         }
+        taskIDCounter += largeNumberOfTasks;
     }
 
     @Test
@@ -421,7 +426,7 @@ public class TasksTests {
         String taskContent = "{\n" +
                 "    \"contactIDs\":[],\n" +
                 "    \"taskNotes\": [],\n" +
-                "    \"taskName\": \"TaskNumber" + String.valueOf(1) + "\"\n" +
+                "    \"taskName\": \"TaskNumber" + String.valueOf(taskIDCounter) + "\"\n" +
                 "}";
 
         mvc.perform(post("/task/createTask")
@@ -431,12 +436,12 @@ public class TasksTests {
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
-
+        taskIDCounter++;
         // create the task 2
         taskContent = "{\n" +
                 "    \"contactIDs\":[],\n" +
                 "    \"taskNotes\": [],\n" +
-                "    \"taskName\": \"TaskNumber" + String.valueOf(2) + "\"\n" +
+                "    \"taskName\": \"TaskNumber" + String.valueOf(taskIDCounter) + "\"\n" +
                 "}";
 
         mvc.perform(post("/task/createTask")
@@ -456,14 +461,13 @@ public class TasksTests {
                 .getResponse()
                 .getContentAsString();
         System.out.println(output);
-
-
+        
         // add a contact.
         int contactId3 = accountService.getByUsername("taskAccount3").getAccountID();
         taskContent = String.format("{\n" +
-                "    \"taskID\": 5,\n" +
+                "    \"taskID\": %d,\n" +
                 "    \"contactID\": %d\n" +
-                "}", contactId3);
+                "}", taskIDCounter, contactId3);
 
         mvc.perform(post("/task/addTaskContact")
                 .cookie(cookie)
@@ -475,10 +479,10 @@ public class TasksTests {
 
         // add a task note.
 
-        taskContent = "{\n" +
-                "    \"taskID\": 5,\n" +
+        taskContent = String.format("{\n" +
+                "    \"taskID\": %d,\n" +
                 "    \"taskNote\": \"NoteNumber1\"\n" +
-                "}";
+                "}", taskIDCounter);
 
         mvc.perform(post("/task/addTaskNote")
                 .cookie(cookie)
@@ -488,12 +492,12 @@ public class TasksTests {
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        taskContent = "{\n" +
-                "    \"taskID\": 5\n" +
-                "}";
+        taskContent = String.format("{\n" +
+                "    \"taskID\": %d\n" +
+                "}", taskIDCounter);
 
 
-        output = String.format("\"taskName\":\"TaskNumber1\",\"taskDeadline\":null,\"taskPriority\":3,\"taskComplete\":0,\"taskNoteList\":[{\"taskID\":5,\"taskNoteID\":1,\"note\":\"NoteNumber1\"}],\"taskContactAccounts\":[{\"taskID\":5,\"contactID\":%d}],\"owner\":false,\"taskID\":5}", contactId3);
+        output = String.format("\"taskName\":\"TaskNumber%d\",\"taskDeadline\":null,\"taskPriority\":-1,\"taskComplete\":0,\"taskNoteList\":[{\"taskID\":%d,\"taskNoteID\":1,\"note\":\"NoteNumber1\"}],\"taskContactAccounts\":[{\"taskID\":%d,\"contactID\":%d}],\"owner\":false,\"taskID\":%d}", taskIDCounter, taskIDCounter, taskIDCounter, contactId3, taskIDCounter);
 
 
         mvc.perform(get("/task/readTask")
@@ -504,11 +508,11 @@ public class TasksTests {
 
         // update the task note
 
-        taskContent = "{\n" +
-                "    \"taskID\": 5,\n" +
+        taskContent = String.format("{\n" +
+                "    \"taskID\": %d,\n" +
                 "    \"taskNoteID\": 1,\n" +
                 "    \"newTaskNote\": \"NEW NOTE HELLO WORLD\"\n" +
-                "}";
+                "}", taskIDCounter);
 
         // update the task note.
 
@@ -520,15 +524,12 @@ public class TasksTests {
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        taskContent = "{\n" +
-                "    \"taskID\": 5\n" +
-                "}";
+        taskContent = String.format("{\n" +
+                "    \"taskID\": %d\n" +
+                "}", taskIDCounter);
 
-        taskContent = "{\n" +
-                "    \"taskID\": 5\n" +
-                "}";
 
-        output = String.format("\"taskName\":\"TaskNumber1\",\"taskDeadline\":null,\"taskPriority\":3,\"taskComplete\":0,\"taskNoteList\":[{\"taskID\":5,\"taskNoteID\":1,\"note\":\"NEW NOTE HELLO WORLD\"}],\"taskContactAccounts\":[{\"taskID\":5,\"contactID\":%d}],\"owner\":false,\"taskID\":5}", contactId3);
+        output = String.format("\"taskName\":\"TaskNumber%d\",\"taskDeadline\":null,\"taskPriority\":-1,\"taskComplete\":0,\"taskNoteList\":[{\"taskID\":%d,\"taskNoteID\":1,\"note\":\"NEW NOTE HELLO WORLD\"}],\"taskContactAccounts\":[{\"taskID\":%d,\"contactID\":%d}],\"owner\":false,\"taskID\":%d}", taskIDCounter, taskIDCounter, taskIDCounter, contactId3, taskIDCounter);
         mvc.perform(get("/task/readTask")
                 .cookie(cookie)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -551,12 +552,12 @@ public class TasksTests {
                 .andExpect(status().isOk());
 
 
-        taskContent = "{\n" +
-                "    \"taskID\": 5\n" +
-                "}";
+        taskContent = String.format("{\n" +
+                "    \"taskID\": %d\n" +
+                "}", taskIDCounter);
 
 
-        output = String.format("\"taskName\":\"TaskNumber1\",\"taskDeadline\":null,\"taskPriority\":3,\"taskComplete\":0,\"taskNoteList\":[],\"taskContactAccounts\":[{\"taskID\":5,\"contactID\":%d}],\"owner\":false,\"taskID\":5}", contactId3);
+        output = String.format("\"taskName\":\"TaskNumber%d\",\"taskDeadline\":null,\"taskPriority\":-1,\"taskComplete\":0,\"taskNoteList\":[],\"taskContactAccounts\":[{\"taskID\":%d,\"contactID\":%d}],\"owner\":false,\"taskID\":%d}", taskIDCounter, taskIDCounter, contactId3, taskIDCounter);
         mvc.perform(get("/task/readTask")
                 .cookie(cookie)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -566,9 +567,9 @@ public class TasksTests {
         // Delete the Task Contact.
 
         taskContent = String.format("{\n" +
-                "    \"taskID\": 5,\n" +
+                "    \"taskID\": %d,\n" +
                 "    \"contactID\": %d\n" +
-                "}", contactId3);
+                "}", taskIDCounter, contactId3);
 
         // delete the task note
 
@@ -581,12 +582,12 @@ public class TasksTests {
                 .andExpect(status().isOk());
 
 
-        taskContent = "{\n" +
-                "    \"taskID\": 5\n" +
-                "}";
+        taskContent = String.format("{\n" +
+                "    \"taskID\": %d\n" +
+                "}", taskIDCounter);
 
 
-        output = "\"taskName\":\"TaskNumber1\",\"taskDeadline\":null,\"taskPriority\":3,\"taskComplete\":0,\"taskNoteList\":[],\"taskContactAccounts\":[],\"owner\":false,\"taskID\":5}";
+        output = String.format("\"taskName\":\"TaskNumber%d\",\"taskDeadline\":null,\"taskPriority\":-1,\"taskComplete\":0,\"taskNoteList\":[],\"taskContactAccounts\":[],\"owner\":false,\"taskID\":%d}", taskIDCounter, taskIDCounter);
         mvc.perform(get("/task/readTask")
                 .cookie(cookie)
                 .contentType(MediaType.APPLICATION_JSON)

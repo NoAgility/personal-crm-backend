@@ -22,23 +22,25 @@ public class AccountController {
     @Autowired
     ContactService contactService;
 
+    /**
+     * API endpoint to create an account
+     * @param payload The payload of the request containing the account details
+     * @param referral An optional request parameter indicating that the registration was through referral
+     * @return A ResponseEntity indicating the success of the request
+     * @throws Exception Indicates that the server failed to create an account for the client
+     */
     @RequestMapping(
         value = "/create",
         method = RequestMethod.POST,
         consumes = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<String> create(@RequestBody Map<String, Object> payload, @RequestParam(value="referral", defaultValue = "") String referral) throws Exception{
-        System.out.println((String)payload.get("username"));
-        System.out.println((String)payload.get("password"));
-        System.out.println((String)payload.get("name"));
-        System.out.println((String)payload.get("dob"));
         if(accountService.registerAccount(
             (String)payload.get("username"), 
             (String)payload.get("password"),
             (String)payload.get("name"),
             (String)payload.get("dob")
         )){
-            System.out.println("???? " + referral);
             if(referral != "" && accountService.getByUsername(referral) != null){
                 contactService.addContactWithUsername((String)payload.get("username"), referral);
             }
@@ -47,6 +49,12 @@ public class AccountController {
         return ResponseEntity.badRequest().body("Failure");
     }
 
+    /**
+     * API endpoint to deactivate an account
+     * @param payload The payload containing the id of the account to deactivate
+     * @return A ResponseEntity indicating the success of the request
+     * @throws Exception Indicates that the server failed in deactivating an account for the client
+     */
     @RequestMapping(
         value = "/deactivate",
         method = RequestMethod.POST,
@@ -61,6 +69,11 @@ public class AccountController {
         return ResponseEntity.badRequest().body("Failure");
     }
 
+    /**
+     * API endpoint to get an account by username
+     * @param username The username of the account to fetch
+     * @return A ResponseEntity containing the account details
+     */
     @RequestMapping(
         value = "/get",
         method = RequestMethod.GET,
@@ -80,6 +93,11 @@ public class AccountController {
         return ResponseEntity.ok().body("test");
     }
 
+    /**
+     * API endpoint to get an account by id
+     * @param id The id of the account to fetch
+     * @return A ResponseEntity containing the account details
+     */
     @RequestMapping(
         value = "/get",
         method = RequestMethod.GET,

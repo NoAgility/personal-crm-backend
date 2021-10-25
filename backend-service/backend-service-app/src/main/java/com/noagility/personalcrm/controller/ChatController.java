@@ -31,10 +31,11 @@ public class ChatController {
     private JwtTokenUtil jwtTokenUtil;
 
     
-    /** 
-     * @param payload
-     * @param token
-     * @return ResponseEntity<String>
+    /**
+     * API endpoint to create a chat between accounts
+     * @param payload The payload of the request containing the ids of the accounts to include
+     * @param token The JWT token used to authenticate the request
+     * @return ResponseEntity<String> Indicating the success of the request
      */
     @RequestMapping(
         value = "/createChat",
@@ -223,6 +224,12 @@ public class ChatController {
         return ResponseEntity.badRequest().body(null);
     }
 
+    /**
+     * API endpoint for an account to leave a chat
+     * @param payload The payload containing the id of the chat to leave
+     * @param token The JWT token used to authenticate the request and indicate the owner of
+     * @return A responseEntity indicating the success of the request
+     */
     @RequestMapping(
         value = "/leaveChat",
         method = RequestMethod.POST,

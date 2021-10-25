@@ -19,7 +19,11 @@ import java.util.Iterator;
 @RequestMapping("/calendar")
 public class CalendarController {
 
-
+    /**
+     * API Endpoint to fetch the national public holidays of Australia
+     * @return A ResponseEntity containing an array of Holiday objects
+     * @throws Exception Indicates that the server has failed to load and send holiday data
+     */
     @RequestMapping(
             value = "/public_holiday/get",
             method = RequestMethod.GET
