@@ -18,6 +18,12 @@ public class JwtAuthenticationController {
     @Autowired
     private AuthenticationService authenticationService;
 
+    /**
+     * API endpoint to authenticate an account
+     * @param payload The payload of the request containing the authentication details
+     * @param response The HTTP response object
+     * @return A ResponseEntity that contains a Set-Cookie header for the created JWT token
+     */
     @RequestMapping(
             value = "/login",
             method = RequestMethod.POST

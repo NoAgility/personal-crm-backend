@@ -47,6 +47,10 @@ public class ChatService {
 
     private int maxChatID;
 
+    /**
+     * Method on application start, reads from the database the current max ID and increments it to insert future
+     * entries
+     */
     @EventListener(ApplicationReadyEvent.class)
     private void loadChatID(){
         String sql = "SELECT MAX(ChatID) as ChatID FROM Chats";
@@ -63,9 +67,9 @@ public class ChatService {
     
     /** 
      * <p>Adds a message to a given chat
-     * @param chatID
-     * @param accountID
-     * @param messageText
+     * @param chatID The chat to add message to
+     * @param accountID The account that created the message
+     * @param messageText The text of the message
      * @return boolean
      */
     public boolean addMessage(int chatID, int accountID, String messageText){
@@ -85,8 +89,8 @@ public class ChatService {
     
     /** 
      * <p>Creates a chat with the given accountIDs
-     * @param accountIDs
-     * @return boolean
+     * @param accountIDs The ids of the accounts involved
+     * @return a boolean indicating the success of the transaction
      */
     public boolean addChat(Collection<Integer> accountIDs){
         try{
@@ -114,12 +118,12 @@ public class ChatService {
         return false;
     }
 
-    
-    /** 
+
+    /**
      * <p>Deletes a message with the given messageID and chatID
-     * @param messageID
-     * @param chatID
-     * @return boolean
+     * @param messageID The id of the message to be deleted
+     * @param chatID The id of the chat that contains the message
+     * @return a boolean indicating the success of the transaction
      */
     public boolean deleteMessage(int messageID, int chatID){
         try{
@@ -139,10 +143,10 @@ public class ChatService {
     
     /** 
      * <p>Edits a message with the given messageID and chatID
-     * @param messageID
-     * @param chatID
-     * @param newText
-     * @return boolean
+     * @param messageID The id of the message to be edited
+     * @param chatID The id of the chat that contains the message
+     * @param newText The new text of the message
+     * @return a boolean indicating the success of the transaction
      */
     public boolean editMessage(int messageID, int chatID, String newText){
         try{
@@ -162,8 +166,8 @@ public class ChatService {
     
     /** 
      * <p>Returns the specified chat object for the given chatID
-     * @param chatID
-     * @return Chat
+     * @param chatID The id of the chat to look for
+     * @return A Chat object
      */
     public Chat getChatByID(int chatID){
         try{
@@ -196,8 +200,8 @@ public class ChatService {
 
     /** 
      * <p>Returns the specified Message object by the messageID and chatID
-     * @param messageID
-     * @param chatID
+     * @param messageID The id of the message to look for
+     * @param chatID The id of the chat to look for the message in
      * @return Message
      */
     public Message getMessageByID(int messageID, int chatID){
@@ -218,7 +222,7 @@ public class ChatService {
     
     /** 
      * <p>Gets all of the chats a user is in
-     * @param accountID
+     * @param accountID The account to fetch the chats for
      * @return List<Chat>
      */
     public List<Chat> getAccountChatsByID(int accountID){
@@ -252,9 +256,9 @@ public class ChatService {
     
     /** 
      * <p>Validates that the person sending the request has created the messsage
-     * @param token
-     * @param messageID
-     * @param chatID
+     * @param token The JWT token from the request
+     * @param messageID The id of the message
+     * @param chatID The id of the chat containing the message
      * @return boolean
      */
     public boolean validateMessageCreator(String token, int messageID, int chatID){
@@ -272,8 +276,8 @@ public class ChatService {
 
     /** 
      * <p>Validates that the person sending the request is a participant of the chat
-     * @param token
-     * @param chatID
+     * @param token The JWT token from the request
+     * @param chatID The id of the chat containing the message
      * @return boolean
      */
     public boolean validateChatParticipant(String token, int chatID){
@@ -290,6 +294,12 @@ public class ChatService {
         return false;
     }
 
+    /**
+     * Method to leave an chat for an account
+     * @param chatID The id of the chat to leave
+     * @param accountID The id of the account to leave
+     * @return boolean indicating the success of the transaction
+     */
     public boolean leaveChat(int chatID, int accountID){
         try{
             String sql = "UPDATE Accounts_Chats SET Account_ChatActive = 0 WHERE ChatID = ? AND AccountID = ?";

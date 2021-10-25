@@ -39,6 +39,10 @@ public class TaskService {
     private int maxTaskID;
     private int maxTaskNoteID;
 
+    /**
+     * Method on application start, reads from the database the current max ID and increments it to insert future
+     * entries
+     */
     @EventListener(ApplicationReadyEvent.class)
     private void loadTaskID(){
         String sql = "SELECT MAX(TaskID) as TaskID FROM Tasks";
@@ -57,6 +61,16 @@ public class TaskService {
     }
 
 
+    /**
+     * Method for creating a task
+     * @param contactIDs The contacts to be included
+     * @param taskNotes The task notes to be included
+     * @param accountID The creator of the task
+     * @param taskName The name of the task
+     * @param priority The priority of the task
+     * @param deadline The deadline of the task
+     * @return boolean indicating if the creation was successful
+     */
     public boolean createTask(List<Integer> contactIDs, List<String> taskNotes, int accountID, String taskName, int priority, String deadline) {
         // return the Task ID.
         try {
@@ -112,6 +126,12 @@ public class TaskService {
     }
 
 
+    /**
+     * Method to add a note to a task
+     * @param taskID The task where the note will be added
+     * @param taskNote The task note
+     * @return a boolean indicating if the transaction was successful
+     */
     public boolean addTaskNote(int taskID, String taskNote) {
         try {
             String sql = "INSERT INTO TaskNotes(TaskID, TaskNoteID, Note) VALUES (?, ?, ?)";
@@ -127,7 +147,12 @@ public class TaskService {
         return false;
     }
 
-
+    /**
+     * Method to add a contact to a task
+     * @param taskID The task where the contact will be added
+     * @param contactID The accountID of the contact
+     * @return a boolean indicating if the transaction was successful
+     */
     public boolean addTaskContact(int taskID, int contactID) {
         try {
             String sql = "INSERT INTO Account_Contacts_Tasks(TaskId, ContactID) VALUES (?, ?)";
@@ -143,7 +168,12 @@ public class TaskService {
         return false;
     }
 
-
+    /**
+     * Method to update the name of a task
+     * @param taskID The task to be updated
+     * @param newTaskName The new name of the task
+     * @return a boolean indicating the success of the transaction
+     */
     public boolean updateTask(int taskID, String newTaskName) {
         try {
             String sql = "UPDATE Tasks SET TaskName = ? WHERE TaskID = ?";
@@ -159,23 +189,34 @@ public class TaskService {
         return false;
     }
 
-
-    public boolean updateTaskNote( int taskNoteID, String newTaskNoteID) {
+    /**
+     * Method to update a task note
+     * @param taskNoteID The note to be updated
+     * @param newNote The new text of the note
+     * @return a boolean indicating the success of the transaction
+     */
+    public boolean updateTaskNote( int taskNoteID, String newNote) {
         try {
             // delete the old one and create a new one.
             String sql = "UPDATE TaskNotes SET Note = ? WHERE TaskNoteID = ?";
-            if (jdbcTemplate.update(sql, newTaskNoteID, taskNoteID) == 0) {
+            if (jdbcTemplate.update(sql, newNote, taskNoteID) == 0) {
                 throw new Exception("Could not find Task from given TaskID");
             }
-            log.info("Updated task note for task note (id: {}), new note: {}", taskNoteID, newTaskNoteID);
+            log.info("Updated task note for task note (id: {}), new note: {}", taskNoteID, newNote);
             return true;
         }
         catch (Exception e) {
-            log.error("Failed to update taskNote (id: {}) with new name: {}", taskNoteID, newTaskNoteID, e);
+            log.error("Failed to update taskNote (id: {}) with new name: {}", taskNoteID, newNote, e);
         }
         return false;
     }
 
+    /**
+     * Method to update the priority of a task
+     * @param taskID The id of the task to be updated
+     * @param newPriority The new priority of the task
+     * @return a boolean indicating the success of the transaction
+     */
     public boolean updatePriority(int taskID, int newPriority){
         try{
             String sql = "UPDATE Tasks SET TaskPriority = ? WHERE TaskID = ?";
@@ -191,6 +232,12 @@ public class TaskService {
         return false;
     }
 
+    /**
+     * Method to update the deadline of a task
+     * @param taskID The id of the task to be updated
+     * @param newDeadline The new deadline of the task
+     * @return a boolean indicating the success of the transaction
+     */
     public boolean updateDeadline(int taskID, String newDeadline){
         try{
             String sql = "UPDATE Tasks SET TaskDeadline = ? WHERE TaskID = ?";
@@ -206,7 +253,11 @@ public class TaskService {
         return false;
     }
 
-
+    /**
+     * Method to delete a task
+     * @param taskID The id of the task to be deleted
+     * @return a boolean indicating the success of the transaction
+     */
     public boolean deleteTask(int taskID) {
         try {
             // delete the TaskNotes.
@@ -229,7 +280,11 @@ public class TaskService {
         return false;
     }
 
-
+    /**
+     * Method to delete a task note
+     * @param taskNoteID The id of the task note
+     * @return a boolean indicating the success of the transaction
+     */
     public boolean deleteTaskNote(int taskNoteID) {
         try {
             String sql = "DELETE FROM TaskNotes WHERE TaskNoteID = ?";
@@ -245,7 +300,12 @@ public class TaskService {
         return false;
     }
 
-
+    /**
+     * Method to delete a contact from a task
+     * @param taskID The id of the task
+     * @param contactID The id of the contact to be deleted
+     * @return a boolean indicating the success of the transaction
+     */
     public boolean deleteTaskContact(int taskID, int contactID) {
         try {
             String sql = "DELETE FROM Account_Contacts_Tasks WHERE TaskID = ? AND ContactID = ?";
@@ -261,6 +321,11 @@ public class TaskService {
         return false;
     }
 
+    /**
+     * Method to delete the priority of a task
+     * @param taskID The id of the task
+     * @return a boolean indicating the success of the transaction
+     */
     public boolean deletePriority(int taskID){
         try {
             String sql = "UPDATE Tasks SET TaskDeadline = NULL WHERE TaskID = ?";
@@ -275,6 +340,11 @@ public class TaskService {
         return false;
     }
 
+    /**
+     * Method to delete the deadline of a task
+     * @param taskID The id of the task
+     * @return a boolean indicating the success of the transaction
+     */
     public boolean deleteDeadline(int taskID){
         try {
             String sql = "UPDATE Tasks SET TaskDeadline = NULL WHERE TaskID = ?";
@@ -290,7 +360,12 @@ public class TaskService {
         return false;
     }
 
-
+    /**
+     * Method to get tasks by account id
+     * @param accountID the id to fetch tasks by
+     * @param readAll boolean indicating if all tasks should be read, whether or not accountID is the owner
+     * @return A List of task objects from the database
+     */
     public List<Task> getTasksByAccountID(int accountID, Boolean readAll){
         List<Task> tasks = new ArrayList<>();
         for(Task task: getTasksOwnedByAccountID(accountID, readAll)){
@@ -302,6 +377,12 @@ public class TaskService {
         return tasks;
     }
 
+    /**
+     * Method to get tasks owned by account
+     * @param accountID The id of the account
+     * @param readAll boolean indicating if all tasks should be read, whether or not accountID is the owner
+     * @return A List of task objects from the database
+     */
     private List<Task> getTasksOwnedByAccountID(int accountID, Boolean readAll){
         try {
             String sql;
@@ -333,6 +414,12 @@ public class TaskService {
         return null;
     }
 
+    /**
+     * Method to get tasks that involves an account
+     * @param accountID The id of the account
+     * @param readAll boolean indicating if all tasks should be read, whether or not accountID is the owner
+     * @return A List of task objects from the database
+     */
     private List<Task> getTasksWithAccountID(int accountID, Boolean readAll){
         try {
             String sql = "SELECT * FROM Account_Contacts_Tasks WHERE ContactID = ?";
@@ -353,7 +440,12 @@ public class TaskService {
         return null;
     }
 
-
+    /**
+     * Method to get task by taskID
+     * @param taskID The id of the task
+     * @param readAll boolean indicating if the task should be read, whether or not the task is fi0nished
+     * @return A task object
+     */
     public Task getTaskByID(int taskID, Boolean readAll) {
         try {
             // add in the Main task properties
@@ -380,6 +472,11 @@ public class TaskService {
         return null;
     }
 
+    /**
+     * Method to complete a task
+     * @param taskID The id of the task to complete
+     * @return a boolean indicating the success of the transaction
+     */
     public boolean completeTask(int taskID){
         try {
             String sql = "UPDATE Tasks SET TaskComplete = 1 WHERE TaskID = ?";

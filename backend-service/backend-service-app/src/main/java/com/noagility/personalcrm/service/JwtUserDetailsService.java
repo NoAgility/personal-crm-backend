@@ -22,6 +22,13 @@ public class JwtUserDetailsService implements UserDetailsService {
     JdbcTemplate jdbcTemplate;
     @Autowired
     LoginRowMapper loginRowMapper;
+
+    /**
+     * Method to load a username into a UserDetails object
+     * @param username The username to load
+     * @return a UserDetails object
+     * @throws UsernameNotFoundException Indicates that the service failed to create a UserDetails object from the username
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {

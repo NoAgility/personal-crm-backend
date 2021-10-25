@@ -111,7 +111,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `personalCrmDB`.`Meetings` (
   `MeetingID` INT NOT NULL,
   `MeetingName` VARCHAR(45) NOT NULL,
-  `MeetingDescription` VARCHAR(100) NULL,
+  `MeetingDescription` VARCHAR(255) NULL,
   `MeetingCreatorID` INT NOT NULL,
   `MeetingStart` DATETIME NOT NULL,
   `MeetingEnd` DATETIME NOT NULL,
@@ -262,7 +262,7 @@ CREATE TABLE IF NOT EXISTS `personalCrmDB`.`Minutes` (
   `MinuteID` INT NOT NULL AUTO_INCREMENT,
   `MeetingID` INT NOT NULL,
   `AccountID` INT NOT NULL,
-  `MinuteText` VARCHAR(100) NOT NULL,
+  `MinuteText` VARCHAR(255) NOT NULL,
   `MinuteCreation` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`MinuteID`, `MeetingID`),
   INDEX `fk_Minute_Meetings1_idx` (`MeetingID` ASC) VISIBLE,
