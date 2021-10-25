@@ -29,6 +29,11 @@ public class AccountService {
     @Autowired
     JwtTokenUtil jwtTokenUtil;
 
+    /**
+     * Method to get an account by username
+     * @param username The username of the account
+     * @return An account object
+     */
     public Account getByUsername(String username) {
         try {
             String sql = "SELECT * FROM Accounts WHERE AccountUsername = ?";
@@ -41,6 +46,11 @@ public class AccountService {
         return null;
     }
 
+    /**
+     * Method to get an account by id
+     * @param id The id of the account
+     * @return An account object
+     */
     public Account getByID(int id){
         try {
             String sql = "SELECT * FROM Accounts WHERE AccountID = ?";
@@ -52,6 +62,14 @@ public class AccountService {
         return null;
     }
 
+    /**
+     * Method to register an account
+     * @param username The username to register with
+     * @param password The password to register with
+     * @param name The name to register with
+     * @param dateOfBirth The date of birth to register with
+     * @return A boolean indicating the success of the transaction
+     */
     public boolean registerAccount(String username, String password, String name, String dateOfBirth){
         if(getByUsername(username)!=null){
             log.info(String.format("Tried to register account with username that already exists, Username=%s", username));
@@ -87,6 +105,11 @@ public class AccountService {
         return false;
     }
 
+    /**
+     * Method to deactivate an account
+     * @param id The id of the account to deactivate
+     * @return A boolean indicating the success of the transaction
+     */
     public boolean deactivateAccount(int id) {
         //  Insert new account into Accounts table
         String sql = "UPDATE Accounts SET AccountActive = 0 WHERE AccountID = ?;";

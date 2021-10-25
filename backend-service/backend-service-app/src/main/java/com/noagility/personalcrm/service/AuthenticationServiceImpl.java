@@ -16,13 +16,19 @@ import javax.servlet.http.HttpServletResponse;
 @Service
 @Profile("!ete")
 public class AuthenticationServiceImpl extends AuthenticationService {
+
+    /**
+     * Method to create a response entity containing Set-Cookie headers for a JWT token and accountID which can be used
+     * to send authenticated requests to the backend
+     * @param username The username of the account to authenticate
+     * @param password The password of the account to authenticate
+     * @param response The response that will be sent back to the client
+     * @return A ResponseEntity object
+     * @throws Exception Indicates that there was an issue validating the user details and creating a token
+     */
     @Override
     public ResponseEntity<?> authenticate(String username, String password, HttpServletResponse response) throws Exception {
 
-
-        /**
-         * Needs to be refactored out - Make a default builder method for cookies
-         */
         authenticate(username, password);
 
         final UserDetails userDetails = userDetailsService

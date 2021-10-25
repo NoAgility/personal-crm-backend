@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/healthcheck")
 public class HealthCheckController {
 
+    /**
+     * API endpoint for AWS to call every 30 seconds to validate the health of this application
+     * @return
+     */
     @RequestMapping(
             value="/update",
             method= RequestMethod.GET

@@ -27,6 +27,12 @@ public abstract class AuthenticationService {
 
     public abstract ResponseEntity<?> authenticate(String usernmame, String password, HttpServletResponse response) throws Exception;
 
+    /**
+     * Method to authenticate a user
+     * @param username The username passed
+     * @param password The password passed
+     * @throws Exception Indicates that there was an issue authenticating the user details
+     */
     protected void authenticate(String username, String password) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));

@@ -27,6 +27,13 @@ public class TaskController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
+    /**
+     * API Endpoint to create a task
+     * @param payload The payload of the request
+     * @param token The JWT token used to authenticate the request
+     * @return A ResponseEntity indicating the success
+     * @throws Exception Indicates that an issue occurred in creating a task for the client
+     */
     @RequestMapping(
             value = "/createTask",
             method = RequestMethod.POST,
@@ -53,12 +60,18 @@ public class TaskController {
         return ResponseEntity.badRequest().body("Failure");
     }
 
+    /**
+     * API Endpoint to create a task note for a task
+     * @param payload The payload of the request
+     * @param token The JWT token used to authenticate the request
+     * @return A ResponseEntity indicating the success
+     * @throws Exception Indicates that an issue occurred in creating a task note for the client
+     */
     @RequestMapping(
             value = "/addTaskNote",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-
     public ResponseEntity<String> addTaskNote(@RequestBody Map<String, Object> payload, @CookieValue("jwt") String token){
         try {
             if(taskService.addTaskNote(
@@ -74,6 +87,13 @@ public class TaskController {
         return ResponseEntity.badRequest().body("Failure");
     }
 
+    /**
+     * API Endpoint to add a contact to a task
+     * @param payload The payload of the request
+     * @param token The JWT token used to authenticate the request
+     * @return A ResponseEntity indicating the success
+     * @throws Exception Indicates that an issue occurred in adding a contact for the task
+     */
     @RequestMapping(
             value = "/addTaskContact",
             method = RequestMethod.POST,
@@ -94,7 +114,12 @@ public class TaskController {
         return ResponseEntity.badRequest().body("Failure");
     }
 
-
+    /**
+     * API Endpoint to read the tasks of an account
+     * @param token The JWT token used to authenticate the request
+     * @return A ResponseEntity indicating the success
+     * @throws Exception Indicates that an issue occurred in creating a task for the client
+     */
     @RequestMapping(
             value = "/readTasks",
             method = RequestMethod.GET
@@ -111,7 +136,12 @@ public class TaskController {
         }
         return null;
     }
-
+    /**
+     * API Endpoint to read all the tasks of an account, completed and non-owner tasks.
+     * @param token The JWT token used to authenticate the request
+     * @return A ResponseEntity indicating the success
+     * @throws Exception Indicates that an issue occurred in creating a task for the client
+     */
     @RequestMapping(
             value = "/readAllTasks",
             method = RequestMethod.GET
@@ -129,7 +159,13 @@ public class TaskController {
         return null;
     }
 
-
+    /**
+     * API Endpoint to read a specific task by id
+     * @param payload The payload of the request
+     * @param token The JWT token used to authenticate the request
+     * @return A ResponseEntity indicating the success
+     * @throws Exception Indicates that an issue occurred in creating a task for the client
+     */
     @RequestMapping(
             value = "/readTask",
             method = RequestMethod.GET

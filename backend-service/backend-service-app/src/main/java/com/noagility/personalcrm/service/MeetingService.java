@@ -43,6 +43,10 @@ public class MeetingService {
 
     private int maxMeetingID;
 
+    /**
+     * Method on application start, reads from the database the current max ID and increments it to insert future
+     * entries
+     */
     @EventListener(ApplicationReadyEvent.class)
     private void loadMeetingID(){
         String sql = "SELECT MAX(MeetingID) as MeetingID FROM Meetings";
@@ -56,6 +60,16 @@ public class MeetingService {
         log.info("TaskService has started, incrementing MeetingID from {}", maxMeetingID);
     }
 
+    /**
+     * Method to create a meeting
+     * @param accountIDs The ids of the accounts that will participate in the meeting
+     * @param meetingCreatorID The id of the account that created the meeting
+     * @param meetingName The name of the meeting
+     * @param meetingDescription The description of the meeting
+     * @param meetingStart The start date/time of the meeting
+     * @param meetingEnd The end date/time of the meeting
+     * @return a boolean indiciating the success of the transaction
+     */
     public boolean createMeeting(Collection<Integer> accountIDs, int meetingCreatorID, String meetingName, String meetingDescription, String meetingStart, String meetingEnd){
         try{
             //  Insert new meeting into Meetings table
@@ -83,6 +97,14 @@ public class MeetingService {
         return false;
     }
 
+    /**
+     * Method to edit a meeting
+     * @param meetingName The name of the meeting
+     * @param meetingDescription The description of the meeting
+     * @param meetingStart The start date/time of the meeting
+     * @param meetingEnd The end date/time of the meeting
+     * @return a boolean indiciating the success of the transaction
+     */
     public boolean editMeeting(int meetingID, String meetingName, String meetingDescription, String meetingStart, String meetingEnd){
         try{
             //  Edit message by meetingID
@@ -98,6 +120,11 @@ public class MeetingService {
         return false;
     }
 
+    /**
+     * Method to delete a meeting
+     * @param meetingID The id of the meeting to delete
+     * @return a boolean indicating the success of the transaction
+     */
     public boolean deleteMeeting(int meetingID){
         try{
             //  Delete minutes by meetingID
@@ -119,6 +146,11 @@ public class MeetingService {
         return false;
     }
 
+    /**
+     * Method to get a meeting by it's id
+     * @param meetingID The id of the meeting to fetch
+     * @return A meeting object
+     */
     public Meeting getMeetingByID(int meetingID){
         try{
             //  Get meeting by meetingID
@@ -142,6 +174,11 @@ public class MeetingService {
         return null;
     }
 
+    /**
+     * Method to fetch all the meetings for an account
+     * @param accountID The id of the account
+     * @return A List of meeting objects
+     */
     public List<Meeting> getAccountMeetingsByID(int accountID){
         try{
             //  Get all MeetingIDs for account
@@ -171,6 +208,13 @@ public class MeetingService {
         return null;
     }
 
+    /**
+     * Method to create a minute for a meeting
+     * @param meetingID The id of the meeting to create a minute for
+     * @param minuteText The text of the minute
+     * @param accountID The id of the account creating the minute
+     * @return a boolean indiciating the success of the transaction
+     */
     public boolean createMinute(int meetingID, String minuteText, int accountID){
         try{
             //  Insert new minute to Minutes table
@@ -186,6 +230,13 @@ public class MeetingService {
         return false;
     }
 
+    /**
+     * Method to edit a minute for a meeting
+     * @param meetingID The id of the meeting
+     * @param minuteID The id of the minute
+     * @param minuteText The new minute text
+     * @return a boolean indiciating the success of the transaction
+     */
     public boolean editMinute(int meetingID, int minuteID, String minuteText){
         try{
             //  Edit minute by meetingID and minuteID
@@ -201,6 +252,12 @@ public class MeetingService {
         return false;
     }
 
+    /**
+     * Method to delete a minute from a meeting
+     * @param meetingID The id of the meeting
+     * @param minuteID The id of the minute
+     * @return a boolean indiciating the success of the transaction
+     */
     public boolean deleteMinute(int meetingID, int minuteID){
 
         try{
@@ -217,6 +274,12 @@ public class MeetingService {
         return false;
     }
 
+    /**
+     * Method to mark a meeting as accepted by an account
+     * @param meetingID The id of the meeting
+     * @param accountID The id of the account
+     * @return a boolean indicating the success of the transaction
+     */
     public boolean acceptMeeting(int meetingID, int accountID){
 
         try{
@@ -234,6 +297,12 @@ public class MeetingService {
         return false;
     }
 
+    /**
+     * Method to mark a meeting as declined by an account
+     * @param meetingID The id of the meeting
+     * @param accountID The id of the account
+     * @return a boolean indicating the success of the transaction
+     */
     public boolean declineMeeting(int meetingID, int accountID){
         try{
             String sql = "DELETE FROM Accounts_Meetings WHERE MeetingID = ? AND AccountID = ? AND Accounts_MeetingsAccepted = 0";
@@ -250,6 +319,12 @@ public class MeetingService {
         return false;
     }
 
+    /**
+     * Method to get a minute object by id
+     * @param meetingID The id of the meeting that contains the minute
+     * @param minuteID The id of the minute
+     * @return a boolean indicating the success of the transaction
+     */
     public Minute getMinuteByID(int meetingID, int minuteID){
         try{
             //  Get minute by meetingID and minuteID
@@ -265,6 +340,11 @@ public class MeetingService {
         return null;
     }
 
+    /**
+     * Method to get all the minutes of a meeting
+     * @param meetingID The meeting to get the minutes for
+     * @return A List of minute objects
+     */
     public List<Minute> getMeetingMinutes(int meetingID){
         try{
             //  Get minutes by meetingID
@@ -280,6 +360,11 @@ public class MeetingService {
         return null;
     }
 
+    /**
+     * Method to get all the participants of a meeting
+     * @param meetingID The id of the meeting
+     * @return A Map from (Integer, Boolean) -> (AccountID, Coming?)
+     */
     public Map<Integer, Boolean> getMeetingParticipants(int meetingID){
         try{
             //  Get accoundIDs by meetingID
@@ -299,6 +384,12 @@ public class MeetingService {
         return null;
     }
 
+    /**
+     * Method to validate if the owner of a token is the creator of a meeting
+     * @param token The JWT token sent
+     * @param meetingID The id of the meeting
+     * @return a boolean indicating if the owner of the token created the meeting
+     */
     public boolean validateMeetingCreator(String token, int meetingID){
         try{
             Meeting meeting = getMeetingByID(meetingID);
@@ -311,6 +402,12 @@ public class MeetingService {
         return false;
     }
 
+    /**
+     * Method to validate if the owner of a token is the creator of a minute
+     * @param token The JWT token sent
+     * @param meetingID The id of the minute
+     * @return a boolean indicating if the owner of the token created the minute
+     */
     public boolean validateMinuteCreator(String token, int meetingID, int minuteID){
         try{
             Minute minute = getMinuteByID(meetingID, minuteID);
@@ -323,6 +420,12 @@ public class MeetingService {
         return false;
     }
 
+    /**
+     * Method to validate if the owner of a token is a participant of a meeting
+     * @param token The JWT token sent
+     * @param meetingID The id of the meeting
+     * @return a boolean indicating if the owner of the token is a participant
+     */
     public boolean validateMeetingParticipant(String token, int meetingID){
         try{
             Meeting meeting = getMeetingByID(meetingID);
@@ -336,6 +439,12 @@ public class MeetingService {
         return false;
     }
 
+    /**
+     * Method to validate if the owner of a token has accepted a meeting
+     * @param token The JWT token sent
+     * @param meetingID The id of the meeting
+     * @return a boolean indicating if the owner of the token has accepted
+     */
     public boolean validateMeetingAccepted(String token, int meetingID){
         try{
             Meeting meeting = getMeetingByID(meetingID);

@@ -30,6 +30,12 @@ public class MeetingController {
     @Autowired
     MeetingService meetingService;
 
+    /**
+     * API endpoint to create a meeting for an account
+     * @param payload The payload of the request containing the meeting details
+     * @param token The JWT token used to authenticate the request
+     * @return A ResponseEntity indicating the success of the request
+     */
     @RequestMapping(
         value = "/createMeeting",
         method = RequestMethod.POST,
@@ -65,6 +71,12 @@ public class MeetingController {
         return ResponseEntity.badRequest().body("Failure");
     }
 
+    /**
+     * API endpoint to edit a meeting for an account
+     * @param payload The payload of the request containing the meeting details
+     * @param token The JWT token used to authenticate the request
+     * @return A ResponseEntity indicating the success of the request
+     */
     @RequestMapping(
         value = "/editMeeting",
         method = RequestMethod.POST,
@@ -95,6 +107,12 @@ public class MeetingController {
         return ResponseEntity.badRequest().body("Failure");
     }
 
+    /**
+     * API endpoint to delete a meeting for an account
+     * @param payload The payload of the request containing the meeting id
+     * @param token The JWT token used to authenticate the request
+     * @return A ResponseEntity indicating the success of the request
+     */
     @RequestMapping(
         value = "/deleteMeeting",
         method = RequestMethod.POST,
@@ -121,6 +139,12 @@ public class MeetingController {
         return ResponseEntity.badRequest().body("Failure");
     }
 
+    /**
+     * API endpoint to get a meeting by id
+     * @param meetingID The request parameter containing the id of the meeting
+     * @param token The JWT token used to authenticate the request
+     * @return A ResponseEntity indicating the success of the request
+     */
     @RequestMapping(
         value = "/getMeetingByID",
         method = RequestMethod.GET
@@ -140,6 +164,11 @@ public class MeetingController {
         return ResponseEntity.badRequest().body(null);
     }
 
+    /**
+     * API endpoint to get all the meeting for an account
+     * @param token The JWT token used to authenticate the request and indicate the owner of
+     * @return A ResponseEntity indicating the success of the request
+     */
     @RequestMapping(
         value = "/getAccountMeetings",
         method = RequestMethod.GET
@@ -156,6 +185,12 @@ public class MeetingController {
         return ResponseEntity.badRequest().body(null);
     }
 
+    /**
+     * API endpoint to create a minute for an meeting
+     * @param payload The payload of the request containing the minute details
+     * @param token The JWT token used to authenticate the request
+     * @return A ResponseEntity indicating the success of the request
+     */
     @RequestMapping(
         value = "/createMinute",
         method = RequestMethod.POST,
@@ -185,6 +220,12 @@ public class MeetingController {
         return ResponseEntity.badRequest().body("Failure");
     }
 
+    /**
+     * API endpoint to delete a minute from a meeting
+     * @param payload The payload of the request containing the meeting id
+     * @param token The JWT token used to authenticate the request
+     * @return A ResponseEntity indicating the success of the request
+     */
     @RequestMapping(
         value = "/deleteMinute",
         method = RequestMethod.POST,
@@ -217,6 +258,12 @@ public class MeetingController {
         return ResponseEntity.badRequest().body("Failure");
     }
 
+    /**
+     * API endpoint to edit a meeting for an account
+     * @param payload The payload of the request containing the new meeting details
+     * @param token The JWT token used to authenticate the request
+     * @return A ResponseEntity indicating the success of the request
+     */
     @RequestMapping(
         value = "/editMinute",
         method = RequestMethod.POST,
@@ -250,6 +297,12 @@ public class MeetingController {
         return ResponseEntity.badRequest().body("Failure");
     }
 
+    /**
+     * API endpoint to accept a meeting for an account
+     * @param payload The payload of the request containing the meeting id
+     * @param token The JWT token used to authenticate the request
+     * @return A ResponseEntity indicating the success of the request
+     */
     @RequestMapping(
         value = "/acceptMeeting",
         method = RequestMethod.POST,
@@ -279,6 +332,12 @@ public class MeetingController {
         return ResponseEntity.badRequest().body("Failure");
     }
 
+    /**
+     * API endpoint to decline a meeting for an account
+     * @param payload The payload of the request containing the meeting id
+     * @param token The JWT token used to authenticate the request
+     * @return A ResponseEntity indicating the success of the request
+     */
     @RequestMapping(
         value = "/declineMeeting",
         method = RequestMethod.POST,
