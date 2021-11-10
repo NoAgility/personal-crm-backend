@@ -27,27 +27,3 @@ ENV=local
 
 Then compile as a maven project and run the Spring Boot application.
 
-### docker-compose-local-soft.sh
-
-Running this will create a docker container for just the MySQL database, meaning that it is up to you to run the Spring Boot application. Do this if you have JDK 11 and the maven dependencies already installed on your local PC.
-
-However, note that if you take this approach, you will need to set a few environment variables:
-
-To set the required environment variables in IntelliJ:
-
-1. Click on the Run tab
-
-2. Click on Edit Configurations…
-
-If you don’t see PersonalCRMApplication under Application, you need to run PersonalCRMApplication first. (It will throw an exception obviously)
-
-4. Paste into “Environment variables”:
-5. 
-```
-SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/personalCrmDB;MYSQL_ROOT_PASSWORD=admin;ENV=dev
-```
-
-5. Run the application and it should work, provided that you’ve already run docker-compose-local-soft.sh to startup the database server.
-
-
-
